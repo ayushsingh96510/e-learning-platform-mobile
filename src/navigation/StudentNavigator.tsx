@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import HomeScreen from "../features/dashboard/screens/HomeScreen";
 import ProfileScreen from "../features/profile/screens/ProfileScreen";
+import LiveClassesScreen from "@/features/live-class/screens/LiveClassesScreen";
 
 export type StudentTabParamList = {
   Home: undefined;
@@ -98,7 +99,7 @@ function StudentTabs() {
 
       <Tab.Screen
         name="LiveClasses"
-        children={() => null}
+        component={LiveClassesScreen}
         options={{
           tabBarLabel: "Live",
         }}
