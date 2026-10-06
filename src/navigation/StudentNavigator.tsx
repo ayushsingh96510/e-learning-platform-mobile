@@ -1,5 +1,10 @@
+import {
+  createNativeStackNavigator,
+} from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, Text } from "react-native";
+
+import HomeScreen from "../features/dashboard/screens/HomeScreen";
+import ProfileScreen from "../features/profile/screens/ProfileScreen";
 
 export type StudentTabParamList = {
   Home: undefined;
@@ -9,45 +14,65 @@ export type StudentTabParamList = {
   Content: undefined;
 };
 
-const Tab = createBottomTabNavigator<StudentTabParamList>();
+export type StudentStackParamList = {
+  MainTabs: undefined;
+  Profile: undefined;
+};
 
-function Placeholder({ title }: { title: string }) {
+const Tab = createBottomTabNavigator<StudentTabParamList>();
+const Stack = createNativeStackNavigator<StudentStackParamList>();
+
+function StudentTabs() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-2xl font-bold text-gray-900">
-        {title}
-      </Text>
-    </View>
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+      />
+
+      <Tab.Screen
+        name="LiveClasses"
+        children={() => null}
+      />
+
+      <Tab.Screen
+        name="GroupStudy"
+        children={() => null}
+      />
+
+      <Tab.Screen
+        name="Assignments"
+        children={() => null}
+      />
+
+      <Tab.Screen
+        name="Content"
+        children={() => null}
+      />
+    </Tab.Navigator>
   );
 }
 
 export default function StudentNavigator() {
   return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name="Home"
-        children={() => <Placeholder title="Home" />}
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen
+        name="MainTabs"
+        component={StudentTabs}
       />
 
-      <Tab.Screen
-        name="LiveClasses"
-        children={() => <Placeholder title="Live Classes" />}
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
       />
-
-      <Tab.Screen
-        name="GroupStudy"
-        children={() => <Placeholder title="Group Study" />}
-      />
-
-      <Tab.Screen
-        name="Assignments"
-        children={() => <Placeholder title="Assignments" />}
-      />
-
-      <Tab.Screen
-        name="Content"
-        children={() => <Placeholder title="Content" />}
-      />
-    </Tab.Navigator>
+    </Stack.Navigator>
   );
 }

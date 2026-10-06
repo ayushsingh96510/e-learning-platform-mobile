@@ -13,18 +13,13 @@ const Stack =
   createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
-  const {
-    isAuthenticated,
-    loading,
-    user,
-  } = useAuth();
+  const { isAuthenticated, loading, user } = useAuth();
 
   if (loading) {
     return null;
   }
 
-  const isStudent =
-    user?.role?.toUpperCase() === "STUDENT";
+  const isStudent = user?.role?.toUpperCase() === "STUDENT";
 
   return (
     <Stack.Navigator
