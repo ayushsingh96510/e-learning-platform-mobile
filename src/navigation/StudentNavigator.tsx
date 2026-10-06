@@ -1,7 +1,6 @@
-import {
-  createNativeStackNavigator,
-} from "@react-navigation/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
 
 import HomeScreen from "../features/dashboard/screens/HomeScreen";
 import ProfileScreen from "../features/profile/screens/ProfileScreen";
@@ -22,36 +21,111 @@ export type StudentStackParamList = {
 const Tab = createBottomTabNavigator<StudentTabParamList>();
 const Stack = createNativeStackNavigator<StudentStackParamList>();
 
+type IconName = keyof typeof Ionicons.glyphMap;
+
 function StudentTabs() {
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerShown: false,
-      }}
+
+        tabBarActiveTintColor: "#2563EB",
+        tabBarInactiveTintColor: "#9CA3AF",
+
+        tabBarStyle: {
+          height: 68,
+          paddingTop: 8,
+          paddingBottom: 8,
+          borderTopWidth: 1,
+          borderTopColor: "#F3F4F6",
+          backgroundColor: "#FFFFFF",
+        },
+
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: "600",
+        },
+
+        tabBarIcon: ({ focused, color, size }) => {
+          const icons: Record<
+            keyof StudentTabParamList,
+            {
+              active: IconName;
+              inactive: IconName;
+            }
+          > = {
+            Home: {
+              active: "home",
+              inactive: "home-outline",
+            },
+            LiveClasses: {
+              active: "videocam",
+              inactive: "videocam-outline",
+            },
+            GroupStudy: {
+              active: "people",
+              inactive: "people-outline",
+            },
+            Assignments: {
+              active: "document-text",
+              inactive: "document-text-outline",
+            },
+            Content: {
+              active: "library",
+              inactive: "library-outline",
+            },
+          };
+
+          const icon = icons[route.name];
+
+          return (
+            <Ionicons
+              name={focused ? icon.active : icon.inactive}
+              size={focused ? size + 1 : size}
+              color={color}
+            />
+          );
+        },
+      })}
     >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
+        options={{
+          tabBarLabel: "Home",
+        }}
       />
 
       <Tab.Screen
         name="LiveClasses"
         children={() => null}
+        options={{
+          tabBarLabel: "Live",
+        }}
       />
 
       <Tab.Screen
         name="GroupStudy"
         children={() => null}
+        options={{
+          tabBarLabel: "Groups",
+        }}
       />
 
       <Tab.Screen
         name="Assignments"
         children={() => null}
+        options={{
+          tabBarLabel: "Tests",
+        }}
       />
 
       <Tab.Screen
         name="Content"
         children={() => null}
+        options={{
+          tabBarLabel: "Content",
+        }}
       />
     </Tab.Navigator>
   );
