@@ -21,6 +21,8 @@ import { KeyboardAvoidingView, Platform } from "react-native";
 import { useAuth } from "../../auth/AuthContext";
 import ChatPanel from "../components/ChatPanel";
 import { useClassroomChat } from "../hooks/useClassroomChat";
+import MainStage from "../classroom/stage/MainStage";
+import { useIngressParticipant } from "../classroom/stage/useIngressParticipant";
 
 function ClassRoomContent({ onLeave, roomError, }: { onLeave: () => void; roomError: string | null; }) {
     const insets = useSafeAreaInsets();
@@ -30,6 +32,8 @@ function ClassRoomContent({ onLeave, roomError, }: { onLeave: () => void; roomEr
     const participants = useParticipants();
     const { state, dispatch } = useClassRoom();
     const { send, notifyTyping } = useClassroomChat();
+
+    useIngressParticipant();
 
     const handleClassEnded = useCallback(() => {
         Alert.alert("Class ended", "This live class has ended.", [
@@ -98,9 +102,8 @@ function ClassRoomContent({ onLeave, roomError, }: { onLeave: () => void; roomEr
                 </Pressable>
             </View>
 
-            {/* Temporary placeholder: the stage is added in the next step. */}
-            <View className="h-48 items-center justify-center bg-black">
-                <Text className="text-sm text-gray-400">Stage will be added here.</Text>
+            <View className="px-3 pt-3">
+                <MainStage />
             </View>
 
             <ChatPanel onSend={send} onTyping={notifyTyping} />
