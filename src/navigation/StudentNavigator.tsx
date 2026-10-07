@@ -2,9 +2,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
-import HomeScreen from "../features/dashboard/screens/HomeScreen";
-import ProfileScreen from "../features/profile/screens/ProfileScreen";
+import HomeScreen from "@/features/dashboard/screens/HomeScreen";
+import ProfileScreen from "@/features/profile/screens/ProfileScreen";
 import LiveClassesScreen from "@/features/live-class/screens/LiveClassesScreen";
+import ClassRoomScreen from "@/features/live-class/screens/ClassRoomScreen";
 
 export type StudentTabParamList = {
   Home: undefined;
@@ -17,6 +18,7 @@ export type StudentTabParamList = {
 export type StudentStackParamList = {
   MainTabs: undefined;
   Profile: undefined;
+  ClassRoom: { roomName: string };
 };
 
 const Tab = createBottomTabNavigator<StudentTabParamList>();
@@ -147,6 +149,12 @@ export default function StudentNavigator() {
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
+      />
+
+      <Stack.Screen
+        name="ClassRoom"
+        component={ClassRoomScreen}
+        options={{ gestureEnabled: false }}
       />
     </Stack.Navigator>
   );

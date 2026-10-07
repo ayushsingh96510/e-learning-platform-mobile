@@ -1,6 +1,6 @@
 import {
   ActivityIndicator,
-  Alert,
+//   Alert,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -13,6 +13,11 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import LiveClassCard from "../components/LiveClassCard";
 import { useLiveSessions } from "../hooks/useLiveSessions";
 import type { LiveClassTab } from "../types";
+
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
+
 
 const tabs: { label: string; value: LiveClassTab }[] = [
   {
@@ -59,6 +64,9 @@ const fromYmd = (s: string) => {
 };
 
 export default function LiveClassesScreen() {
+  const navigation =
+  useNavigation<NativeStackNavigationProp<StudentStackParamList>>();
+  
   const [activeTab, setActiveTab] =
     useState<LiveClassTab>("LIVE");
 
@@ -79,10 +87,9 @@ export default function LiveClassesScreen() {
     reload,
   } = useLiveSessions(activeTab, startDate, endDate);
 
-  const handleJoin = (roomName: string) => {
-    // TODO: navigate to the class room screen (added in the next step).
-    Alert.alert("Join class", `Room: ${roomName}`);
-  };
+    const handleJoin = (roomName: string) => {
+        navigation.navigate("ClassRoom", { roomName });
+    };
 
   const pickerValue =
     picker === "start" && startDate
