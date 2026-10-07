@@ -23,8 +23,9 @@ import ChatPanel from "../components/ChatPanel";
 import { useClassroomChat } from "../hooks/useClassroomChat";
 import MainStage from "../classroom/stage/MainStage";
 import { useIngressParticipant } from "../classroom/stage/useIngressParticipant";
+import ClassRoomHeader from "../components/ClassRoomHeader";
 
-function ClassRoomContent({ onLeave, roomError, }: { onLeave: () => void; roomError: string | null; }) {
+function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => void; onRetry: () => void; roomError: string | null; }) {
     const insets = useSafeAreaInsets();
     const room = useRoomContext();
     const { user } = useAuth();
@@ -60,50 +61,16 @@ function ClassRoomContent({ onLeave, roomError, }: { onLeave: () => void; roomEr
         onLeave();
     };
 
-    const statusText = (() => {
-        switch (connectionState) {
-            case ConnectionState.Connected:
-                return "Connected";
-            case ConnectionState.Connecting:
-                return "Connecting...";
-            case ConnectionState.Reconnecting:
-                return "Reconnecting...";
-            case ConnectionState.Disconnected:
-                return "Disconnected";
-            default:
-                return String(connectionState);
-        }
-    })();
-
     return (
         <KeyboardAvoidingView
             className="flex-1 bg-gray-50"
             style={{ paddingTop: insets.top }}
             behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-            <View className="flex-row items-center justify-between border-b border-gray-100 bg-white px-4 py-3">
-                <View className="mr-3 flex-1">
-                    <Text className="text-base font-semibold text-gray-900" numberOfLines={1}>
-                        {state.title ?? "Live Class"}
-                    </Text>
-                    <Text className="text-xs text-gray-500">
-                        {statusText} · {participants.length} in room
-                    </Text>
-                </View>
-
-                {roomError ? (
-                    <Text className="mt-0.5 text-xs text-red-600" numberOfLines={2}>
-                        {roomError}
-                    </Text>
-                ) : null}
-
-                <Pressable onPress={handleLeave} className="rounded-full bg-red-50 px-4 py-2">
-                    <Text className="text-sm font-semibold text-red-600">Leave</Text>
-                </Pressable>
-            </View>
+            <ClassRoomHeader onLeave={handleLeave} roomError={roomError} />
 
             <View className="px-3 pt-3">
-                <MainStage />
+                <MainStage onRetry={onRetry} />
             </View>
 
             <ChatPanel onSend={send} onTyping={notifyTyping} />
@@ -187,9 +154,10 @@ export default function ClassRoomScreen() {
                     teacher: session?.teacher ?? null,
                     recordedVideoId: session?.replayMaterialId ?? null,
                     isChatEnabled: session?.isChatEnabled ?? false,
+                    isRecordingEnabled: session?.isRecordingEnabled ?? false,
                 }}
             >
-                <ClassRoomContent onLeave={leave} roomError={roomError} />
+                <ClassRoomContent onLeave={leave} onRetry={retry} roomError={roomError} />
             </ClassRoomProvider>
         </LiveKitRoom>
     );

@@ -31,6 +31,7 @@ export interface ClassRoomState {
   isRecording: boolean;
   participantCount: number;
   isChatEnabled: boolean;
+  isRecordingEnabled: boolean;
 }
 
 export type ClassRoomAction =
@@ -53,6 +54,7 @@ export interface ClassRoomInit {
   teacher: ITeacherIdentity | null;
   recordedVideoId: string | null;
   isChatEnabled: boolean;
+  isRecordingEnabled: boolean;
 }
 
 // Same rule as the web useLiveClassRoom hook.
@@ -91,6 +93,7 @@ function createInitialState(init: ClassRoomInit): ClassRoomState {
     isRecording: false,
     participantCount: 0,
     isChatEnabled: init.isChatEnabled,
+    isRecordingEnabled: init.isRecordingEnabled,
   };
 }
 

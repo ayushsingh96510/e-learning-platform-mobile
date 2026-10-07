@@ -1,29 +1,34 @@
 import { View } from "react-native";
 
 import { useStageState } from "./useStageState";
-import StageMessage from "./StageMessage";
 import StagePlaying from "./StagePlaying";
 import StageWaiting from "./StageWaiting";
+import {
+  StageBuffering,
+  StageConnecting,
+  StageError,
+  StageReplayPending,
+} from "./StageStates";
 
-export default function MainStage() {
+export default function MainStage({ onRetry }: { onRetry: () => void }) {
   const { stageState } = useStageState();
 
   let content: React.ReactNode = null;
   switch (stageState) {
     case "CONNECTING":
-      content = <StageMessage title="Connecting to the class..." loading />;
+      content = <StageConnecting />;
       break;
     case "WAITING":
       content = <StageWaiting />;
       break;
     case "REPLAY_PENDING":
-      content = <StageMessage title="Waiting for the replay to start" loading />;
+      content = <StageReplayPending />;
       break;
     case "BUFFERING":
-      content = <StageMessage title="Loading video..." loading />;
+      content = <StageBuffering />;
       break;
     case "ERROR":
-      content = <StageMessage title="Disconnected from the class" />;
+      content = <StageError onRetry={onRetry} />;
       break;
     case "PLAYING":
       content = <StagePlaying />;
