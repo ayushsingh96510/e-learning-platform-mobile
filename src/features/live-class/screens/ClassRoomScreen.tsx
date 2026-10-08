@@ -26,6 +26,7 @@ import { useIngressParticipant } from "../classroom/stage/useIngressParticipant"
 import ClassRoomHeader from "../components/ClassRoomHeader";
 import ClassroomControls from "../components/ClassroomControls";
 import ParticipantsSheet from "../components/ParticipantsSheet";
+import { requestMediaPermissions, showPermissionAlert } from "../classroom/permissions";
 
 function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => void; onRetry: () => void; roomError: string | null; }) {
     const insets = useSafeAreaInsets();
@@ -99,6 +100,7 @@ export default function ClassRoomScreen() {
     const insets = useSafeAreaInsets();
     const route = useRoute<RouteProp<StudentStackParamList, "ClassRoom">>();
     const { roomName } = route.params;
+    const [permissionsReady, setPermissionsReady] = useState(false);
 
     const { step, session, joinData, connection, error, statusCode, retry } =
         useClassRoomConnection(roomName);
@@ -112,6 +114,25 @@ export default function ClassRoomScreen() {
         AudioSession.startAudioSession();
         return () => {
             AudioSession.stopAudioSession();
+        };
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        requestMediaPermissions()
+            .then((result) => {
+                if (!cancelled && (!result.camera || !result.microphone)) {
+                    showPermissionAlert(result.blocked);
+                }
+            })
+            .catch((e) => console.warn("[classroom] permission request failed:", e))
+            .finally(() => {
+                if (!cancelled) setPermissionsReady(true);
+            });
+
+        return () => {
+            cancelled = true;
         };
     }, []);
 
@@ -137,7 +158,7 @@ export default function ClassRoomScreen() {
         );
     }
 
-    if (step !== "ready" || !connection) {
+    if (step !== "ready" || !connection || !permissionsReady) {
         return (
             <View className="flex-1 items-center justify-center bg-gray-50">
                 <ActivityIndicator />
