@@ -24,6 +24,8 @@ import { useClassroomChat } from "../hooks/useClassroomChat";
 import MainStage from "../classroom/stage/MainStage";
 import { useIngressParticipant } from "../classroom/stage/useIngressParticipant";
 import ClassRoomHeader from "../components/ClassRoomHeader";
+import ClassroomControls from "../components/ClassroomControls";
+import ParticipantsSheet from "../components/ParticipantsSheet";
 
 function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => void; onRetry: () => void; roomError: string | null; }) {
     const insets = useSafeAreaInsets();
@@ -33,6 +35,7 @@ function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => voi
     const participants = useParticipants();
     const { state, dispatch } = useClassRoom();
     const { send, notifyTyping } = useClassroomChat();
+    const [participantsOpen, setParticipantsOpen] = useState(false);
 
     useIngressParticipant();
 
@@ -57,7 +60,11 @@ function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => voi
     }, [connectionState, room, user?.role, dispatch]);
 
     const handleLeave = async () => {
-        await room.disconnect();
+        try {
+            await room.disconnect();
+        } catch (e) {
+            console.warn("[classroom] disconnect failed:", e);
+        }
         onLeave();
     };
 
@@ -73,7 +80,16 @@ function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => voi
                 <MainStage onRetry={onRetry} />
             </View>
 
+            <ClassroomControls
+                onOpenParticipants={() => setParticipantsOpen(true)}
+                onLeave={handleLeave}
+            />
+
             <ChatPanel onSend={send} onTyping={notifyTyping} />
+            <ParticipantsSheet
+                visible={participantsOpen}
+                onClose={() => setParticipantsOpen(false)}
+            />
         </KeyboardAvoidingView>
     );
 }

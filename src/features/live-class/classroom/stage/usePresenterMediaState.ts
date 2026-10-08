@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { useParticipants, useTracks } from "@livekit/react-native";
 import type { TrackReference } from "@livekit/react-native";
+import { useParticipants, useTracks } from "@livekit/react-native";
 import { Track } from "livekit-client";
+import { useMemo } from "react";
 
 import { useClassRoom } from "../ClassRoomContext";
 import { extractAvatar } from "../utils";

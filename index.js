@@ -1,4 +1,4 @@
-import { registerGlobals } from "@livekit/react-native-webrtc";
+import { registerGlobals } from "@livekit/react-native";
 
 registerGlobals();
 

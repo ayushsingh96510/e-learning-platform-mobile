@@ -1,9 +1,9 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
 import { Animated, Image, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
-import { getInitials } from "../utils";
 import type { StageRole } from "./usePresenterMediaState";
+import { getInitials } from "../utils";
 
 const ROLE_LABEL: Record<StageRole, string> = {
   TEACHER: "Teacher",

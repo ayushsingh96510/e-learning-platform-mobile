@@ -14,3 +14,14 @@ export function extractAvatar(metadata?: string): string | undefined {
     return undefined;
   }
 }
+
+// Same as the web chat and participants avatars: first letters of the first two words.
+export function getAvatarInitials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}

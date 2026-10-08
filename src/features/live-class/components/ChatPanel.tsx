@@ -4,6 +4,7 @@ import { useParticipants, useRoomContext } from "@livekit/react-native";
 
 import { useClassRoom } from "../classroom/ClassRoomContext";
 import type { ChatMessage, ChatTab } from "../classroom/types";
+import Avatar from "./Avatar";
 
 interface TabConfig {
   value: ChatTab;
@@ -33,24 +34,25 @@ function formatTime(timestamp: number) {
 
 function MessageItem({ message, isOwn }: { message: ChatMessage; isOwn: boolean }) {
   return (
-    <View className={`mb-3 px-4 ${isOwn ? "items-end" : "items-start"}`}>
-      <View
-        className={`max-w-[85%] rounded-2xl px-3 py-2 ${
-          isOwn ? "bg-primary-600" : "border border-gray-100 bg-white"
-        }`}
-      >
-        {!isOwn && (
-          <Text className="mb-0.5 text-xs font-semibold text-primary-600">
-            {message.senderName}
-          </Text>
-        )}
-        <Text className={`text-sm ${isOwn ? "text-white" : "text-gray-900"}`}>
-          {message.content}
-        </Text>
+    <View className={`flex-row gap-2.5 px-4 py-2 ${isOwn ? "flex-row-reverse" : ""}`}>
+      <View className="mt-0.5">
+        <Avatar name={message.senderName} uri={message.senderAvatar} size={28} />
       </View>
-      <Text className="mt-1 text-[10px] text-gray-400">
-        {formatTime(message.timestamp)}
-      </Text>
+
+      <View className={`max-w-[85%] ${isOwn ? "items-end" : "items-start"}`}>
+        <View
+          className={`rounded-2xl px-3 py-1.5 ${isOwn ? "bg-primary-600" : "bg-gray-100"}`}
+>
+          <Text className={`text-sm ${isOwn ? "text-white" : "text-gray-900"}`}>
+            {message.content}
+          </Text>
+        </View>
+
+        <View className="mt-0.5 flex-row items-center gap-2">
+          <Text className="text-xs font-medium text-gray-700">{message.senderName}</Text>
+          <Text className="text-[10px] text-gray-400">{formatTime(message.timestamp)}</Text>
+        </View>
+      </View>
     </View>
   );
 }

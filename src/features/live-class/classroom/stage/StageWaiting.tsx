@@ -1,5 +1,5 @@
-import { Image, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Image, Text, View } from "react-native";
 
 import { useClassRoom } from "../ClassRoomContext";
 import { getInitials } from "../utils";
