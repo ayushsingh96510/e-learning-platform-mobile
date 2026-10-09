@@ -27,6 +27,7 @@ import ClassRoomHeader from "../components/ClassRoomHeader";
 import ClassroomControls from "../components/ClassroomControls";
 import ParticipantsSheet from "../components/ParticipantsSheet";
 import { requestMediaPermissions, showPermissionAlert } from "../classroom/permissions";
+import ChatSheet from "../components/ChatSheet";
 
 function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => void; onRetry: () => void; roomError: string | null; }) {
     const insets = useSafeAreaInsets();
@@ -37,8 +38,19 @@ function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => voi
     const { state, dispatch } = useClassRoom();
     const { send, notifyTyping } = useClassroomChat();
     const [participantsOpen, setParticipantsOpen] = useState(false);
+    const [chatOpen, setChatOpen] = useState(false);
+    const [seenCount, setSeenCount] = useState(0);
 
     useIngressParticipant();
+
+    // While the chat sheet is open, every message counts as seen.
+    useEffect(() => {
+        if (chatOpen) setSeenCount(state.messages.length);
+    }, [chatOpen, state.messages.length]);
+
+    const unreadCount = state.messages
+        .slice(seenCount)
+        .filter((m) => m.senderId !== state.participantIdentity).length;
 
     const handleClassEnded = useCallback(() => {
         Alert.alert("Class ended", "This live class has ended.", [
@@ -56,7 +68,7 @@ function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => voi
         if (connected) {
             room.localParticipant
                 .setAttributes({ role: user?.role ?? "" })
-                .catch(() => { });
+                .catch((e) => console.warn("[classroom] setAttributes(role) failed:", e));
         }
     }, [connectionState, room, user?.role, dispatch]);
 
@@ -70,28 +82,36 @@ function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => voi
     };
 
     return (
-        <KeyboardAvoidingView
+        <View
             className="flex-1 bg-gray-50"
-            style={{ paddingTop: insets.top }}
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
         >
-            <ClassRoomHeader onLeave={handleLeave} roomError={roomError} />
+            <ClassRoomHeader onLeave={onLeave} roomError={roomError} />
 
-            <View className="px-3 pt-3">
+            <View className="flex-1 px-3 pt-3">
                 <MainStage onRetry={onRetry} />
             </View>
 
             <ClassroomControls
+                chatOpen={chatOpen}
+                unreadCount={unreadCount}
+                onToggleChat={() => setChatOpen((open) => !open)}
                 onOpenParticipants={() => setParticipantsOpen(true)}
                 onLeave={handleLeave}
             />
 
-            <ChatPanel onSend={send} onTyping={notifyTyping} />
+            <ChatSheet
+                visible={chatOpen}
+                onClose={() => setChatOpen(false)}
+                onSend={send}
+                onTyping={notifyTyping}
+            />
+
             <ParticipantsSheet
                 visible={participantsOpen}
                 onClose={() => setParticipantsOpen(false)}
             />
-        </KeyboardAvoidingView>
+        </View>
     );
 }
 

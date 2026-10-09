@@ -36,10 +36,7 @@ export default function MainStage({ onRetry }: { onRetry: () => void }) {
   }
 
   return (
-    <View
-      className="w-full overflow-hidden rounded-xl border border-violet-200 bg-white"
-      style={{ aspectRatio: 16 / 9 }}
-    >
+    <View className="w-full flex-1 overflow-hidden rounded-xl border border-violet-200 bg-white">
       {content}
     </View>
   );

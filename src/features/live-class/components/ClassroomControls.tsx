@@ -19,12 +19,14 @@ function RoundButton({
   locked,
   label,
   onPress,
+  badge,
 }: {
   icon: ComponentProps<typeof Ionicons>["name"];
   tone: Tone;
   locked?: boolean;
   label: string;
   onPress: () => void;
+  badge?: number;
 }) {
   return (
     <Pressable
@@ -36,18 +38,38 @@ function RoundButton({
       }`}
     >
       <Ionicons name={icon} size={18} color={TONE[tone].icon} />
+
+      {badge ? (
+        <View
+          className="absolute -right-1 -top-1 items-center justify-center rounded-full bg-red-500 px-1"
+          style={{ minWidth: 16, height: 16 }}
+        >
+          <Text className="text-[9px] font-bold text-white">
+            {badge > 9 ? "9+" : badge}
+          </Text>
+        </View>
+      ) : null}
     </Pressable>
   );
 }
 
-const Divider = () => <View className="mx-1 h-8 w-px bg-gray-200" />;
+const Divider = () => <View className="mx-0.5 h-8 w-px bg-gray-200" />;
 
 interface Props {
+  chatOpen: boolean;
+  unreadCount: number;
+  onToggleChat: () => void;
   onOpenParticipants: () => void;
   onLeave: () => void;
 }
 
-export default function ClassroomControls({ onOpenParticipants, onLeave }: Props) {
+export default function ClassroomControls({
+  chatOpen,
+  unreadCount,
+  onToggleChat,
+  onOpenParticipants,
+  onLeave,
+}: Props) {
   const room = useRoomContext();
   const { isMicrophoneEnabled, isCameraEnabled } = useLocalParticipant();
   const { state, dispatch } = useClassRoom();
@@ -97,7 +119,7 @@ export default function ClassroomControls({ onOpenParticipants, onLeave }: Props
         </View>
       ) : null}
 
-      <View className="flex-row items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-2 shadow-sm">
+      <View className="flex-row items-center gap-1.5 rounded-2xl border border-gray-200 bg-white px-3 py-2 shadow-sm">
         {/* Students cannot control their own mic or camera. Teachers and admins do it remotely. */}
         <RoundButton
           icon={isMicrophoneEnabled ? "mic" : "mic-off"}
@@ -126,12 +148,18 @@ export default function ClassroomControls({ onOpenParticipants, onLeave }: Props
         <Divider />
 
         <RoundButton
+          icon={chatOpen ? "chatbubble" : "chatbubble-outline"}
+          tone="neutral"
+          label={chatOpen ? "Close chat" : "Open chat"}
+          onPress={onToggleChat}
+          badge={unreadCount}
+        />
+        <RoundButton
           icon="people"
           tone="neutral"
-          label="Participants"
+          label="Show participants"
           onPress={onOpenParticipants}
         />
-
         <RoundButton
           icon="log-out-outline"
           tone="danger"

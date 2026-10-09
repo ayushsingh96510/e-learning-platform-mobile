@@ -3,15 +3,16 @@ import { useParticipants } from "@livekit/react-native";
 import { RoomEvent } from "livekit-client";
 import { useMemo, useState } from "react";
 import {
-    FlatList,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    Pressable,
-    Text,
-    TextInput,
-    View,
+  FlatList,
+  // KeyboardAvoidingView,
+  // Modal,
+  // Platform,
+  Pressable,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
+import BottomSheet from "./BottomSheet";
 
 import { useClassRoom } from "../classroom/ClassRoomContext";
 import { extractAvatar } from "../classroom/utils";
@@ -77,9 +78,8 @@ function ParticipantRow({
 
   return (
     <View
-      className={`mb-1.5 flex-row items-center gap-3 rounded-lg border bg-white px-3 py-2.5 ${
-        participant.isSpeaking ? "border-green-400" : "border-slate-200"
-      }`}
+      className={`mb-1.5 flex-row items-center gap-3 rounded-lg border bg-white px-3 py-2.5 ${participant.isSpeaking ? "border-green-400" : "border-slate-200"
+        }`}
     >
       <View>
         <Avatar name={participant.name} uri={participant.avatar} size={36} />
@@ -159,53 +159,44 @@ export default function ParticipantsSheet({
   }, [livekitParticipants, teacherId, query, activeSpeaker]);
 
   return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        className="flex-1 justify-end bg-black/40"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <Pressable className="flex-1" onPress={onClose} />
+    <BottomSheet visible={visible} onClose={onClose} heightPercent={70}>
+      <View className="flex-row items-center justify-between border-b border-gray-200 px-4 py-3">
+        <View className="flex-row items-center gap-2">
+          <Ionicons name="people-outline" size={16} color="#6B7280" />
+          <Text className="text-sm font-semibold text-gray-900">Participants</Text>
+          <Text className="text-xs text-gray-500">{livekitParticipants.length}</Text>
+        </View>
 
-        <View className="h-[70%] rounded-t-3xl bg-gray-50">
-          <View className="flex-row items-center justify-between border-b border-gray-200 px-4 py-3">
-            <View className="flex-row items-center gap-2">
-              <Ionicons name="people-outline" size={16} color="#6B7280" />
-              <Text className="text-sm font-semibold text-gray-900">Participants</Text>
-              <Text className="text-xs text-gray-500">{livekitParticipants.length}</Text>
-            </View>
+        <Pressable onPress={onClose} hitSlop={8}>
+          <Ionicons name="close" size={20} color="#6B7280" />
+        </Pressable>
+      </View>
 
-            <Pressable onPress={onClose} hitSlop={8}>
-              <Ionicons name="close" size={20} color="#6B7280" />
-            </Pressable>
-          </View>
-
-          <View className="px-3 pb-2 pt-3">
-            <View className="h-9 flex-row items-center rounded-lg border border-gray-200 bg-white px-2.5">
-              <Ionicons name="search" size={14} color="#9CA3AF" />
-              <TextInput
-                value={query}
-                onChangeText={setQuery}
-                placeholder="Search participants..."
-                placeholderTextColor="#9CA3AF"
-                className="ml-2 flex-1 text-xs text-gray-900"
-              />
-            </View>
-          </View>
-
-          <FlatList
-            data={participants}
-            keyExtractor={(p) => p.identity}
-            renderItem={({ item }) => (
-              <ParticipantRow
-                participant={item}
-                isLocal={item.identity === state.participantIdentity}
-              />
-            )}
-            contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 16 }}
-            keyboardShouldPersistTaps="handled"
+      <View className="px-3 pb-2 pt-3">
+        <View className="h-9 flex-row items-center rounded-lg border border-gray-200 bg-white px-2.5">
+          <Ionicons name="search" size={14} color="#9CA3AF" />
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search participants..."
+            placeholderTextColor="#9CA3AF"
+            className="ml-2 flex-1 text-xs text-gray-900"
           />
         </View>
-      </KeyboardAvoidingView>
-    </Modal>
+      </View>
+
+      <FlatList
+        data={participants}
+        keyExtractor={(p) => p.identity}
+        renderItem={({ item }) => (
+          <ParticipantRow
+            participant={item}
+            isLocal={item.identity === state.participantIdentity}
+          />
+        )}
+        contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 16 }}
+        keyboardShouldPersistTaps="handled"
+      />
+    </BottomSheet>
   );
 }
