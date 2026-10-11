@@ -6,6 +6,7 @@ import HomeScreen from "@/features/dashboard/screens/HomeScreen";
 import ProfileScreen from "@/features/profile/screens/ProfileScreen";
 import LiveClassesScreen from "@/features/live-class/screens/LiveClassesScreen";
 import ClassRoomScreen from "@/features/classroom/screens/ClassRoomScreen";
+import AssignmentsScreen from "@/features/assignments/screens/AssignmentsScreen";
 
 export type StudentTabParamList = {
   Home: undefined;
@@ -117,7 +118,7 @@ function StudentTabs() {
 
       <Tab.Screen
         name="Assignments"
-        children={() => null}
+        component={AssignmentsScreen}
         options={{
           tabBarLabel: "Tests",
         }}
