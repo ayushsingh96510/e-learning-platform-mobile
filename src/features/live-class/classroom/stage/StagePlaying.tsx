@@ -15,15 +15,32 @@ import VideoTile from "./VideoTile";
 const VISIBLE_SEATS = 6;
 const GAP = 8;
 const PADDING = 8;
+const CHIP_SPACE = 36;
+const COMPACT_BELOW = 200; // tiles narrower than this use the compact audio card
+
+// Picks the column count that gives the largest 16:9 tiles inside width x height.
+function bestGrid(count: number, width: number, height: number) {
+  let best = { cols: 1, cellWidth: 0 };
+  for (let cols = 1; cols <= Math.min(count, 4); cols++) {
+    const rows = Math.ceil(count / cols);
+    const byWidth = (width - GAP * (cols - 1)) / cols;
+    const byHeight = ((height - GAP * (rows - 1)) / rows) * (16 / 9);
+    const cellWidth = Math.floor(Math.min(byWidth, byHeight));
+    if (cellWidth > best.cellWidth) best = { cols, cellWidth };
+  }
+  return best;
+}
 
 export default function StagePlaying() {
   const { state } = useClassRoom();
   const presenter = state.presenter;
   const { stageSeats, screenShareTracks } = usePresenterMediaState();
-  const [width, setWidth] = useState(0);
+  const [size, setSize] = useState({ width: 0, height: 0 });
 
-  const onLayout = (e: LayoutChangeEvent) =>
-    setWidth(e.nativeEvent.layout.width);
+  const onLayout = (e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout;
+    setSize({ width, height });
+  };
 
   const teacherPlaceholder = stageSeats.find((s) => s.isTeacherPlaceholder) ?? null;
   const realSeats = stageSeats.filter((s) => !s.isTeacherPlaceholder);
@@ -86,14 +103,16 @@ export default function StagePlaying() {
   if (showTeacherCell && teacherPlaceholder) gridSeats.push(teacherPlaceholder);
   gridSeats.push(...realSeats.slice(0, VISIBLE_SEATS));
 
-  // Portrait phones: one column for 1-2 seats, two columns for 3-6 seats.
-  const cols = gridSeats.length <= 2 ? 1 : 2;
-  const compact = cols > 1;
-  const cellWidth =
-    width > 0
-      ? Math.floor((width - PADDING * 2 - GAP * (cols - 1)) / cols)
-      : 0;
+  const paddingTop = hasChips ? CHIP_SPACE : PADDING;
+  const availableWidth = size.width - PADDING * 2;
+  const availableHeight = size.height - paddingTop - PADDING;
+
+  const ready = availableWidth > 0 && availableHeight > 0 && gridSeats.length > 0;
+  const { cols, cellWidth } = ready
+    ? bestGrid(gridSeats.length, availableWidth, availableHeight)
+    : { cols: 1, cellWidth: 0 };
   const cellHeight = Math.round((cellWidth * 9) / 16);
+  const compact = cellWidth < COMPACT_BELOW;
 
   return (
     <View className="h-full w-full" onLayout={onLayout}>
@@ -118,10 +137,18 @@ export default function StagePlaying() {
 
       <View
         className="flex-1 items-center justify-center"
-        style={{ padding: PADDING, paddingTop: hasChips ? 36 : PADDING }}
+        style={{ paddingHorizontal: PADDING, paddingTop, paddingBottom: PADDING }}
       >
         {cellWidth > 0 && (
-          <View className="flex-row flex-wrap justify-center" style={{ gap: GAP }}>
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: GAP,
+              width: cols * cellWidth + GAP * (cols - 1),
+            }}
+          >
             {gridSeats.map((seat) => (
               <View
                 key={seat.identity ?? "teacher-placeholder"}

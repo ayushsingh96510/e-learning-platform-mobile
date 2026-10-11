@@ -10,6 +10,8 @@ import {
     useRoomContext,
 } from "@livekit/react-native";
 import { ConnectionState } from "livekit-client";
+import { StatusBar } from "react-native"; // add to your existing react-native import
+import { useClassroomFullscreen } from "../classroom/useClassroomFullscreen";
 
 import { useClassRoomConnection } from "../hooks/useClassRoomConnection";
 import { useClassroomRoomEvents } from "../hooks/useClassroomRoomEvents";
@@ -40,6 +42,8 @@ function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => voi
     const [participantsOpen, setParticipantsOpen] = useState(false);
     const [chatOpen, setChatOpen] = useState(false);
     const [seenCount, setSeenCount] = useState(0);
+    const { fullscreen, enter, exit } = useClassroomFullscreen();
+    const handleToggleFullscreen = () => (fullscreen ? exit() : enter());
 
     useIngressParticipant();
 
@@ -83,22 +87,38 @@ function ClassRoomContent({ onLeave, onRetry, roomError, }: { onLeave: () => voi
 
     return (
         <View
-            className="flex-1 bg-gray-50"
-            style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+            className={`flex-1 ${fullscreen ? "bg-black" : "bg-gray-50"}`}
+            style={
+                fullscreen
+                    ? {
+                        paddingLeft: insets.left,
+                        paddingRight: insets.right,
+                        paddingBottom: insets.bottom,
+                    }
+                    : { paddingTop: insets.top, paddingBottom: insets.bottom }
+            }
         >
-            <ClassRoomHeader onLeave={onLeave} roomError={roomError} />
+            <StatusBar hidden={fullscreen} />
 
-            <View className="flex-1 px-3 pt-3">
-                <MainStage onRetry={onRetry} />
+            {!fullscreen && <ClassRoomHeader onLeave={onLeave} roomError={roomError} />}
+
+            <View className={fullscreen ? "flex-1" : "flex-1 px-3 pt-3"}>
+                <MainStage
+                    onRetry={onRetry}
+                    fullscreen={fullscreen}
+                    onToggleFullscreen={handleToggleFullscreen}
+                />
             </View>
 
-            <ClassroomControls
-                chatOpen={chatOpen}
-                unreadCount={unreadCount}
-                onToggleChat={() => setChatOpen((open) => !open)}
-                onOpenParticipants={() => setParticipantsOpen(true)}
-                onLeave={handleLeave}
-            />
+            {!fullscreen && (
+                <ClassroomControls
+                    chatOpen={chatOpen}
+                    unreadCount={unreadCount}
+                    onToggleChat={() => setChatOpen((open) => !open)}
+                    onOpenParticipants={() => setParticipantsOpen(true)}
+                    onLeave={handleLeave}
+                />
+            )}
 
             <ChatSheet
                 visible={chatOpen}

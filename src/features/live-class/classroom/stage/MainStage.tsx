@@ -1,4 +1,5 @@
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 import { useStageState } from "./useStageState";
 import StagePlaying from "./StagePlaying";
@@ -10,7 +11,13 @@ import {
   StageReplayPending,
 } from "./StageStates";
 
-export default function MainStage({ onRetry }: { onRetry: () => void }) {
+interface Props {
+  onRetry: () => void;
+  fullscreen: boolean;
+  onToggleFullscreen: () => void;
+}
+
+export default function MainStage({ onRetry, fullscreen, onToggleFullscreen }: Props) {
   const { stageState } = useStageState();
 
   let content: React.ReactNode = null;
@@ -36,8 +43,22 @@ export default function MainStage({ onRetry }: { onRetry: () => void }) {
   }
 
   return (
-    <View className="w-full flex-1 overflow-hidden rounded-xl border border-violet-200 bg-white">
+    <View
+      className={`w-full flex-1 overflow-hidden bg-white ${
+        fullscreen ? "" : "rounded-xl border border-violet-200"
+      }`}
+    >
       {content}
+
+      <Pressable
+        onPress={onToggleFullscreen}
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel={fullscreen ? "Exit fullscreen" : "Fullscreen"}
+        className="absolute right-2 top-2 z-10 h-8 w-8 items-center justify-center rounded-lg bg-black/40"
+      >
+        <Ionicons name={fullscreen ? "contract" : "expand"} size={15} color="#FFFFFF" />
+      </Pressable>
     </View>
   );
 }
