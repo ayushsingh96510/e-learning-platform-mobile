@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 import { useParticipants, useRoomContext } from "@livekit/react-native";
 
-import { useClassRoom } from "../classroom/ClassRoomContext";
-import type { ChatMessage, ChatTab } from "../classroom/types";
+import { useClassRoom } from "@/features/classroom/ClassRoomContext";
+import type { ChatMessage, ChatTab } from "@/features/classroom/types";
+
 import Avatar from "./Avatar";
 
 interface TabConfig {

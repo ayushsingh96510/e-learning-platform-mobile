@@ -1,6 +1,6 @@
 import { Image, Text, View } from "react-native";
 
-import { getAvatarInitials } from "../classroom/utils";
+import { getAvatarInitials } from "@/features/classroom/utils";
 
 interface Props {
   name: string;

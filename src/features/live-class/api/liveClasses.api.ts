@@ -1,11 +1,6 @@
 import api from "../../../api/axios";
-import type {
-  ApiResponse,
-  JoinLiveClassResponse,
-  LiveClassTab,
-  LiveSession,
-  SessionsResponse,
-} from "../types";
+import type { ApiResponse } from "../../../api/types";
+import type { LiveClassTab, SessionsResponse } from "../types";
 
 const STATUS_BY_TAB: Record<LiveClassTab, "LIVE" | "SCHEDULED" | "COMPLETED"> = {
   LIVE: "LIVE",
@@ -32,18 +27,4 @@ export async function getSessions(
     sessions: data?.sessions ?? [],
     pagination: data?.pagination,
   };
-}
-
-export async function getLiveClassByRoomName(roomName: string) {
-  const res = await api.get<ApiResponse<LiveSession>>(
-    `/live-classes/roomName/${encodeURIComponent(roomName)}`
-  );
-  return res.data.data;
-}
-
-export async function joinLiveClass(roomName: string) {
-  const res = await api.post<ApiResponse<JoinLiveClassResponse>>(
-    `/live-classes/${encodeURIComponent(roomName)}/join`
-  );
-  return res.data.data;
 }

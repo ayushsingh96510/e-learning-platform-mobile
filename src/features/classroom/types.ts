@@ -42,3 +42,20 @@ export interface ITeacherIdentity {
   name: string;
   profileImage?: string;
 }
+
+// Response of the join API (LiveKit credentials and participant info).
+export interface JoinLiveClassResponse {
+  liveClass: {
+    id: string;
+    roomName: string;
+    participantName: string;
+    participantId: string;
+    participantRole: string;
+    deliveryMode: string;
+  };
+  liveKit: {
+    token: string;
+    roomName: string;
+    serverURL: string;
+  };
+}

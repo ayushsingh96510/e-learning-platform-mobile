@@ -1,9 +1,9 @@
-import { Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useConnectionState, useParticipants } from "@livekit/react-native";
 import { ConnectionState } from "livekit-client";
+import { Pressable, Text, View } from "react-native";
 
-import { useClassRoom } from "../classroom/ClassRoomContext";
+import { useClassRoom } from "../ClassRoomContext";
 
 const CONNECTION_CONFIG: Record<
   string,

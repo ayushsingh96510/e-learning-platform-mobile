@@ -1,13 +1,5 @@
 export type LiveClassTab = "LIVE" | "UPCOMING" | "COMPLETED";
 
-export interface ApiResponse<T> {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: T;
-  errors: string[];
-}
-
 export interface LiveSession {
   id: string;
   title: string;
@@ -42,20 +34,4 @@ export interface Pagination {
 export interface SessionsResponse {
   sessions: LiveSession[];
   pagination?: Pagination;
-}
-
-export interface JoinLiveClassResponse {
-  liveClass: {
-    id: string;
-    roomName: string;
-    participantName: string;
-    participantId: string;
-    participantRole: string;
-    deliveryMode: string;
-  };
-  liveKit: {
-    token: string;
-    roomName: string;
-    serverURL: string;
-  };
 }

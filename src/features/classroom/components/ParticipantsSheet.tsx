@@ -12,13 +12,14 @@ import {
   TextInput,
   View,
 } from "react-native";
-import BottomSheet from "./BottomSheet";
 
-import { useClassRoom } from "../classroom/ClassRoomContext";
-import { extractAvatar } from "../classroom/utils";
-import type { ParticipantRole } from "../classroom/types";
-import { useSingleSpeakerSystem } from "../classroom/useSingleSpeakerSystem";
+import BottomSheet from "./BottomSheet";
 import Avatar from "./Avatar";
+
+import { useClassRoom } from "@/features/classroom/ClassRoomContext";
+import { extractAvatar } from "@/features/classroom/utils";
+import type { ParticipantRole } from "@/features/classroom/types";
+import { useSingleSpeakerSystem } from "../hooks/useSingleSpeakerSystem";
 
 interface PanelParticipant {
   identity: string;

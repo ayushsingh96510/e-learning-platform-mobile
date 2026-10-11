@@ -1,9 +1,9 @@
-import { Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Pressable, Text, View } from "react-native";
 
 import BottomSheet from "./BottomSheet";
 import ChatPanel from "./ChatPanel";
-import type { ChatMessage } from "../classroom/types";
+import type { ChatMessage } from "../types";
 
 interface Props {
   visible: boolean;

@@ -3,7 +3,7 @@ import { Alert, Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalParticipant, useRoomContext } from "@livekit/react-native";
 
-import { useClassRoom } from "../classroom/ClassRoomContext";
+import { useClassRoom } from "@/features/classroom/ClassRoomContext";
 
 type Tone = "neutral" | "danger" | "warning";
 

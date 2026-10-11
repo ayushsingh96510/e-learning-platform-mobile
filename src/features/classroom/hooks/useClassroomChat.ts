@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef } from "react";
 import { useRoomContext } from "@livekit/react-native";
 import { RoomEvent } from "livekit-client";
 
-import { useClassRoom } from "../classroom/ClassRoomContext";
-import type { ChatMessage } from "../classroom/types";
+import { useClassRoom } from "@/features/classroom/ClassRoomContext";
+import type { ChatMessage } from "@/features/classroom/types";
 
 const MESSAGE_TYPES: ChatMessage["type"][] = ["message", "question", "announcement"];
 const TYPING_TIMEOUT_MS = 1500;

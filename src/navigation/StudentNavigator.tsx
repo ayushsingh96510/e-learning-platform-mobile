@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "@/features/dashboard/screens/HomeScreen";
 import ProfileScreen from "@/features/profile/screens/ProfileScreen";
 import LiveClassesScreen from "@/features/live-class/screens/LiveClassesScreen";
-import ClassRoomScreen from "@/features/live-class/screens/ClassRoomScreen";
+import ClassRoomScreen from "@/features/classroom/screens/ClassRoomScreen";
 
 export type StudentTabParamList = {
   Home: undefined;

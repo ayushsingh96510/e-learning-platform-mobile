@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getLiveClassByRoomName, joinLiveClass } from "../api/liveClasses.api";
-import type { JoinLiveClassResponse, LiveSession } from "../types";
+import { getLiveClassByRoomName, joinLiveClass } from "../api/classroom.api";
+import type { JoinLiveClassResponse } from "../types";
+import type { LiveSession } from "@/features/live-class/types";
 
 export type JoinStep =
   | "fetching_session"
