@@ -100,13 +100,13 @@ export default function AssignmentsScreen() {
   const handleConfirmStart = () => {
     if (!selected) return;
     setSheetOpen(false);
-    // navigation.navigate("AssignmentAttempt", { assessmentId: selected.id });
+    navigation.navigate("AssignmentAttempt", { assessmentId: selected.id });
   };
 
   const handleViewResult = (item: AssessmentSummary) => {
     const result = latestResults.get(item.id);
     if (!result) return;
-    // navigation.navigate("AssignmentResult", { resultId: result.id });
+    navigation.navigate("AssignmentResult", { resultId: result.id });
   };
 
   const tabs: { label: string; value: AssignmentTab; count: number }[] = [

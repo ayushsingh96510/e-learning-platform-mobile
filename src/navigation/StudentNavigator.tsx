@@ -7,6 +7,9 @@ import ProfileScreen from "@/features/profile/screens/ProfileScreen";
 import LiveClassesScreen from "@/features/live-class/screens/LiveClassesScreen";
 import ClassRoomScreen from "@/features/classroom/screens/ClassRoomScreen";
 import AssignmentsScreen from "@/features/assignments/screens/AssignmentsScreen";
+import AttemptScreen from "@/features/assignments/screens/AttemptScreen";
+import ResultScreen from "@/features/assignments/screens/ResultScreen";
+import type { AssessmentResult } from "@/features/assignments/types";
 
 export type StudentTabParamList = {
   Home: undefined;
@@ -20,6 +23,8 @@ export type StudentStackParamList = {
   MainTabs: undefined;
   Profile: undefined;
   ClassRoom: { roomName: string };
+  AssignmentAttempt: { assessmentId: string };
+  AssignmentResult: { resultId?: string; result?: AssessmentResult };
 };
 
 const Tab = createBottomTabNavigator<StudentTabParamList>();
@@ -156,6 +161,17 @@ export default function StudentNavigator() {
         name="ClassRoom"
         component={ClassRoomScreen}
         options={{ gestureEnabled: false }}
+      />
+
+      <Stack.Screen
+        name="AssignmentAttempt"
+        component={AttemptScreen}
+        options={{ gestureEnabled: false }}
+      />
+
+      <Stack.Screen
+        name="AssignmentResult"
+        component={ResultScreen}
       />
     </Stack.Navigator>
   );
