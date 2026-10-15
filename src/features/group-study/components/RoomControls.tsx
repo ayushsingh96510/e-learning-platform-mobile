@@ -1,4 +1,66 @@
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import type { ComponentProps } from "react";
+
+type Tone = "neutral" | "danger" | "warning";
+
+const TONE: Record<Tone, { bg: string; icon: string }> = {
+  neutral: { bg: "bg-gray-100", icon: "#374151" },
+  danger: { bg: "bg-red-100", icon: "#DC2626" },
+  warning: { bg: "bg-yellow-500", icon: "#FFFFFF" },
+};
+
+function RoundButton({
+  icon,
+  tone,
+  label,
+  onPress,
+  badge,
+  loading = false,
+  disabled = false,
+}: {
+  icon: ComponentProps<typeof Ionicons>["name"];
+  tone: Tone;
+  label: string;
+  onPress: () => void;
+  badge?: number;
+  loading?: boolean;
+  disabled?: boolean;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled || loading}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
+      className={`h-10 w-10 items-center justify-center rounded-full ${
+        TONE[tone].bg
+      } ${disabled || loading ? "opacity-60" : ""}`}
+    >
+      {loading ? (
+        <ActivityIndicator size="small" color={TONE[tone].icon} />
+      ) : (
+        <Ionicons name={icon} size={18} color={TONE[tone].icon} />
+      )}
+
+      {badge != null && badge > 0 && (
+        <View
+          className="absolute -right-1 -top-1 items-center justify-center rounded-full bg-red-500 px-1"
+          style={{ minWidth: 16, height: 16 }}
+        >
+          <Text className="text-[9px] font-bold text-white">
+            {badge > 9 ? "9+" : badge}
+          </Text>
+        </View>
+      )}
+    </Pressable>
+  );
+}
+
+const Divider = () => (
+  <View className="mx-0.5 h-8 w-px bg-gray-200" />
+);
 
 interface Props {
   micOn: boolean;
@@ -31,102 +93,60 @@ export default function RoomControls({
 }: Props) {
   return (
     <View
-      className="flex-row items-center justify-around border-t border-gray-100 bg-white px-4 pt-3"
+      className="items-center px-3 pt-3"
       style={{ paddingBottom: bottomInset + 12 }}
     >
-      {/* Mic */}
-      <Pressable
-        onPress={onToggleMic}
-        disabled={micBusy}
-        className="items-center"
-        accessibilityLabel={micOn ? "Mute microphone" : "Unmute microphone"}
-      >
-        <View
-          className={`h-12 w-12 items-center justify-center rounded-full ${
-            micOn ? "bg-primary-600" : "bg-gray-200"
-          }`}
-        >
-          {micBusy ? (
-            <ActivityIndicator color={micOn ? "#FFFFFF" : "#6B7280"} />
-          ) : (
-            <Text className="text-xl">{micOn ? "🎙️" : "🔇"}</Text>
-          )}
-        </View>
-        <Text className="mt-1 text-xs text-gray-600">
-          {micOn ? "Mute" : "Unmute"}
-        </Text>
-      </Pressable>
+      <View className="flex-row items-center gap-1.5 rounded-2xl border border-gray-200 bg-white px-3 py-2 shadow-sm">
+        {/* Microphone */}
+        <RoundButton
+          icon={micOn ? "mic" : "mic-off"}
+          tone={micOn ? "neutral" : "danger"}
+          label={micOn ? "Mute microphone" : "Unmute microphone"}
+          onPress={onToggleMic}
+          loading={micBusy}
+        />
 
-      {/* Chat */}
-      <Pressable
-        onPress={onOpenChat}
-        className="items-center"
-        accessibilityLabel="Open chat"
-      >
-        <View className="h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-          <Text className="text-xl">💬</Text>
+        <Divider />
 
-          {unread > 0 && (
-            <View className="absolute -right-1 -top-1 min-w-[20px] items-center rounded-full bg-red-500 px-1 py-0.5">
-              <Text className="text-[10px] font-bold text-white">
-                {unread > 9 ? "9+" : unread}
-              </Text>
-            </View>
-          )}
-        </View>
-        <Text className="mt-1 text-xs text-gray-600">Chat</Text>
-      </Pressable>
+        {/* Chat */}
+        <RoundButton
+          icon="chatbubble-outline"
+          tone="neutral"
+          label="Open chat"
+          onPress={onOpenChat}
+          badge={unread}
+        />
 
-      {/* Files */}
-      <Pressable
-        onPress={onOpenFiles}
-        className="items-center"
-        accessibilityLabel="Open shared files"
-      >
-        <View className="h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-          <Text className="text-xl">📎</Text>
+        {/* Shared files */}
+        <RoundButton
+          icon="attach-outline"
+          tone="neutral"
+          label="Open shared files"
+          onPress={onOpenFiles}
+          badge={fileCount}
+        />
 
-          {fileCount > 0 && (
-            <View className="absolute -right-1 -top-1 min-w-[20px] items-center rounded-full bg-red-500 px-1 py-0.5">
-              <Text className="text-[10px] font-bold text-white">
-                {fileCount > 9 ? "9+" : fileCount}
-              </Text>
-            </View>
-          )}
-        </View>
-        <Text className="mt-1 text-xs text-gray-600">Files</Text>
-      </Pressable>
+        <Divider />
 
-      {/* End room (creator only) */}
-      {isCreator && (
-        <Pressable
-          onPress={onEndRoom}
-          disabled={ending}
-          className="items-center"
-          accessibilityLabel="End room"
-        >
-          <View className="h-12 w-12 items-center justify-center rounded-full bg-red-50">
-            {ending ? (
-              <ActivityIndicator color="#DC2626" />
-            ) : (
-              <Text className="text-xl">⏹️</Text>
-            )}
-          </View>
-          <Text className="mt-1 text-xs text-red-600">End</Text>
-        </Pressable>
-      )}
+        {/* End room: creator only */}
+        {isCreator && (
+          <RoundButton
+            icon="stop-circle-outline"
+            tone="danger"
+            label="End room"
+            onPress={onEndRoom}
+            loading={ending}
+          />
+        )}
 
-      {/* Leave */}
-      <Pressable
-        onPress={onLeave}
-        className="items-center"
-        accessibilityLabel="Leave room"
-      >
-        <View className="h-12 w-12 items-center justify-center rounded-full bg-red-600">
-          <Text className="text-xl">📞</Text>
-        </View>
-        <Text className="mt-1 text-xs text-gray-600">Leave</Text>
-      </Pressable>
+        {/* Leave room */}
+        <RoundButton
+          icon="log-out-outline"
+          tone="danger"
+          label="Leave room"
+          onPress={onLeave}
+        />
+      </View>
     </View>
   );
 }

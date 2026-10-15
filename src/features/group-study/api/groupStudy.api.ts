@@ -6,6 +6,8 @@ import type {
   RoomStats,
   StudyRoom,
   RoomsPage,
+  CreateRoomPayload,
+  StudentOption,
 } from "../types";
 
 export interface RoomsParams {
@@ -62,4 +64,29 @@ export async function joinRoom(roomName: string): Promise<JoinRoomData> {
 /** Ends the room for everyone. Only the creator is allowed to do this. */
 export async function endRoom(id: string): Promise<void> {
   await api.post(`/group-study/${id}/end`);
+}
+
+export async function createRoom(payload: CreateRoomPayload): Promise<void> {
+  await api.post("/group-study", payload);
+}
+
+interface RawStudent {
+  id?: string;
+  _id?: string;
+  personalInfo?: { name?: string };
+}
+
+/** Students of a batch, used to pick the members of a new room. */
+export async function getBatchStudents(
+  batchId: string
+): Promise<StudentOption[]> {
+  const res = await api.get(`/users/students/by-batch/${batchId}`);
+  const data = unwrap<{ students?: RawStudent[] }>(res.data);
+
+  return (data?.students ?? [])
+    .filter((student) => !!(student.id ?? student._id))
+    .map((student) => ({
+      value: String(student.id ?? student._id),
+      label: student.personalInfo?.name ?? "Unknown Student",
+    }));
 }

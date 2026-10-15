@@ -12,13 +12,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
+import CreateRoomSheet from "../components/CreateRoomSheet";
 import RoomCard from "../components/RoomCard";
 import RoomStats from "../components/RoomStats";
 import { useGroupStudyRooms } from "../hooks/useGroupStudyRooms";
 import { useGroupStudyStats } from "../hooks/useGroupStudyStats";
 import { useJoinRoom } from "../hooks/useJoinRoom";
+import { useStudentBatchId } from "../hooks/useStudentBatchId";
 import type { RoomFilter, StudyRoom } from "../types";
-import type { StudentStackParamList } from "@/navigation/StudentNavigator";
+import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
 
 const FILTERS: { label: string; value: RoomFilter }[] = [
   { label: "All Rooms", value: "ALL" },
@@ -34,6 +36,8 @@ export default function GroupStudyScreen() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [filter, setFilter] = useState<RoomFilter>("ALL");
+  const [createOpen, setCreateOpen] = useState(false);
+  const batchId = useStudentBatchId();
 
   // Wait for the student to stop typing before calling the API.
   useEffect(() => {
@@ -93,11 +97,20 @@ export default function GroupStudyScreen() {
         }
       >
         {/* Header */}
-        <View className="mb-6">
-          <Text className="text-2xl font-bold text-gray-900">Study Rooms</Text>
-          <Text className="mt-1 text-sm text-gray-500">
-            Join a peer study room with live audio and a shared whiteboard
-          </Text>
+        <View className="mb-6 flex-row items-start justify-between">
+          <View className="flex-1 pr-3">
+            <Text className="text-2xl font-bold text-gray-900">Study Rooms</Text>
+            <Text className="mt-1 text-sm text-gray-500">
+              Join a peer study room with live audio and a shared whiteboard
+            </Text>
+          </View>
+
+          <Pressable
+            onPress={() => setCreateOpen(true)}
+            className="rounded-xl bg-primary-600 px-4 py-2.5"
+          >
+            <Text className="text-sm font-semibold text-white">+ New Room</Text>
+          </Pressable>
         </View>
 
         <RoomStats stats={stats.stats} loading={stats.loading} />
@@ -200,6 +213,16 @@ export default function GroupStudyScreen() {
           </>
         )}
       </ScrollView>
+
+      <CreateRoomSheet
+        visible={createOpen}
+        batchId={batchId}
+        onClose={() => setCreateOpen(false)}
+        onCreated={() => {
+          refetchRoomsSilently();
+          refetchStats();
+        }}
+      />
     </View>
   );
 }
