@@ -65,3 +65,12 @@ export interface JoinRoomData {
     serverURL: string;
   };
 }
+
+/** Chat message sent over the LiveKit data channel (same shape as the web app). */
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  message: string;
+  timestamp: number;
+}

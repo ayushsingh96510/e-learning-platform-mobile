@@ -1,4 +1,4 @@
-import api from "@/api/axios";
+import api from "../../../api/axios";
 import type {
   JoinRoomData,
   Pagination,
@@ -57,4 +57,9 @@ export async function getStats(): Promise<RoomStats> {
 export async function joinRoom(roomName: string): Promise<JoinRoomData> {
   const res = await api.post(`/group-study/${roomName}/join`);
   return unwrap<JoinRoomData>(res.data);
+}
+
+/** Ends the room for everyone. Only the creator is allowed to do this. */
+export async function endRoom(id: string): Promise<void> {
+  await api.post(`/group-study/${id}/end`);
 }
