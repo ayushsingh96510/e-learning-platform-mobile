@@ -10,6 +10,9 @@ import AssignmentsScreen from "@/features/assignments/screens/AssignmentsScreen"
 import AttemptScreen from "@/features/assignments/screens/AttemptScreen";
 import ResultScreen from "@/features/assignments/screens/ResultScreen";
 import type { AssessmentResult } from "@/features/assignments/types";
+import GroupStudyScreen from "@/features/group-study/screens/GroupStudyScreen";
+import GroupStudyRoomScreen from "@/features/group-study/screens/GroupStudyRoomScreen";
+import type { JoinRoomData } from "@/features/group-study/types";
 
 export type StudentTabParamList = {
   Home: undefined;
@@ -25,6 +28,7 @@ export type StudentStackParamList = {
   ClassRoom: { roomName: string };
   AssignmentAttempt: { assessmentId: string };
   AssignmentResult: { resultId?: string; result?: AssessmentResult };
+  GroupStudyRoom: { roomName: string; joinData?: JoinRoomData };
 };
 
 const Tab = createBottomTabNavigator<StudentTabParamList>();
@@ -115,7 +119,7 @@ function StudentTabs() {
 
       <Tab.Screen
         name="GroupStudy"
-        children={() => null}
+        component={GroupStudyScreen}
         options={{
           tabBarLabel: "Groups",
         }}
@@ -172,6 +176,12 @@ export default function StudentNavigator() {
       <Stack.Screen
         name="AssignmentResult"
         component={ResultScreen}
+      />
+
+      <Stack.Screen
+        name="GroupStudyRoom"
+        component={GroupStudyRoomScreen}
+        options={{ gestureEnabled: false }}
       />
     </Stack.Navigator>
   );
