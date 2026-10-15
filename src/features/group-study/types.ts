@@ -74,3 +74,32 @@ export interface ChatMessage {
   message: string;
   timestamp: number;
 }
+
+/** Metadata sent with every chunk of a shared file (same shape as the web app). */
+export interface SharedFileMeta {
+  id: string;
+  senderId: string;
+  senderName: string;
+  fileName: string;
+  mimeType: string;
+  size: number;
+}
+
+/** A shared file that has been saved to the device cache. */
+export interface SharedFile extends SharedFileMeta {
+  uri: string;
+}
+
+/** Body of POST /group-study (same fields as the web form). */
+export interface CreateRoomPayload {
+  name: string;
+  description: string;
+  subject: string;
+  isPrivate: boolean;
+  memberIds: string[];
+}
+
+export interface StudentOption {
+  value: string;
+  label: string;
+}

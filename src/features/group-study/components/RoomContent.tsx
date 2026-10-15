@@ -5,9 +5,11 @@ import { ConnectionState, RoomEvent } from "livekit-client";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import ChatSheet from "./ChatSheet";
+import FilesSheet from "./FilesSheet";
 import ParticipantTile from "./ParticipantTile";
 import RoomControls from "./RoomControls";
 import { useRoomChat } from "../hooks/useRoomChat";
+import { useSharedFiles } from "../hooks/useSharedFiles";
 import { useRoomParticipants } from "../hooks/useRoomParticipants";
 import {
   requestMicrophonePermission,
@@ -40,8 +42,10 @@ export default function RoomContent({
   const insets = useSafeAreaInsets();
   const participants = useRoomParticipants();
   const { messages, send } = useRoomChat();
+  const { files, sendProgress, pickAndSend } = useSharedFiles();
 
   const [chatOpen, setChatOpen] = useState(false);
+  const [filesOpen, setFilesOpen] = useState(false);
   const [seenCount, setSeenCount] = useState(0);
   const [micBusy, setMicBusy] = useState(false);
 
@@ -87,6 +91,11 @@ export default function RoomContent({
     setSeenCount(messages.length);
     setChatOpen(false);
   }, [messages.length]);
+
+  const handleUpload = async () => {
+    const error = await pickAndSend();
+    if (error) Alert.alert("Could not share the file", error);
+  };
 
   const confirmEndRoom = () => {
     Alert.alert(
@@ -157,11 +166,13 @@ export default function RoomContent({
         micOn={micOn}
         micBusy={micBusy}
         unread={unread}
+        fileCount={files.length}
         isCreator={isCreator}
         ending={ending}
         bottomInset={insets.bottom}
         onToggleMic={handleToggleMic}
         onOpenChat={openChat}
+        onOpenFiles={() => setFilesOpen(true)}
         onEndRoom={confirmEndRoom}
         onLeave={onLeave}
       />
@@ -172,6 +183,14 @@ export default function RoomContent({
         localIdentity={local.identity}
         onSend={send}
         onClose={closeChat}
+      />
+
+      <FilesSheet
+        visible={filesOpen}
+        files={files}
+        sendProgress={sendProgress}
+        onUpload={handleUpload}
+        onClose={() => setFilesOpen(false)}
       />
     </View>
   );
