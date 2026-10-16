@@ -12,6 +12,7 @@ import { useRoute, type RouteProp } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import { WebView } from "react-native-webview";
 
 import api from "@/api/axios";
 import type { ApiResponse } from "@/api/types";
@@ -218,7 +219,28 @@ function MaterialViewer({
 
     case "PDF":
       return (
-        <ViewerMessage message="The embedded PDF viewer will be added in the next step." />
+        <View
+          className="overflow-hidden rounded-xl border border-gray-200 bg-white"
+          style={{ height: 520 }}
+        >
+          <WebView
+            source={{
+              uri: `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(uri)}`,
+            }}
+            style={{ flex: 1 }}
+            javaScriptEnabled
+            domStorageEnabled
+            startInLoadingState
+            renderLoading={() => (
+              <View className="flex-1 items-center justify-center">
+                <ActivityIndicator size="large" color="#2563EB" />
+                <Text className="mt-2 text-sm text-gray-500">
+                  Loading PDF...
+                </Text>
+              </View>
+            )}
+          />
+        </View>
       );
 
     case "DOCUMENT":
