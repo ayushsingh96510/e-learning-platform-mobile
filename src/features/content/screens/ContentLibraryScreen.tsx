@@ -16,6 +16,10 @@ import {
   type MaterialType,
 } from "../api/content.api";
 
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { StudentStackParamList } from "@/navigation/StudentNavigator";
+
 const MATERIAL_TYPES: Array<{
   label: string;
   value: MaterialType | undefined;
@@ -74,6 +78,9 @@ export default function ContentLibraryScreen() {
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const navigation =
+  useNavigation<NativeStackNavigationProp<StudentStackParamList>>();
 
   const fetchMaterials = useCallback(
     async (requestedPage: number, append = false) => {
@@ -192,9 +199,8 @@ export default function ContentLibraryScreen() {
     <TouchableOpacity
       activeOpacity={0.8}
       className="mb-3 overflow-hidden rounded-2xl border border-gray-100 bg-white"
-      onPress={() => {
-        // Material detail navigation will be added in the next step.
-      }}
+      onPress={() =>
+        navigation.navigate("MaterialDetail", {materialId: item.id,})}
     >
       <View className="h-36 items-center justify-center bg-blue-50">
         <Ionicons
