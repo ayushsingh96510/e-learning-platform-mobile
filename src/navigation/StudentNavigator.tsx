@@ -10,6 +10,9 @@ import AssignmentsScreen from "@/features/assignments/screens/AssignmentsScreen"
 import AttemptScreen from "@/features/assignments/screens/AttemptScreen";
 import ResultScreen from "@/features/assignments/screens/ResultScreen";
 import type { AssessmentResult } from "@/features/assignments/types";
+import ContentLibraryScreen from "@/features/content/screens/ContentLibraryScreen";
+import MaterialDetailScreen from "@/features/content/screens/MaterialDetailScreen";
+
 
 export type StudentTabParamList = {
   Home: undefined;
@@ -25,6 +28,7 @@ export type StudentStackParamList = {
   ClassRoom: { roomName: string };
   AssignmentAttempt: { assessmentId: string };
   AssignmentResult: { resultId?: string; result?: AssessmentResult };
+  MaterialDetail: { materialId: string };
 };
 
 const Tab = createBottomTabNavigator<StudentTabParamList>();
@@ -131,10 +135,8 @@ function StudentTabs() {
 
       <Tab.Screen
         name="Content"
-        children={() => null}
-        options={{
-          tabBarLabel: "Content",
-        }}
+        component={ContentLibraryScreen}
+        options={{ tabBarLabel: "Content" }}
       />
     </Tab.Navigator>
   );
@@ -172,6 +174,11 @@ export default function StudentNavigator() {
       <Stack.Screen
         name="AssignmentResult"
         component={ResultScreen}
+      />
+
+      <Stack.Screen
+        name="MaterialDetail"
+        component={MaterialDetailScreen}
       />
     </Stack.Navigator>
   );
