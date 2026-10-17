@@ -1,5 +1,10 @@
 import api from "../../../api/axios";
 import type { ApiResponse } from "../../../api/types";
+import type {
+  MaterialDetail,
+  MaterialSummary,
+  MaterialTranscript,
+} from "../types/content.types";
 
 export type MaterialStatus = "DRAFT" | "PUBLISHED" | "DELETED";
 export type MaterialType = "VIDEO" | "PDF" | "DOCUMENT" | "IMAGE" | "AUDIO";
@@ -82,4 +87,36 @@ export async function getMaterials(
     materials: data?.materials ?? [],
     pagination: data?.pagination,
   };
+}
+
+
+
+export async function getMaterial(
+  materialId: string,
+): Promise<MaterialDetail> {
+  const response = await api.get<ApiResponse<MaterialDetail>>(
+    `/materials/${encodeURIComponent(materialId)}`,
+  );
+
+  return response.data.data;
+}
+
+export async function getMaterialSummary(
+  materialId: string,
+): Promise<MaterialSummary> {
+  const response = await api.get<ApiResponse<MaterialSummary>>(
+    `/materials/${encodeURIComponent(materialId)}/summary`,
+  );
+
+  return response.data.data;
+}
+
+export async function getMaterialTranscript(
+  materialId: string,
+): Promise<MaterialTranscript> {
+  const response = await api.get<ApiResponse<MaterialTranscript>>(
+    `/materials/${encodeURIComponent(materialId)}/transcript`,
+  );
+
+  return response.data.data;
 }
