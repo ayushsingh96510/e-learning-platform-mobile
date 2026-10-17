@@ -142,6 +142,9 @@ export interface ViewportState {
   scrollX: number;
   scrollY: number;
   zoom: number;
+  /** Size of the presenter's canvas in pixels. Only sent by newer web versions. */
+  width?: number;
+  height?: number;
 }
 
 export interface Presenter {

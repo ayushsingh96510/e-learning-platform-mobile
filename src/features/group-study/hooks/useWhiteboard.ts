@@ -9,7 +9,8 @@ import type {
   ViewportState,
   WhiteboardElement,
 } from "../types";
-import { isFiniteNumber } from "../utils/whiteboard";
+import { computeBounds, isFiniteNumber } from "../utils/whiteboard";
+import type { Bounds } from "../utils/whiteboard";
 
 // Redraw at most this often, however many messages arrive.
 const FLUSH_MS = 80;
@@ -47,6 +48,11 @@ export function useWhiteboard() {
   const latestViewport = useRef<ViewportState | null>(null);
   const viewportListener = useRef<((viewport: ViewportState) => void) | null>(null);
 
+  // The area the presenter changed last, so the board can follow what they write.
+  const focusListener = useRef<((bounds: Bounds) => void) | null>(null);
+  // The area each participant changed last, used by the "is drawing" badges.
+  const lastEdits = useRef<Record<string, Bounds>>({});
+
   const scheduleFlush = useCallback(() => {
     if (flushTimer.current) return;
     flushTimer.current = setTimeout(() => {
@@ -72,11 +78,11 @@ export function useWhiteboard() {
 
   useEffect(() => {
     // Same rule as the web app: the higher version of an element always wins.
-    const mergeElements = (incoming: unknown) => {
+    const mergeElements = (incoming: unknown, sender?: string) => {
       if (!Array.isArray(incoming)) return;
 
       const map = elementsRef.current;
-      let changed = false;
+      const changed: WhiteboardElement[] = [];
 
       for (const raw of incoming) {
         if (!raw || typeof raw.id !== "string") continue;
@@ -84,11 +90,22 @@ export function useWhiteboard() {
         const existing = map.get(raw.id);
         if (!existing || (raw.version ?? 0) > (existing.version ?? 0)) {
           map.set(raw.id, raw as WhiteboardElement);
-          changed = true;
+          changed.push(raw as WhiteboardElement);
         }
       }
 
-      if (changed) scheduleFlush();
+      if (changed.length === 0) return;
+      scheduleFlush();
+
+      // Remember where this participant is working, so the board can follow
+      // the presenter and jump to whoever is drawing.
+      const bounds = computeBounds(changed.filter((el) => !el.isDeleted));
+      if (!bounds || !sender) return;
+
+      lastEdits.current[sender] = bounds;
+      if (sender === presenterRef.current?.identity) {
+        focusListener.current?.(bounds);
+      }
     };
 
     const handleImageChunk = (msg: any) => {
@@ -124,7 +141,7 @@ export function useWhiteboard() {
       scheduleFlush();
     };
 
-    const handleData = (payload: Uint8Array) => {
+    const handleData = (payload: Uint8Array, participant?: RemoteParticipant) => {
       let msg: any;
       try {
         msg = JSON.parse(new TextDecoder().decode(payload));
@@ -134,7 +151,7 @@ export function useWhiteboard() {
 
       switch (msg?.type) {
         case "whiteboard":
-          mergeElements(msg.elements);
+          mergeElements(msg.elements, participant?.identity);
           break;
 
         case "file-chunk":
@@ -180,6 +197,11 @@ export function useWhiteboard() {
             scrollY: v.scrollY,
             zoom: v.zoom,
           };
+          // Newer web versions also send the size of the presenter's canvas.
+          if (isFiniteNumber(v.width) && isFiniteNumber(v.height)) {
+            viewport.width = v.width;
+            viewport.height = v.height;
+          }
           latestViewport.current = viewport;
           viewportListener.current?.(viewport);
           break;
@@ -277,6 +299,14 @@ export function useWhiteboard() {
     [pings, presenter]
   );
 
+  // Pauses following, e.g. when the student pans or zooms by themselves.
+  const stopFollowing = useCallback(() => setFollowing(false), []);
+
+  const getLastEdit = useCallback(
+    (identity: string): Bounds | null => lastEdits.current[identity] ?? null,
+    []
+  );
+
   const toggleFollow = useCallback(() => {
     const next = !following;
     setFollowing(next);
@@ -289,9 +319,12 @@ export function useWhiteboard() {
     presenter,
     following,
     toggleFollow,
+    stopFollowing,
     activity,
     latestViewport,
     viewportListener,
+    focusListener,
+    getLastEdit,
   };
 }
 

@@ -19,8 +19,15 @@ export function isFiniteNumber(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
+export interface Bounds {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+}
+
 /** Bounding box of everything that is drawn, or null if the board is empty. */
-export function computeBounds(elements: WhiteboardElement[]) {
+export function computeBounds(elements: WhiteboardElement[]): Bounds | null {
   let minX = Infinity;
   let minY = Infinity;
   let maxX = -Infinity;
@@ -48,9 +55,10 @@ export function computeBounds(elements: WhiteboardElement[]) {
 
 /** Camera that shows the whole drawing, centered in the view. */
 export function fitCamera(
-  bounds: NonNullable<ReturnType<typeof computeBounds>>,
+  bounds: Bounds,
   size: Size,
-  padding = 24
+  padding = 24,
+  maxZoom = 1.5
 ): Camera {
   const width = Math.max(bounds.maxX - bounds.minX, 1);
   const height = Math.max(bounds.maxY - bounds.minY, 1);
@@ -59,7 +67,7 @@ export function fitCamera(
     Math.min(
       (size.width - padding * 2) / width,
       (size.height - padding * 2) / height,
-      1.5
+      maxZoom
     ),
     MIN_ZOOM,
     MAX_ZOOM
@@ -179,4 +187,34 @@ export function arrowheadPath(
       // Open "V" arrowhead, also used for kinds that are not drawn specially.
       return { d: `M ${ax} ${ay} L ${tip[0]} ${tip[1]} L ${bx} ${by}`, filled: false };
   }
+}
+
+/**
+ * Returns a camera that brings `bounds` into view, or null if it is already
+ * fully visible. It scrolls to the area and only zooms out when the area is
+ * bigger than the view, never zooms in.
+ */
+export function ensureVisible(
+  camera: Camera,
+  size: Size,
+  bounds: Bounds,
+  margin = 32
+): Camera | null {
+  if (size.width === 0 || size.height === 0) return null;
+
+  const left = -camera.scrollX;
+  const top = -camera.scrollY;
+  const right = left + size.width / camera.zoom;
+  const bottom = top + size.height / camera.zoom;
+  const inset = margin / camera.zoom;
+
+  const visible =
+    bounds.minX >= left + inset &&
+    bounds.maxX <= right - inset &&
+    bounds.minY >= top + inset &&
+    bounds.maxY <= bottom - inset;
+
+  if (visible) return null;
+
+  return fitCamera(bounds, size, margin, camera.zoom);
 }
