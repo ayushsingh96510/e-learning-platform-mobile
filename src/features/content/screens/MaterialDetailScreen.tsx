@@ -8,8 +8,6 @@ import type { ApiResponse } from "@/api/types";
 import type { StudentStackParamList } from "@/navigation/StudentNavigator";
 
 import {
-  TYPE_ICONS,
-  TYPE_LABELS,
   type MaterialType,
   type MaterialTabItem,
 } from "../constants/material";
@@ -19,6 +17,8 @@ import MaterialTabs from "../components/material-detail/MaterialTabs";
 import MaterialViewer from "../components/material-detail/MaterialViewer";
 import OverviewTab from "../components/material-detail/OverviewTab";
 import TranscriptTab from "../components/material-detail/TranscriptionTab";
+
+import MaterialHeader from "../components/material-detail/MaterialHeader";
 
 type MaterialDetailRoute = RouteProp<
   StudentStackParamList,
@@ -178,25 +178,7 @@ export default function MaterialDetailScreen() {
       showsVerticalScrollIndicator={false}
     >
       {/* Material header */}
-      <View className="border-b border-gray-100 bg-white px-5 pb-5 pt-6">
-        <View className="mb-4 h-16 w-16 items-center justify-center rounded-2xl bg-blue-50">
-          <Ionicons
-            name={TYPE_ICONS[materialType] ?? "document-outline"}
-            size={32}
-            color="#2563EB"
-          />
-        </View>
-
-        <Text className="text-2xl font-bold text-gray-900">
-          {material.title}
-        </Text>
-
-        <View className="mt-3 self-start rounded-lg bg-blue-50 px-3 py-1.5">
-          <Text className="text-xs font-semibold text-blue-700">
-            {TYPE_LABELS[materialType] ?? materialType}
-          </Text>
-        </View>
-      </View>
+      <MaterialHeader material={material} />
 
       {/* Material viewer */}
       <View className="mt-5 px-5">

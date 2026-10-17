@@ -10,11 +10,8 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import {
-  getMaterials,
-  type Material,
-  type MaterialType,
-} from "../api/content.api";
+import { getMaterials } from "../api/content.api";
+import { MaterialType, Material } from "../types/content.types";
 
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";

@@ -1,4 +1,3 @@
-
 export type MaterialType =
   | "VIDEO"
   | "PDF"
@@ -7,6 +6,12 @@ export type MaterialType =
   | "AUDIO";
 
 export type MaterialStatus = "DRAFT" | "PUBLISHED" | "DELETED";
+
+export type SummaryStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "COMPLETED"
+  | "FAILED";
 
 export interface MaterialAiReady {
   isTranscriptReady: boolean;
@@ -40,76 +45,58 @@ export interface MaterialDetail {
   isAiReady: MaterialAiReady;
 }
 
-export interface TranscriptSegment {
-  start: number;
-  end: number;
-  text: string;
-}
-
-export interface MaterialTranscript {
-  id: string;
-  language: string;
-  segments: TranscriptSegment[];
-}
-
-export type SummaryStatus =
-  | "PENDING"
-  | "PROCESSING"
-  | "COMPLETED"
-  | "FAILED";
-
-export interface MaterialSummary {
-  id: string;
-  status: SummaryStatus;
-  summary: string;
-  keyTopics: string[];
-  keyTakeaways: string[];
-  generatedAt: string;
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: T;
-  errors: string[];
-}
-
-export interface AskTutorRequest {
-  mode: "LECTURE";
-  message: string;
-  materialId: string;
-}
-
-
-
-export interface MaterialAiReady {
-  isTranscriptReady: boolean;
-  isSummaryReady: boolean;
-  isAskAiReady: boolean;
-}
-
-export interface MaterialDetail {
+export interface Material {
   id: string;
   title: string;
   description: string | null;
-  materialType?: "VIDEO" | "PDF" | "DOCUMENT" | "IMAGE" | "AUDIO";
+  materialType: MaterialType;
   objectKey: string;
   file: {
     originalFileName: string;
     mimeType: string;
     size: number;
   };
-  status: "DRAFT" | "PUBLISHED" | "DELETED";
+  status: MaterialStatus;
   createdAt: string;
-  updatedAt?: string;
-  subject: { id: string; name: string } | null;
+  updatedAt: string;
+  subject:
+    | string
+    | {
+        id: string;
+        name: string;
+      }
+    | null;
   createdBy: {
     id: string;
     name: string;
-    profileImage?: string;
   };
-  isAiReady: MaterialAiReady;
+  metadata?: {
+    durationMs?: number;
+  };
+}
+
+export interface MaterialsPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface MaterialsResult {
+  materials: Material[];
+  pagination?: MaterialsPagination;
+}
+
+export interface MaterialFilters {
+  status?: MaterialStatus;
+  programId?: string;
+  subjectId?: string;
+  type?: MaterialType;
+  search?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }
 
 export interface TranscriptSegment {
@@ -124,7 +111,6 @@ export interface MaterialTranscript {
   segments: TranscriptSegment[];
 }
 
-
 export interface MaterialSummary {
   id: string;
   status: SummaryStatus;
@@ -132,4 +118,10 @@ export interface MaterialSummary {
   keyTopics: string[];
   keyTakeaways: string[];
   generatedAt: string;
+}
+
+export interface AskTutorRequest {
+  mode: "LECTURE";
+  message: string;
+  materialId: string;
 }
