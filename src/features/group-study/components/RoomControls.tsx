@@ -129,7 +129,7 @@ export default function RoomControls({
         <Divider />
 
         {/* End room: creator only */}
-        {isCreator && (
+        {/* {isCreator && (
           <RoundButton
             icon="stop-circle-outline"
             tone="danger"
@@ -137,7 +137,7 @@ export default function RoomControls({
             onPress={onEndRoom}
             loading={ending}
           />
-        )}
+        )} */}
 
         {/* Leave room */}
         <RoundButton
