@@ -103,3 +103,54 @@ export interface StudentOption {
   value: string;
   label: string;
 }
+
+/**
+ * A whiteboard element as sent by the web app (Excalidraw format).
+ * Only the fields needed to draw it are listed.
+ */
+export interface WhiteboardElement {
+  id: string;
+  type: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  angle?: number;
+  strokeColor?: string;
+  backgroundColor?: string;
+  fillStyle?: string;
+  strokeWidth?: number;
+  strokeStyle?: string;
+  opacity?: number;
+  roundness?: { type: number; value?: number } | null;
+  isDeleted?: boolean;
+  version?: number;
+  points?: number[][];
+  startArrowhead?: string | null;
+  endArrowhead?: string | null;
+  text?: string;
+  fontSize?: number;
+  fontFamily?: number;
+  textAlign?: string;
+  lineHeight?: number;
+  fileId?: string | null;
+  name?: string | null;
+}
+
+/** Scroll and zoom of the board, using Excalidraw's meaning: screen = (point + scroll) * zoom. */
+export interface ViewportState {
+  scrollX: number;
+  scrollY: number;
+  zoom: number;
+}
+
+export interface Presenter {
+  identity: string;
+  name: string;
+}
+
+/** "Someone is drawing over here" ping from a participant who is not presenting. */
+export interface ActivityPing extends ViewportState {
+  identity: string;
+  name: string;
+}

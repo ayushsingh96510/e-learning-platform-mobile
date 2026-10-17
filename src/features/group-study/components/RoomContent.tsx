@@ -1,4 +1,4 @@
-import { Alert, ScrollView, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { useRoomContext } from "@livekit/react-native";
 import { ConnectionState, RoomEvent } from "livekit-client";
@@ -8,8 +8,10 @@ import ChatSheet from "./ChatSheet";
 import FilesSheet from "./FilesSheet";
 import ParticipantTile from "./ParticipantTile";
 import RoomControls from "./RoomControls";
+import WhiteboardView from "./WhiteboardView";
 import { useRoomChat } from "../hooks/useRoomChat";
 import { useSharedFiles } from "../hooks/useSharedFiles";
+import { useWhiteboard } from "../hooks/useWhiteboard";
 import { useRoomParticipants } from "../hooks/useRoomParticipants";
 import {
   requestMicrophonePermission,
@@ -43,9 +45,11 @@ export default function RoomContent({
   const participants = useRoomParticipants();
   const { messages, send } = useRoomChat();
   const { files, sendProgress, pickAndSend } = useSharedFiles();
+  const whiteboard = useWhiteboard();
 
   const [chatOpen, setChatOpen] = useState(false);
   const [filesOpen, setFilesOpen] = useState(false);
+  const [tab, setTab] = useState<"people" | "board">("people");
   const [seenCount, setSeenCount] = useState(0);
   const [micBusy, setMicBusy] = useState(false);
 
@@ -137,9 +141,44 @@ export default function RoomContent({
         </View>
       </View>
 
+      {/* View switcher */}
+      <View className="flex-row border-b border-gray-100 bg-white px-4">
+        {(["people", "board"] as const).map((item) => {
+          const active = tab === item;
+          const showDot =
+            item === "board" &&
+            !active &&
+            (!!whiteboard.presenter || whiteboard.activity.length > 0);
+
+          return (
+            <Pressable
+              key={item}
+              onPress={() => setTab(item)}
+              className={`mr-6 border-b-2 py-3 ${
+                active ? "border-primary-600" : "border-transparent"
+              }`}
+            >
+              <View className="flex-row items-center">
+                <Text
+                  className={`text-sm font-semibold ${
+                    active ? "text-primary-600" : "text-gray-500"
+                  }`}
+                >
+                  {item === "people" ? "People" : "Board"}
+                </Text>
+                {showDot && (
+                  <View className="ml-1.5 h-2 w-2 rounded-full bg-red-500" />
+                )}
+              </View>
+            </Pressable>
+          );
+        })}
+      </View>
+
       {/* Participants */}
       <ScrollView
         className="flex-1"
+        style={{ display: tab === "people" ? "flex" : "none" }}
         contentContainerClassName="px-3 pb-6 pt-2"
         showsVerticalScrollIndicator={false}
       >
@@ -161,6 +200,14 @@ export default function RoomContent({
           ))}
         </View>
       </ScrollView>
+
+      {/* Whiteboard. It stays mounted so it keeps its view while hidden. */}
+      <View
+        className="flex-1"
+        style={{ display: tab === "board" ? "flex" : "none" }}
+      >
+        <WhiteboardView whiteboard={whiteboard} />
+      </View>
 
       <RoomControls
         micOn={micOn}
