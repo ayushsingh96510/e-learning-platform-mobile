@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { View } from "react-native";
 
 import HomeScreen from "@/features/dashboard/screens/HomeScreen";
 import ProfileScreen from "@/features/profile/screens/ProfileScreen";
@@ -36,6 +37,40 @@ const Stack = createNativeStackNavigator<StudentStackParamList>();
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
+const TAB_ICONS: Record<
+  keyof StudentTabParamList,
+  { active: IconName; inactive: IconName }
+> = {
+  Home: {
+    active: "grid",
+    inactive: "grid-outline",
+  },
+  LiveClasses: {
+    active: "videocam",
+    inactive: "videocam-outline",
+  },
+  GroupStudy: {
+    active: "people",
+    inactive: "people-outline",
+  },
+  Assignments: {
+    active: "document-text",
+    inactive: "document-text-outline",
+  },
+  Content: {
+    active: "albums",
+    inactive: "albums-outline",
+  },
+};
+
+const COLORS = {
+  active: "#2563EB",
+  inactive: "#9CA3AF",
+  activeBackground: "#DBEAFE",
+  background: "#FFFFFF",
+  border: "#F1F5F9",
+};
+
 function StudentTabs() {
   return (
     <Tab.Navigator
@@ -46,57 +81,42 @@ function StudentTabs() {
         tabBarInactiveTintColor: "#9CA3AF",
 
         tabBarStyle: {
-          height: 68,
+          height: 80,
           paddingTop: 8,
           paddingBottom: 8,
-          borderTopWidth: 1,
-          borderTopColor: "#F3F4F6",
           backgroundColor: "#FFFFFF",
+          borderTopWidth: 1,
+          borderTopColor: "#F1F5F9",
+          elevation: 0,
         },
 
+        tabBarBackground: () => (
+          <View className="flex-1 bg-white" />
+        ),
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: "600",
+          marginTop: 3,
         },
 
-        tabBarIcon: ({ focused, color, size }) => {
-          const icons: Record<
-            keyof StudentTabParamList,
-            {
-              active: IconName;
-              inactive: IconName;
-            }
-          > = {
-            Home: {
-              active: "home",
-              inactive: "home-outline",
-            },
-            LiveClasses: {
-              active: "videocam",
-              inactive: "videocam-outline",
-            },
-            GroupStudy: {
-              active: "people",
-              inactive: "people-outline",
-            },
-            Assignments: {
-              active: "document-text",
-              inactive: "document-text-outline",
-            },
-            Content: {
-              active: "library",
-              inactive: "library-outline",
-            },
-          };
+        tabBarItemStyle: {
+          paddingVertical: 2,
+        },
 
-          const icon = icons[route.name];
+        tabBarIcon: ({ focused, color }) => {
+          const icon = TAB_ICONS[route.name];
 
           return (
-            <Ionicons
-              name={focused ? icon.active : icon.inactive}
-              size={focused ? size + 1 : size}
-              color={color}
-            />
+            <View
+              className={`h-8 w-[52px] items-center justify-center rounded-xl ${focused ? "bg-blue-100" : "bg-transparent"
+                }`}
+            >
+              <Ionicons
+                name={focused ? icon.active : icon.inactive}
+                size={22}
+                color={color}
+              />
+            </View>
           );
         },
       })}
@@ -104,41 +124,31 @@ function StudentTabs() {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{
-          tabBarLabel: "Home",
-        }}
+        options={{ tabBarLabel: "Home" }}
       />
 
       <Tab.Screen
         name="LiveClasses"
         component={LiveClassesScreen}
-        options={{
-          tabBarLabel: "Live",
-        }}
+        options={{ tabBarLabel: "Live" }}
       />
 
       <Tab.Screen
         name="GroupStudy"
         component={GroupStudyScreen}
-        options={{
-          tabBarLabel: "Groups",
-        }}
+        options={{ tabBarLabel: "Groups" }}
       />
 
       <Tab.Screen
         name="Assignments"
         component={AssignmentsScreen}
-        options={{
-          tabBarLabel: "Tests",
-        }}
+        options={{ tabBarLabel: "Tests" }}
       />
 
       <Tab.Screen
         name="Content"
         children={() => null}
-        options={{
-          tabBarLabel: "Content",
-        }}
+        options={{ tabBarLabel: "Content" }}
       />
     </Tab.Navigator>
   );
