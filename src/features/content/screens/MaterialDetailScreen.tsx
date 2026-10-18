@@ -174,52 +174,56 @@ export default function MaterialDetailScreen() {
 
   return (
     <ScrollView
-      className="flex-1 bg-gray-50"
-      contentContainerStyle={{ paddingBottom: 28 }}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Material header */}
-      <MaterialHeader material={material} />
+  className="flex-1 bg-gray-50"
+  contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+  showsVerticalScrollIndicator={false}
+  stickyHeaderIndices={[2]}
+  keyboardShouldPersistTaps="handled"
+>
+  {/* 0: Header */}
+  <MaterialHeader material={material} />
 
-      {/* Material viewer */}
-      <View className="mt-5 px-5">
-        <MaterialViewer material={material} />
-      </View>
+  {/* 1: Material Viewer */}
+  <View className="mt-5 px-5">
+    <MaterialViewer material={material} />
+  </View>
 
-      {/* Material tabs */}
-      <View className="mt-5 px-5">
-        <MaterialTabs
-          tabs={tabs}
-          activeTab={displayedTab}
-          onChange={setActiveTab}
-        />
-      </View>
+  {/* 2: Sticky tabs */}
+  <View className="bg-gray-50 px-5 pt-3">
+    <MaterialTabs
+      tabs={tabs}
+      activeTab={displayedTab}
+      onChange={setActiveTab}
+    />
+  </View>
 
-      {/* Selected tab content */}
-      <View className="px-5">
-        {displayedTab === "overview" && <OverviewTab material={material} />}
+  {/* 3: Selected tab content */}
+  <View className="min-h-[400px] px-5">
+    {displayedTab === "overview" && (
+      <OverviewTab material={material} />
+    )}
 
-        {displayedTab === "ai-summary" && aiReady?.isSummaryReady && (
-          <AISummaryTab
-            key={`summary-${material.id}`}
-            materialId={material.id}
-          />
-        )}
+    {displayedTab === "ai-summary" && aiReady?.isSummaryReady && (
+      <AISummaryTab
+        key={`summary-${material.id}`}
+        materialId={material.id}
+      />
+    )}
 
-        {displayedTab === "transcription" && aiReady?.isTranscriptReady && (
-          <TranscriptTab
-            key={`transcript-${material.id}`}
-            materialId={material.id}
-          />
-        )}
+    {displayedTab === "transcription" && aiReady?.isTranscriptReady && (
+      <TranscriptTab
+        key={`transcript-${material.id}`}
+        materialId={material.id}
+      />
+    )}
 
-        {displayedTab === "ai-tutor" && aiReady?.isAskAiReady && (
-          <AskAITutorTab
-            key={`tutor-${material.id}`}
-            materialId={material.id}
-          />
-        )}
-      </View>
-    </ScrollView>
+    {displayedTab === "ai-tutor" && aiReady?.isAskAiReady && (
+      <AskAITutorTab
+        key={`tutor-${material.id}`}
+        materialId={material.id}
+      />
+    )}
+  </View>
+</ScrollView>
   );
 }

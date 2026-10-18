@@ -176,7 +176,8 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
 
               <View className="my-1 h-px bg-gray-100" />
 
-              <Pressable
+            {/* hided for now  */}
+              {/* <Pressable
                 onPress={() => {
                   setMenuVisible(false);
                   // TODO: Open AI Tutor
@@ -192,9 +193,9 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
                 </Text>
                 <View className="flex-1" />
                 <Ionicons name="chevron-forward" size={16} color="#9CA3AF" />
-              </Pressable>
+              </Pressable> */}
 
-              <View className="my-1 h-px bg-gray-100" />
+              {/* <View className="my-1 h-px bg-gray-100" /> */}
 
               {/* Download Material */}
               <Pressable
