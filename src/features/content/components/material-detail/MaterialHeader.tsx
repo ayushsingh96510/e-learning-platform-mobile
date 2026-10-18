@@ -2,6 +2,7 @@ import {  Modal, Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import { resolveMaterialType } from "../../utils/material";
 
 import {
   TYPE_LABELS,
@@ -76,19 +77,6 @@ function getAiReadyCount(aiReady: HeaderMaterial["isAiReady"]): number {
     aiReady.isAskAiReady,
     aiReady.isTranscriptReady,
   ].filter(Boolean).length;
-}
-
-function resolveMaterialType(material: HeaderMaterial): MaterialType {
-  if (material.materialType) return material.materialType;
-
-  const mimeType = material.file?.mimeType?.toLowerCase();
-
-  if (mimeType?.startsWith("video/")) return "VIDEO";
-  if (mimeType?.startsWith("audio/")) return "AUDIO";
-  if (mimeType?.startsWith("image/")) return "IMAGE";
-  if (mimeType === "application/pdf") return "PDF";
-
-  return "DOCUMENT";
 }
 
 export default function MaterialHeader({ material }: MaterialHeaderProps) {

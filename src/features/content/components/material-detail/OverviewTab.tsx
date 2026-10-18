@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 
 import { TYPE_LABELS, type MaterialType } from "../../constants/material";
 import MaterialInfoRow from "./MaterialInfoRow";
+import { resolveMaterialType } from "../../utils/material";
 
 interface OverviewMaterial {
   description: string | null;
@@ -47,7 +48,7 @@ function formatDate(date: string): string {
 }
 
 export default function OverviewTab({ material }: OverviewTabProps) {
-  const materialType = material.materialType;
+  const materialType = resolveMaterialType(material);
 
   return (
     <>
@@ -99,7 +100,7 @@ export default function OverviewTab({ material }: OverviewTabProps) {
         <MaterialInfoRow
           icon="layers-outline"
           label="Content type"
-          value={TYPE_LABELS[materialType] ?? materialType}
+          value={TYPE_LABELS[materialType]}
           last
         />
       </View>

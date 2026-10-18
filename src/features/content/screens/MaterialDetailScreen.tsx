@@ -17,6 +17,7 @@ import MaterialTabs from "../components/material-detail/MaterialTabs";
 import MaterialViewer from "../components/material-detail/MaterialViewer";
 import OverviewTab from "../components/material-detail/OverviewTab";
 import TranscriptTab from "../components/material-detail/TranscriptionTab";
+import AskAITutorTab from "../components/material-detail/AskAITutorTab";
 
 import MaterialHeader from "../components/material-detail/MaterialHeader";
 
@@ -213,28 +214,10 @@ export default function MaterialDetailScreen() {
         )}
 
         {displayedTab === "ai-tutor" && aiReady?.isAskAiReady && (
-          <View className="rounded-2xl border border-gray-100 bg-white p-5">
-            <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-indigo-50">
-              <Ionicons
-                name="chatbubbles-outline"
-                size={25}
-                color="#4F46E5"
-              />
-            </View>
-
-            <Text className="text-base font-bold text-gray-900">
-              Ask AI Tutor
-            </Text>
-
-            <Text className="mt-2 text-sm leading-6 text-gray-600">
-              Ask questions about this learning material and get help
-              understanding its concepts.
-            </Text>
-
-            <Text className="mt-3 text-xs text-gray-400">
-              AI Tutor chat will be connected in the next step.
-            </Text>
-          </View>
+          <AskAITutorTab
+            key={`tutor-${material.id}`}
+            materialId={material.id}
+          />
         )}
       </View>
     </ScrollView>
