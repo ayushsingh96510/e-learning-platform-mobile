@@ -71,7 +71,8 @@ export default function AISummaryTab({
     <ScrollView
       className="flex-1"
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24 }}
+      nestedScrollEnabled
+      contentContainerStyle={{ paddingBottom: 20 }}
     >
       <View className="mb-4 rounded-2xl border border-gray-200 bg-white p-4">
         <View className="mb-3 flex-row items-center">

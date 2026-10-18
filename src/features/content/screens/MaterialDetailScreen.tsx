@@ -86,10 +86,10 @@ export default function MaterialDetailScreen() {
         const message =
           typeof err === "object" && err !== null && "response" in err
             ? (
-                err as {
-                  response?: { data?: { message?: string } };
-                }
-              ).response?.data?.message
+              err as {
+                response?: { data?: { message?: string } };
+              }
+            ).response?.data?.message
             : undefined;
 
         setError(message || "Unable to load material details.");
@@ -139,30 +139,30 @@ export default function MaterialDetailScreen() {
     { key: "overview", label: "Overview" },
     ...(aiReady?.isSummaryReady
       ? [
-          {
-            key: "ai-summary" as const,
-            label: "Summary",
-            a11y: "AI Summary",
-          },
-        ]
+        {
+          key: "ai-summary" as const,
+          label: "Summary",
+          a11y: "AI Summary",
+        },
+      ]
       : []),
     ...(aiReady?.isAskAiReady
       ? [
-          {
-            key: "ai-tutor" as const,
-            label: "Ask AI",
-            a11y: "Ask AI Tutor",
-          },
-        ]
+        {
+          key: "ai-tutor" as const,
+          label: "Ask AI",
+          a11y: "Ask AI Tutor",
+        },
+      ]
       : []),
     ...(aiReady?.isTranscriptReady
       ? [
-          {
-            key: "transcription" as const,
-            label: "Transcript",
-            a11y: "Transcription",
-          },
-        ]
+        {
+          key: "transcription" as const,
+          label: "Transcript",
+          a11y: "Transcription",
+        },
+      ]
       : []),
   ];
 
@@ -174,56 +174,57 @@ export default function MaterialDetailScreen() {
 
   return (
     <ScrollView
-  className="flex-1 bg-gray-50"
-  contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-  showsVerticalScrollIndicator={false}
-  stickyHeaderIndices={[2]}
-  keyboardShouldPersistTaps="handled"
->
-  {/* 0: Header */}
-  <MaterialHeader material={material} />
+      className="flex-1 bg-gray-50"
+      contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+      showsVerticalScrollIndicator={false}
+      stickyHeaderIndices={[1]}
+      keyboardShouldPersistTaps="handled"
+    >
+      {/* 0: Header */}
+      <MaterialHeader material={material} />
 
-  {/* 1: Material Viewer */}
-  <View className="mt-5 px-5">
-    <MaterialViewer material={material} />
-  </View>
+      {/* 1: Both Viewer and Tabs sticky together */}
+      <View className="bg-gray-50">
+        <View className="px-5 pt-5">
+          <MaterialViewer material={material} />
+        </View>
 
-  {/* 2: Sticky tabs */}
-  <View className="bg-gray-50 px-5 pt-3">
-    <MaterialTabs
-      tabs={tabs}
-      activeTab={displayedTab}
-      onChange={setActiveTab}
-    />
-  </View>
+        <View className="px-5 pt-3 pb-2 bg-gray-50">
+          <MaterialTabs
+            tabs={tabs}
+            activeTab={displayedTab}
+            onChange={setActiveTab}
+          />
+        </View>
+      </View>
 
-  {/* 3: Selected tab content */}
-  <View className="min-h-[400px] px-5">
-    {displayedTab === "overview" && (
-      <OverviewTab material={material} />
-    )}
+      {/* 2: Selected tab content */}
+      <View className="min-h-[400px] px-5">
+        {displayedTab === "overview" && (
+          <OverviewTab material={material} />
+        )}
 
-    {displayedTab === "ai-summary" && aiReady?.isSummaryReady && (
-      <AISummaryTab
-        key={`summary-${material.id}`}
-        materialId={material.id}
-      />
-    )}
+        {displayedTab === "ai-summary" && aiReady?.isSummaryReady && (
+          <AISummaryTab
+            key={`summary-${material.id}`}
+            materialId={material.id}
+          />
+        )}
 
-    {displayedTab === "transcription" && aiReady?.isTranscriptReady && (
-      <TranscriptTab
-        key={`transcript-${material.id}`}
-        materialId={material.id}
-      />
-    )}
+        {displayedTab === "transcription" && aiReady?.isTranscriptReady && (
+          <TranscriptTab
+            key={`transcript-${material.id}`}
+            materialId={material.id}
+          />
+        )}
 
-    {displayedTab === "ai-tutor" && aiReady?.isAskAiReady && (
-      <AskAITutorTab
-        key={`tutor-${material.id}`}
-        materialId={material.id}
-      />
-    )}
-  </View>
-</ScrollView>
+        {displayedTab === "ai-tutor" && aiReady?.isAskAiReady && (
+          <AskAITutorTab
+            key={`tutor-${material.id}`}
+            materialId={material.id}
+          />
+        )}
+      </View>
+    </ScrollView>
   );
 }

@@ -150,7 +150,7 @@ export default function TranscriptTab({
         </View>
       ) : (
         <ScrollView
-          className="flex-1"
+          className="min-h-0 flex-1"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 24 }}
           keyboardShouldPersistTaps="handled"

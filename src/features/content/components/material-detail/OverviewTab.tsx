@@ -1,5 +1,4 @@
-import { Text, View } from "react-native";
-
+import { ScrollView, Text, View } from "react-native";
 import { TYPE_LABELS, type MaterialType } from "../../constants/material";
 import MaterialInfoRow from "./MaterialInfoRow";
 import { resolveMaterialType } from "../../utils/material";
@@ -51,7 +50,12 @@ export default function OverviewTab({ material }: OverviewTabProps) {
   const materialType = resolveMaterialType(material);
 
   return (
-    <>
+    <ScrollView
+      className="flex-1"
+      showsVerticalScrollIndicator={false}
+      nestedScrollEnabled
+      contentContainerStyle={{ paddingBottom: 20 }}
+    >
       <View className="rounded-2xl border border-gray-100 bg-white p-4">
         <Text className="text-base font-bold text-gray-900">
           Description
@@ -104,6 +108,6 @@ export default function OverviewTab({ material }: OverviewTabProps) {
           last
         />
       </View>
-    </>
+    </ScrollView>
   );
 }
