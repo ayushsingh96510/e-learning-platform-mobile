@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Text } from "react-native";
 
 import LoginScreen from "../features/auth/screens/LoginScreen";
+import ForgotPasswordScreen from "../features/auth/screens/ForgotPasswordScreen";
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -9,8 +10,7 @@ export type AuthStackParamList = {
   ResetPassword: undefined;
 };
 
-const Stack =
-  createNativeStackNavigator<AuthStackParamList>();
+const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -35,9 +35,7 @@ export default function AuthNavigator() {
 
       <Stack.Screen
         name="ForgotPassword"
-        children={() => (
-          <Placeholder title="Forgot Password" />
-        )}
+        component={ForgotPasswordScreen}
       />
 
       <Stack.Screen
