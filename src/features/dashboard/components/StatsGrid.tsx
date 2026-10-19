@@ -1,5 +1,4 @@
 import { View } from "react-native";
-
 import StatCard from "./StatCard";
 
 interface StatsGridProps {
@@ -11,36 +10,34 @@ interface StatsGridProps {
   };
 }
 
-export default function StatsGrid({
-  data,
-}: StatsGridProps) {
+export default function StatsGrid({ data }: StatsGridProps) {
   return (
-    <View className="gap-3">
-      <View className="flex-row gap-3">
+    <View className="gap-5">
+      <View className="flex-row gap-5">
         <StatCard
           title="Study Material"
           value={data?.contentCount ?? 0}
-          icon="📚"
+          icon="book"
         />
 
         <StatCard
           title="Study Groups"
           value={data?.groupStudyCount ?? 0}
-          icon="👥"
+          icon="users"
         />
       </View>
 
-      <View className="flex-row gap-3">
+      <View className="flex-row gap-5">
         <StatCard
           title="Live Classes"
           value={data?.liveClassCount ?? 0}
-          icon="🎥"
+          icon="video"
         />
 
         <StatCard
           title="Subjects"
           value={data?.subjectCount ?? 0}
-          icon="📖"
+          icon="layers"
         />
       </View>
     </View>

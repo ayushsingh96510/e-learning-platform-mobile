@@ -1,29 +1,79 @@
 import { Text, View } from "react-native";
+import {
+  BookOpen,
+  UsersRound,
+  Video,
+  Layers3,
+} from "lucide-react-native";
 
 interface StatCardProps {
   title: string;
   value: number | string;
-  icon: string;
+  icon: "book" | "users" | "video" | "layers";
 }
+
+const iconConfig = {
+  book: {
+    Component: BookOpen,
+    color: "#2563FF",
+    background: "#EFF6FF",
+    border: "#BBD5FF",
+  },
+  users: {
+    Component: UsersRound,
+    color: "#A020F0",
+    background: "#FAF0FF",
+    border: "#E9C8FF",
+  },
+  video: {
+    Component: Video,
+    color: "#FF4545",
+    background: "#FFF0F0",
+    border: "#FFCACA",
+  },
+  layers: {
+    Component: Layers3,
+    color: "#F08C00",
+    background: "#FFF8E8",
+    border: "#FFDB80",
+  },
+};
 
 export default function StatCard({
   title,
   value,
   icon,
 }: StatCardProps) {
+  const config = iconConfig[icon];
+  const Icon = config.Component;
+
   return (
-    <View className="flex-1 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-      <View className="mb-4 h-10 w-10 items-center justify-center rounded-xl bg-primary-50">
-        <Text className="text-lg">{icon}</Text>
+    <View
+      className="flex-1 flex-row items-center rounded-xl border bg-white px-4 py-3"
+      style={{ borderColor: config.border }}
+    >
+      <View
+        className="h-9 w-9 items-center justify-center rounded-xl"
+        style={{ backgroundColor: config.background }}
+      >
+        <Icon size={19} color={config.color} strokeWidth={2} />
       </View>
 
-      <Text className="text-2xl font-bold text-gray-900">
-        {value}
-      </Text>
+      <View className="ml-3 flex-1">
+        <Text
+          className="text-sm text-gray-500"
+          numberOfLines={1}
+        >
+          {title}
+        </Text>
 
-      <Text className="mt-1 text-sm text-gray-500">
-        {title}
-      </Text>
+        <Text
+          className="text-xl font-bold leading-6 text-gray-950"
+          numberOfLines={1}
+        >
+          {value}
+        </Text>
+      </View>
     </View>
   );
 }
