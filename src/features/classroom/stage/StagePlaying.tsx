@@ -83,7 +83,7 @@ export default function StagePlaying() {
               contentContainerStyle={{ paddingHorizontal: 8, gap: 8 }}
             >
               {realSeats.map((seat) => (
-                <View key={seat.identity} style={{ width: 112, aspectRatio: 16 / 9 }}>
+                <View key={seat.identity} style={{ width: 160, aspectRatio: 16 / 9 }}>
                   {renderSeat(seat, true)}
                 </View>
               ))}
