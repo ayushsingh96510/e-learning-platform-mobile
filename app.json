@@ -18,7 +18,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.elearningmobile"
+      "package": "com.msspl.learning"
     },
     "web": {
       "output": "single",
@@ -37,7 +37,7 @@
       "expo-video",
       "expo-audio",
       "expo-image",
-      "expo-sharing",
+      "expo-sharing"
     ],
     "experiments": {
       "reactCompiler": true
