@@ -1,6 +1,6 @@
 import {
   ActivityIndicator,
-//   Alert,
+  Alert,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -11,27 +11,22 @@ import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import LiveClassCard from "../components/LiveClassCard";
+import LiveClassJoinSheet from "../components/LiveClassJoinSheet";
 import { useLiveSessions } from "../hooks/useLiveSessions";
-import type { LiveClassTab } from "../types";
+import type { LiveClassTab, LiveSession } from "../types";
 
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
 
+import { requestMediaPermissions } from "@/features/classroom/permissions";
+
+import { useAuth } from "@/features/auth/AuthContext";
 
 const tabs: { label: string; value: LiveClassTab }[] = [
-  {
-    label: "Live",
-    value: "LIVE",
-  },
-  {
-    label: "Upcoming",
-    value: "UPCOMING",
-  },
-  {
-    label: "Completed",
-    value: "COMPLETED",
-  },
+  { label: "Live", value: "LIVE" },
+  { label: "Upcoming", value: "UPCOMING" },
+  { label: "Completed", value: "COMPLETED" },
 ];
 
 const SECTION: Record<LiveClassTab, { title: string; empty: string }> = {
@@ -49,7 +44,6 @@ const SECTION: Record<LiveClassTab, { title: string; empty: string }> = {
   },
 };
 
-// Formats a Date as YYYY-MM-DD in the device's local timezone.
 const toYmd = (d: Date) => {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -57,7 +51,6 @@ const toYmd = (d: Date) => {
   return `${y}-${m}-${day}`;
 };
 
-// Parses YYYY-MM-DD into a local Date (avoids UTC shifting).
 const fromYmd = (s: string) => {
   const [y, m, d] = s.split("-").map(Number);
   return new Date(y, m - 1, d);
@@ -65,15 +58,19 @@ const fromYmd = (s: string) => {
 
 export default function LiveClassesScreen() {
   const navigation =
-  useNavigation<NativeStackNavigationProp<StudentStackParamList>>();
-  
-  const [activeTab, setActiveTab] =
-    useState<LiveClassTab>("LIVE");
+    useNavigation<NativeStackNavigationProp<StudentStackParamList>>();
 
-  // Upcoming filter. Defaults to today, same as the web app.
+  const { user } = useAuth();
+  const userName = user?.personalInfo?.name ?? null; 
+
+  const [activeTab, setActiveTab] = useState<LiveClassTab>("LIVE");
   const [startDate, setStartDate] = useState<string>(toYmd(new Date()));
   const [endDate, setEndDate] = useState<string>("");
   const [picker, setPicker] = useState<"start" | "end" | null>(null);
+
+  const [selectedClass, setSelectedClass] = useState<LiveSession | null>(null);
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [joining, setJoining] = useState(false);
 
   const {
     items,
@@ -87,9 +84,57 @@ export default function LiveClassesScreen() {
     reload,
   } = useLiveSessions(activeTab, startDate, endDate);
 
-    const handleJoin = (roomName: string) => {
-        navigation.navigate("ClassRoom", { roomName });
-    };
+  const handleJoin = (item: LiveSession) => {
+    if (!item.roomName) return;
+    setSelectedClass(item);
+    setSheetVisible(true);
+  };
+
+  const confirmJoin = async () => {
+    if (!selectedClass?.roomName) return;
+
+    try {
+      setJoining(true);
+
+      const result = await requestMediaPermissions();
+      const denied = !result.camera || !result.microphone;
+
+      if (denied) {
+        Alert.alert(
+          "Camera and microphone access",
+          result.blocked
+            ? "Permissions are blocked. Your teacher may not be able to turn on your camera or microphone. You can enable them later from device settings."
+            : "Camera or microphone permission was denied. You can still join the class, but the teacher may not be able to turn them on.",
+          [
+            {
+              text: "Join anyway",
+              onPress: () => {
+                navigation.navigate("ClassRoom", {
+                  roomName: selectedClass.roomName!,
+                });
+                closeSheet();
+              },
+            },
+            { text: "Cancel", style: "cancel" },
+          ]
+        );
+        return;
+      }
+
+      navigation.navigate("ClassRoom", { roomName: selectedClass.roomName });
+      closeSheet();
+    } catch (e) {
+      console.warn("[join] failed:", e);
+      Alert.alert("Join failed", "Unable to join the class. Please try again.");
+    } finally {
+      setJoining(false);
+    }
+  };
+
+  const closeSheet = () => {
+    setSheetVisible(false);
+    setSelectedClass(null);
+  };
 
   const pickerValue =
     picker === "start" && startDate
@@ -113,7 +158,6 @@ export default function LiveClassesScreen() {
           <Text className="text-2xl font-bold text-gray-900">
             Live Classes
           </Text>
-
           <Text className="mt-1 text-sm text-gray-500">
             Join your live learning sessions
           </Text>
@@ -123,7 +167,6 @@ export default function LiveClassesScreen() {
         <View className="mb-6 flex-row rounded-xl bg-gray-200 p-1">
           {tabs.map((tab) => {
             const active = activeTab === tab.value;
-
             return (
               <Pressable
                 key={tab.value}
@@ -134,9 +177,7 @@ export default function LiveClassesScreen() {
               >
                 <Text
                   className={`text-sm font-semibold ${
-                    active
-                      ? "text-primary-600"
-                      : "text-gray-500"
+                    active ? "text-primary-600" : "text-gray-500"
                   }`}
                 >
                   {tab.label}
@@ -184,12 +225,10 @@ export default function LiveClassesScreen() {
           </View>
         )}
 
-        {/* Section title */}
         <Text className="mb-3 text-lg font-bold text-gray-900">
           {SECTION[activeTab].title}
         </Text>
 
-        {/* Content */}
         {loading ? (
           <View className="items-center rounded-2xl border border-gray-100 bg-white p-6">
             <ActivityIndicator />
@@ -197,7 +236,6 @@ export default function LiveClassesScreen() {
         ) : error ? (
           <View className="items-center rounded-2xl border border-gray-100 bg-white p-6">
             <Text className="text-center text-sm text-red-600">{error}</Text>
-
             <Pressable
               onPress={reload}
               className="mt-4 rounded-xl bg-primary-600 px-6 py-3"
@@ -218,7 +256,7 @@ export default function LiveClassesScreen() {
                 key={item.id}
                 item={item}
                 variant={activeTab}
-                onJoin={handleJoin}
+                onJoin={() => handleJoin(item)}
               />
             ))}
 
@@ -254,6 +292,15 @@ export default function LiveClassesScreen() {
           }}
         />
       )}
+
+      <LiveClassJoinSheet
+        visible={sheetVisible}
+        item={selectedClass}
+        onClose={closeSheet}
+        onJoin={confirmJoin}
+        joining={joining}
+        userName={userName}
+      />
     </View>
   );
 }
