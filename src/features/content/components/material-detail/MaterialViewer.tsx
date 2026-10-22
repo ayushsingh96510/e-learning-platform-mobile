@@ -5,6 +5,8 @@ import { Image } from "expo-image";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { WebView } from "react-native-webview";
+import { useState } from "react";
+import Slider from "@react-native-community/slider";
 
 import { type MaterialType } from "../../constants/material";
 
@@ -39,51 +41,206 @@ function VideoMaterialPlayer({ uri }: { uri: string }) {
   );
 }
 
+const PLAYBACK_SPEEDS = [0.75, 1, 1.25, 1.5, 2];
+
+function formatTime(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) {
+    return "0:00";
+  }
+
+  const totalSeconds = Math.floor(seconds);
+  const minutes = Math.floor(totalSeconds / 60);
+  const remainingSeconds = totalSeconds % 60;
+
+  return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+}
+
 function AudioMaterialPlayer({ uri }: { uri: string }) {
-  const player = useAudioPlayer(uri);
+  const player = useAudioPlayer(uri, { updateInterval: 250 });
   const status = useAudioPlayerStatus(player);
 
+  const [isSeeking, setIsSeeking] = useState(false);
+  const [seekPosition, setSeekPosition] = useState(0);
+
+  const duration = Number.isFinite(status.duration)
+    ? Math.max(0, status.duration)
+    : 0;
+
+  const currentTime = Math.min(
+    duration,
+    Math.max(0, status.currentTime || 0),
+  );
+
+  const progress = isSeeking ? seekPosition : currentTime;
+  const canSeek = status.isLoaded && duration > 0;
+
+  const handleSeek = async (value: number) => {
+    setSeekPosition(value);
+    await player.seekTo(value);
+    setIsSeeking(false);
+  };
+
+  const handleSpeedChange = (speed: number) => {
+    player.setPlaybackRate(speed);
+  };
+
   return (
-    <View className="rounded-xl bg-blue-50 p-5">
-      <View className="mb-4 flex-row items-center">
-        <View className="h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-          <Ionicons name="musical-notes" size={25} color="#2563EB" />
+    <View className="rounded-2xl border border-blue-100 bg-white p-5">
+      {/* Audio heading */}
+      <View className="mb-5 flex-row items-center">
+        <View className="h-14 w-14 items-center justify-center rounded-2xl bg-blue-50">
+          <Ionicons
+            name="musical-notes"
+            size={27}
+            color="#2563EB"
+          />
         </View>
 
         <View className="ml-3 flex-1">
-          <Text className="font-semibold text-gray-900">
+          <Text className="text-base font-semibold text-gray-900">
             Audio material
           </Text>
+
           <Text className="mt-1 text-xs text-gray-500">
-            Listen to the uploaded audio
+            Listen and learn at your own pace
+          </Text>
+        </View>
+
+        {status.isBuffering && (
+          <Ionicons name="sync-outline" size={20} color="#2563EB" />
+        )}
+      </View>
+
+      {/* Playback progress */}
+      <View>
+        <Slider
+          style={{ width: "100%", height: 36 }}
+          minimumValue={0}
+          maximumValue={duration || 1}
+          value={Math.min(progress, duration || 1)}
+          minimumTrackTintColor="#2563EB"
+          maximumTrackTintColor="#DBEAFE"
+          thumbTintColor="#2563EB"
+          disabled={!canSeek}
+          onSlidingStart={(value) => {
+            setSeekPosition(value);
+            setIsSeeking(true);
+          }}
+          onValueChange={(value) => {
+            setSeekPosition(value);
+          }}
+          onSlidingComplete={handleSeek}
+          accessibilityLabel="Audio progress"
+        />
+
+        <View className="-mt-1 flex-row items-center justify-between">
+          <Text className="text-xs font-medium text-gray-600">
+            {formatTime(progress)}
+          </Text>
+
+          <Text className="text-xs font-medium text-gray-500">
+            {formatTime(duration)}
           </Text>
         </View>
       </View>
 
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => {
-          if (status.playing) {
-            player.pause();
-          } else {
-            player.play();
-          }
-        }}
-        accessibilityRole="button"
-        accessibilityLabel={
-          status.playing ? "Pause audio" : "Play audio"
-        }
-        className="flex-row items-center justify-center rounded-xl bg-blue-600 px-4 py-3"
-      >
-        <Ionicons
-          name={status.playing ? "pause" : "play"}
-          size={20}
-          color="#FFFFFF"
-        />
-        <Text className="ml-2 font-semibold text-white">
-          {status.playing ? "Pause Audio" : "Play Audio"}
+      {/* Main playback controls */}
+      <View className="mt-5 flex-row items-center justify-center">
+        <TouchableOpacity
+          activeOpacity={0.7}
+          disabled={!status.isLoaded}
+          onPress={() => {
+            void player.seekTo(Math.max(0, currentTime - 10));
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Rewind 10 seconds"
+          className="h-12 w-12 items-center justify-center"
+        >
+          <Ionicons
+            name="play-back"
+            size={24}
+            color={status.isLoaded ? "#374151" : "#9CA3AF"}
+          />
+          <Text className="text-[10px] text-gray-500">10s</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => {
+            if (status.playing) {
+              player.pause();
+            } else {
+              if (duration > 0 && currentTime >= duration) {
+                void player.seekTo(0);
+              }
+
+              player.play();
+            }
+          }}
+          accessibilityRole="button"
+          accessibilityLabel={status.playing ? "Pause audio" : "Play audio"}
+          className="mx-5 h-14 w-14 items-center justify-center rounded-full bg-blue-600"
+        >
+          <Ionicons
+            name={status.playing ? "pause" : "play"}
+            size={27}
+            color="#FFFFFF"
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity={0.7}
+          disabled={!canSeek}
+          onPress={() => {
+            void player.seekTo(Math.min(duration, currentTime + 10));
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Forward 10 seconds"
+          className="h-12 w-12 items-center justify-center"
+        >
+          <Ionicons
+            name="play-forward"
+            size={24}
+            color={canSeek ? "#374151" : "#9CA3AF"}
+          />
+          <Text className="text-[10px] text-gray-500">10s</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Playback speed */}
+      <View className="mt-5 border-t border-gray-100 pt-4">
+        <Text className="mb-3 text-xs font-semibold text-gray-500">
+          PLAYBACK SPEED
         </Text>
-      </TouchableOpacity>
+
+        <View className="flex-row flex-wrap gap-2">
+          {PLAYBACK_SPEEDS.map((speed) => {
+            const selected = status.playbackRate === speed;
+
+            return (
+              <TouchableOpacity
+                key={speed}
+                activeOpacity={0.75}
+                onPress={() => handleSpeedChange(speed)}
+                accessibilityRole="button"
+                accessibilityLabel={`Playback speed ${speed} times`}
+                accessibilityState={{ selected }}
+                className={`min-w-[52px] items-center rounded-lg px-3 py-2 ${selected
+                    ? "bg-blue-600"
+                    : "border border-gray-200 bg-white"
+                  }`}
+              >
+                <Text
+                  className={`text-xs font-semibold ${selected ? "text-white" : "text-gray-600"
+                    }`}
+                >
+                  {speed}x
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
     </View>
   );
 }
