@@ -62,6 +62,7 @@ export default function MaterialDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<MaterialTab>("overview");
+  const [isPdfInteracting, setIsPdfInteracting] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -179,6 +180,8 @@ export default function MaterialDetailScreen() {
       showsVerticalScrollIndicator={false}
       stickyHeaderIndices={[1]}
       keyboardShouldPersistTaps="handled"
+      nestedScrollEnabled
+      scrollEnabled={!isPdfInteracting}
     >
       {/* 0: Header */}
       <MaterialHeader material={material} />
@@ -186,7 +189,7 @@ export default function MaterialDetailScreen() {
       {/* 1: Both Viewer and Tabs sticky together */}
       <View className="bg-gray-50">
         <View className="px-5 pt-5">
-          <MaterialViewer material={material} />
+          <MaterialViewer material={material} onPdfTouchChange={setIsPdfInteracting} />
         </View>
 
         <View className="px-5 pt-3 pb-2 bg-gray-50">

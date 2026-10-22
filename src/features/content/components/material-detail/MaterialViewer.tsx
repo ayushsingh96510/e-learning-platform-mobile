@@ -21,6 +21,7 @@ interface ViewerMaterial {
 
 interface MaterialViewerProps {
   material: ViewerMaterial;
+  onPdfTouchChange?: (isInteracting: boolean) => void;
 }
 
 function VideoMaterialPlayer({ uri }: { uri: string }) {
@@ -98,7 +99,45 @@ function ViewerMessage({ message }: { message: string }) {
   );
 }
 
-export default function MaterialViewer({ material }: MaterialViewerProps) {
+function PdfMaterialViewer({
+  uri,
+  onTouchChange,
+}: {
+  uri: string;
+  onTouchChange?: (isInteracting: boolean) => void;
+}) {
+  const viewerUrl = `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(uri)}`;
+
+  return (
+    <View
+      className="overflow-hidden rounded-xl border border-gray-200 bg-white"
+      style={{ height: 400 }}
+    >
+      <WebView
+        source={{ uri: viewerUrl }}
+        style={{ flex: 1, backgroundColor: "#FFFFFF" }}
+        javaScriptEnabled
+        domStorageEnabled
+        startInLoadingState
+        scrollEnabled
+        nestedScrollEnabled
+        onTouchStart={() => onTouchChange?.(true)}
+        onTouchEnd={() => onTouchChange?.(false)}
+        onTouchCancel={() => onTouchChange?.(false)}
+        renderLoading={() => (
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator size="large" color="#2563EB" />
+            <Text className="mt-2 text-sm text-gray-500">
+              Loading PDF...
+            </Text>
+          </View>
+        )}
+      />
+    </View>
+  );
+}
+
+export default function MaterialViewer({ material, onPdfTouchChange, }: MaterialViewerProps) {
   const uri = material.objectKey;
   const mimeType = material.file?.mimeType?.toLowerCase() ?? "";
   const fileName = material.file?.originalFileName?.toLowerCase() ?? "";
@@ -160,30 +199,10 @@ export default function MaterialViewer({ material }: MaterialViewerProps) {
 
     case "PDF":
       return (
-        <View
-          className="overflow-hidden rounded-xl border border-gray-200 bg-white"
-          style={{ height: 520 }}
-        >
-          <WebView
-            source={{
-              uri: `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(
-                uri,
-              )}`,
-            }}
-            style={{ flex: 1 }}
-            javaScriptEnabled
-            domStorageEnabled
-            startInLoadingState
-            renderLoading={() => (
-              <View className="flex-1 items-center justify-center">
-                <ActivityIndicator size="large" color="#2563EB" />
-                <Text className="mt-2 text-sm text-gray-500">
-                  Loading PDF...
-                </Text>
-              </View>
-            )}
-          />
-        </View>
+        <PdfMaterialViewer
+          uri={uri}
+          onTouchChange={onPdfTouchChange}
+        />
       );
 
     case "DOCUMENT":
