@@ -1,16 +1,13 @@
-
 import { useState } from "react";
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
-  ScrollView,
   Text,
   TextInput,
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import {
   AlertCircle,
   ArrowLeft,
@@ -97,16 +94,14 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 bg-gray-50"
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="flex-grow justify-center"
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+    <KeyboardAwareScrollView
+    style={{ flex: 1, backgroundColor: "#F9FAFB" }} // gray-50
+    contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+    bottomOffset={8} // extra space kept between the focused input and the keyboard
+    keyboardShouldPersistTaps="handled"
+    keyboardDismissMode="on-drag"
+    showsVerticalScrollIndicator={false}
+  >
         <View className="w-full max-w-md self-center px-6 py-8">
           {/* Back button */}
           <Pressable
@@ -320,7 +315,6 @@ export default function ForgotPasswordScreen() {
             link with anyone.
           </Text>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }

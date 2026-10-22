@@ -2,15 +2,14 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   ImageBackground,
-  KeyboardAvoidingView,
   Linking,
-  Platform,
   Pressable,
-  ScrollView,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { useKeyboardState } from "react-native-keyboard-controller";
 import { useNavigation } from "@react-navigation/native";
 import { Check, Eye, EyeOff, Lock, Mail, ShieldCheck } from "lucide-react-native";
 
@@ -39,6 +38,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState("");
+  const isKeyboardVisible = useKeyboardState((state) => state.isVisible);
 
   const validate = (): FieldErrors => {
     const errors: FieldErrors = {};
@@ -90,17 +90,16 @@ export default function LoginScreen() {
     }`;
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 bg-white"
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    <KeyboardAwareScrollView
+    style={{ flex: 1, backgroundColor: "#FFFFFF" }}
+    contentContainerStyle={{ flexGrow: 1 }}
+    bottomOffset={24} // extra space kept between the focused input and the keyboard
+    keyboardShouldPersistTaps="handled"
+    keyboardDismissMode="on-drag"
+    showsVerticalScrollIndicator={false}
     >
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="flex-grow"
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
         {/* Hero (web's left panel) */}
+        {!isKeyboardVisible ? (
         <ImageBackground
           source={{ uri: HERO_IMAGE }}
           resizeMode="cover"
@@ -122,7 +121,7 @@ export default function LoginScreen() {
               technology.
             </Text>
           </View>
-        </ImageBackground>
+        </ImageBackground>) : null}
 
         {/* Form */}
         <View className="w-full max-w-md self-center px-6 pb-10 pt-8">
@@ -299,7 +298,6 @@ export default function LoginScreen() {
             </Pressable>
           </View>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
