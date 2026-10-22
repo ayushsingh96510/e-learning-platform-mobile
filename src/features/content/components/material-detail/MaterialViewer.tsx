@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View, Modal, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Image } from "expo-image";
@@ -294,6 +294,135 @@ function PdfMaterialViewer({
   );
 }
 
+
+function ImageMaterialViewer({
+  uri,
+  title,
+}: {
+  uri: string;
+  title: string;
+}) {
+  const [fullScreen, setFullScreen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const handleRetry = () => {
+    setError(false);
+    setLoading(true);
+  };
+
+  return (
+    <>
+      <View className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+        <Pressable
+          onPress={() => !error && setFullScreen(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Open image in full screen"
+        >
+          <View
+            className="items-center justify-center bg-gray-50"
+            style={{ height: 280 }}
+          >
+            {!error && (
+              <Image
+                source={{ uri }}
+                contentFit="contain"
+                style={{ width: "100%", height: "100%" }}
+                onLoadStart={() => setLoading(true)}
+                onLoad={() => {
+                  setLoading(false);
+                  setError(false);
+                }}
+                onError={() => {
+                  setLoading(false);
+                  setError(true);
+                }}
+                accessibilityLabel={title}
+              />
+            )}
+
+            {loading && !error && (
+              <View className="absolute inset-0 items-center justify-center">
+                <ActivityIndicator size="large" color="#2563EB" />
+                <Text className="mt-2 text-xs text-gray-500">
+                  Loading image...
+                </Text>
+              </View>
+            )}
+
+            {error && (
+              <View className="items-center px-5">
+                <Ionicons
+                  name="image-outline"
+                  size={32}
+                  color="#9CA3AF"
+                />
+                <Text className="mt-2 text-sm text-gray-600">
+                  Unable to load image
+                </Text>
+                <TouchableOpacity
+                  onPress={handleRetry}
+                  className="mt-3 rounded-lg bg-blue-600 px-4 py-2"
+                >
+                  <Text className="text-sm font-semibold text-white">
+                    Retry
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </Pressable>
+
+        {!error && (
+          <View className="flex-row items-center justify-center border-t border-gray-100 py-2">
+            <Ionicons name="expand-outline" size={16} color="#6B7280" />
+            <Text className="ml-2 text-xs text-gray-500">
+              Tap to view full screen
+            </Text>
+          </View>
+        )}
+      </View>
+
+      <Modal
+        visible={fullScreen}
+        animationType="fade"
+        presentationStyle="fullScreen"
+        onRequestClose={() => setFullScreen(false)}
+      >
+        <View className="flex-1 bg-black">
+          <View className="z-10 flex-row items-center justify-between px-4 py-12">
+            <Text
+              className="mr-4 flex-1 text-sm font-medium text-white"
+              numberOfLines={1}
+            >
+              {title}
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => setFullScreen(false)}
+              accessibilityRole="button"
+              accessibilityLabel="Close full-screen image"
+              className="h-10 w-10 items-center justify-center rounded-full bg-white/15"
+            >
+              <Ionicons name="close" size={25} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+
+          <View className="flex-1">
+            <Image
+              source={{ uri }}
+              contentFit="contain"
+              style={{ width: "100%", height: "100%" }}
+              accessibilityLabel={title}
+            />
+          </View>
+        </View>
+      </Modal>
+    </>
+  );
+}
+
+
 export default function MaterialViewer({ material, onPdfTouchChange, }: MaterialViewerProps) {
   const uri = material.objectKey;
   const mimeType = material.file?.mimeType?.toLowerCase() ?? "";
@@ -344,14 +473,10 @@ export default function MaterialViewer({ material, onPdfTouchChange, }: Material
 
     case "IMAGE":
       return (
-        <View className="overflow-hidden rounded-xl bg-gray-100 p-2">
-          <Image
-            source={{ uri }}
-            contentFit="contain"
-            style={{ width: "100%", height: 280 }}
-            accessibilityLabel={material.title}
-          />
-        </View>
+        <ImageMaterialViewer
+          uri={uri}
+          title={material.title}
+        />
       );
 
     case "PDF":
