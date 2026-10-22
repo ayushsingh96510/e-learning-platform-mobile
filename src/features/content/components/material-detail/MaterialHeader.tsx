@@ -1,9 +1,11 @@
-import {  Modal, Pressable, Text, View } from "react-native";
+import {  Alert, Modal, Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { resolveMaterialType } from "../../utils/material";
 import LectureNotesModal from "./LectureNotesModal";
+import * as Sharing from "expo-sharing";
+import { ensureMaterialDownloaded, saveMaterialToPublicDownloads, } from "../../utils/materialFile";
 
 import {
   TYPE_LABELS,
@@ -13,8 +15,10 @@ import {
 interface HeaderMaterial {
   id: string;
   title: string;
+  objectKey: string;
   materialType?: MaterialType;
   file?: {
+    originalFileName?: string;
     mimeType?: string;
   };
   subject: { id: string; name: string } | null;
@@ -88,6 +92,80 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
   const aiCount = getAiReadyCount(material.isAiReady);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notesVisible, setNotesVisible] = useState(false);
+  const [fileAction, setFileAction] = useState<"download" | "share" | null>(null);
+
+
+  const handleDownloadMaterial = async () => {
+    setFileAction("download");
+
+    try {
+      const result = await saveMaterialToPublicDownloads(material);
+
+      if (result === "cancelled") {
+        Alert.alert(
+          "Download cancelled",
+          "Choose a folder and grant access to save the material.",
+        );
+        return;
+      }
+
+      if (result === "unsupported") {
+        await ensureMaterialDownloaded(material);
+
+        Alert.alert(
+          "Material downloaded",
+          "The material is saved in the app's documents storage. Public Downloads folder saving is supported here only on Android.",
+        );
+        return;
+      }
+
+      Alert.alert(
+        "Download complete",
+        // "Your material has been saved to the folder you selected. Open the Downloads folder to find it if you selected Downloads.",
+        "Your material has been saved to the folder you selected.",
+      );
+    } catch (error) {
+      console.error("Material download failed:", error);
+
+      Alert.alert(
+        "Download failed",
+        "Unable to save this material. Please try again.",
+      );
+    } finally {
+      setFileAction(null);
+    }
+  };
+
+  const handleShareMaterial = async () => {
+    setFileAction("share");
+
+    try {
+      const fileUri = await ensureMaterialDownloaded(material);
+      const available = await Sharing.isAvailableAsync();
+
+      if (!available) {
+        Alert.alert(
+          "Sharing unavailable",
+          "File downloaded, but sharing is not available on this device.",
+        );
+        return;
+      }
+
+      await Sharing.shareAsync(fileUri, {
+        mimeType: material.file?.mimeType,
+        dialogTitle: material.title,
+      });
+    } catch (error) {
+      console.error("Material sharing failed:", error);
+
+      Alert.alert(
+        "Unable to share",
+        "Could not prepare this material for sharing. Please try again.",
+      );
+    } finally {
+      setFileAction(null);
+    }
+  };
 
   return (
     <View className="border-b border-gray-100 bg-white px-5 pb-6 pt-7">
@@ -184,7 +262,7 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
               <Pressable
                 onPress={() => {
                   setMenuVisible(false);
-                  // TODO: Connect material download functionality
+                  void handleDownloadMaterial();
                 }}
                 className="flex-row items-center rounded-xl px-3 py-3 active:bg-gray-50"
               >
@@ -206,7 +284,7 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
               <Pressable
                 onPress={() => {
                   setMenuVisible(false);
-                  // TODO: Connect native share functionality
+                  void handleShareMaterial();
                 }}
                 className="flex-row items-center rounded-xl px-3 py-3 active:bg-gray-50"
               >
