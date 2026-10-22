@@ -9,6 +9,7 @@ import type {
   MaterialsResult,
   MaterialSummary,
   MaterialTranscript,
+  ExportNotesPayload
 } from "../types/content.types";
 
 interface MaterialsData {
@@ -65,4 +66,22 @@ export async function getMaterialTranscript(
   );
 
   return response.data.data;
+}
+
+/**
+ * Requests generated lecture notes from the existing backend.
+ */
+export async function exportMaterialNotes(
+  materialId: string,
+  payload: ExportNotesPayload,
+): Promise<ArrayBuffer> {
+  const response = await api.post<ArrayBuffer>(
+    `/materials/${encodeURIComponent(materialId)}/notes/export`,
+    payload,
+    {
+      responseType: "arraybuffer",
+    },
+  );
+
+  return response.data;
 }

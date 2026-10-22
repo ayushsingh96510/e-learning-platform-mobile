@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { resolveMaterialType } from "../../utils/material";
+import LectureNotesModal from "./LectureNotesModal";
 
 import {
   TYPE_LABELS,
@@ -10,6 +11,7 @@ import {
 } from "../../constants/material";
 
 interface HeaderMaterial {
+  id: string;
   title: string;
   materialType?: MaterialType;
   file?: {
@@ -85,6 +87,7 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
   const theme = TYPE_THEMES[materialType] ?? TYPE_THEMES.DOCUMENT;
   const aiCount = getAiReadyCount(material.isAiReady);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [notesVisible, setNotesVisible] = useState(false);
 
   return (
     <View className="border-b border-gray-100 bg-white px-5 pb-6 pt-7">
@@ -158,7 +161,7 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
               <Pressable
                 onPress={() => {
                   setMenuVisible(false);
-                  // TODO: Open lecture notes
+                  setNotesVisible(true);
                 }}
                 className="flex-row items-center rounded-xl px-3 py-3 active:bg-gray-50"
               >
@@ -176,26 +179,6 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
 
               <View className="my-1 h-px bg-gray-100" />
 
-            {/* hided for now  */}
-              {/* <Pressable
-                onPress={() => {
-                  setMenuVisible(false);
-                  // TODO: Open AI Tutor
-                }}
-                className="flex-row items-center rounded-xl px-3 py-3 active:bg-gray-50">
-                <Ionicons
-                  name="sparkles-outline"
-                  size={19}
-                  color="#4F46E5"
-                />
-                <Text className="ml-3 text-sm font-medium text-gray-800">
-                  Ask AI Tutor
-                </Text>
-                <View className="flex-1" />
-                <Ionicons name="chevron-forward" size={16} color="#9CA3AF" />
-              </Pressable> */}
-
-              {/* <View className="my-1 h-px bg-gray-100" /> */}
 
               {/* Download Material */}
               <Pressable
@@ -269,6 +252,12 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
           </Text>
         </View>
       </View>
+      <LectureNotesModal
+        visible={notesVisible}
+        materialId={material.id}
+        materialTitle={material.title}
+        onClose={() => setNotesVisible(false)}
+      />
     </View>
   );
 }

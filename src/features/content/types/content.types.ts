@@ -125,3 +125,12 @@ export interface AskTutorRequest {
   message: string;
   materialId: string;
 }
+
+export type NotesSection = "TRANSCRIPT" | "SUMMARY" | "KEY_POINTS";
+
+export type NotesFormat = "PDF" | "DOCX" | "TXT";
+
+export interface ExportNotesPayload {
+  sections: NotesSection[];
+  format: NotesFormat;
+}
