@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import {
-  KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
   View,
 } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 interface Props {
   visible: boolean;
@@ -29,14 +29,14 @@ export default function BottomSheet({
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView
-        className="flex-1 justify-end bg-black/40"
+        style={{ flex: 1, justifyContent: "flex-end" }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Pressable className="flex-1" onPress={onClose} />
+        <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)" }} onPress={onClose} />
 
         <View
           className="rounded-t-3xl bg-gray-50"
-          style={{ height: `${heightPercent}%` }}
+          style={{ height: `${heightPercent}%`, overflow: "hidden", }}
         >
           {children}
         </View>
