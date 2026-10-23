@@ -236,26 +236,30 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
             onPress={() => setMenuVisible(false)}
           >
             <View className="absolute right-5 top-24 w-56 rounded-2xl border border-gray-100 bg-white p-2 shadow-lg">
-              <Pressable
-                onPress={() => {
-                  setMenuVisible(false);
-                  setNotesVisible(true);
-                }}
-                className="flex-row items-center rounded-xl px-3 py-3 active:bg-gray-50"
-              >
-                <Ionicons
-                  name="document-text-outline"
-                  size={19}
-                  color="#4B5563"
-                />
-                <Text className="ml-3 text-sm font-medium text-gray-800">
-                  Lecture Notes
-                </Text>
-                <View className="flex-1" />
-                <Ionicons name="chevron-forward" size={16} color="#9CA3AF" />
-              </Pressable>
+              {materialType === "VIDEO" && aiCount > 0 && (
+                <>
+                  <Pressable
+                    onPress={() => {
+                      setMenuVisible(false);
+                      setNotesVisible(true);
+                    }}
+                    className="flex-row items-center rounded-xl px-3 py-3 active:bg-gray-50"
+                  >
+                    <Ionicons
+                      name="document-text-outline"
+                      size={19}
+                      color="#4B5563"
+                    />
+                    <Text className="ml-3 text-sm font-medium text-gray-800">
+                      Lecture Notes
+                    </Text>
+                    <View className="flex-1" />
+                    <Ionicons name="chevron-forward" size={16} color="#9CA3AF" />
+                  </Pressable>
 
-              <View className="my-1 h-px bg-gray-100" />
+                  <View className="my-1 h-px bg-gray-100" />
+                </>
+              )}
 
 
               {/* Download Material */}
