@@ -1,5 +1,4 @@
 import {
-  KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
@@ -7,8 +6,11 @@ import {
   Text,
   TextInput,
   View,
+  Keyboard
 } from "react-native";
-import { useRef, useState } from "react";
+
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { useEffect, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { ChatMessage } from "../types";
 
@@ -45,11 +47,21 @@ export default function ChatSheet({
     setText("");
   };
 
+  useEffect(() => {
+    const subscription = Keyboard.addListener("keyboardDidShow", () => {
+      setTimeout(() => {
+        scrollRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <KeyboardAvoidingView
-        className="flex-1 bg-gray-50"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         {/* Header */}
         <View
@@ -103,16 +115,14 @@ export default function ChatSheet({
                   </View>
 
                   <View
-                    className={`max-w-[80%] rounded-2xl px-3 py-2 ${
-                      mine
+                    className={`max-w-[80%] rounded-2xl px-3 py-2 ${mine
                         ? "rounded-tr-sm bg-primary-600"
                         : "rounded-tl-sm border border-gray-100 bg-white"
-                    }`}
+                      }`}
                   >
                     <Text
-                      className={`text-sm ${
-                        mine ? "text-white" : "text-gray-900"
-                      }`}
+                      className={`text-sm ${mine ? "text-white" : "text-gray-900"
+                        }`}
                     >
                       {msg.message}
                     </Text>
