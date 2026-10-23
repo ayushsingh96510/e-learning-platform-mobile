@@ -272,7 +272,7 @@ export default function AskAITutorTab({
   }
 
   return (
-    <View className="flex-1 overflow-hidden rounded-2xl border border-gray-200 bg-white">
+    <View className="flex-1 min-h-0 overflow-hidden rounded-2xl border border-gray-200 bg-white">
       <ScrollView
         ref={listRef}
         style={{ height: 400, flexGrow: 0 }}
@@ -368,38 +368,36 @@ export default function AskAITutorTab({
         )}
       </ScrollView>
 
-      <View className="border-t border-gray-100 p-3">
-        <View className="flex-row items-end rounded-xl border border-gray-200 bg-gray-50 px-3">
-          <TextInput
-            value={input}
-            onChangeText={setInput}
-            placeholder="Ask your tutor..."
-            placeholderTextColor="#9CA3AF"
-            multiline
-            maxLength={2000}
-            editable={!sending}
-            className="max-h-28 min-h-11 flex-1 py-3 text-sm text-gray-900"
-            accessibilityLabel="Ask AI Tutor a question"
-          />
 
-          <TouchableOpacity
-            disabled={!input.trim() || sending}
-            onPress={() => void sendMessage()}
-            accessibilityRole="button"
-            accessibilityLabel="Send question"
-            className={`mb-1 ml-2 h-10 w-10 items-center justify-center rounded-xl ${input.trim() && !sending
-              ? "bg-indigo-600"
-              : "bg-gray-300"
-              }`}
-          >
-            <Ionicons name="send" size={18} color="#FFFFFF" />
-          </TouchableOpacity>
+      <View style={{ backgroundColor: "#FFFFFF" }}>
+        <View className="border-t border-gray-100 bg-white px-3 pt-2 pb-3">
+          <View className="flex-row items-end rounded-xl border border-gray-200 bg-gray-50 px-3">
+            <TextInput
+              value={input}
+              onChangeText={setInput}
+              placeholder="Ask your tutor..."
+              placeholderTextColor="#9CA3AF"
+              multiline
+              maxLength={2000}
+              editable={!sending}
+              className="max-h-28 min-h-10 flex-1 py-2 text-sm text-gray-900"
+              accessibilityLabel="Ask AI Tutor a question"
+            />
+
+            <TouchableOpacity
+              disabled={!input.trim() || sending}
+              onPress={() => void sendMessage()}
+              className={`mb-1 ml-2 h-9 w-9 items-center justify-center rounded-lg ${input.trim() && !sending ? "bg-indigo-600" : "bg-gray-300"
+                }`}
+              accessibilityRole="button"
+              accessibilityLabel="Send question"
+            >
+              <Ionicons name="send" size={17} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
         </View>
-
-        <Text className="mt-2 text-center text-[11px] text-gray-400">
-          AI responses may contain mistakes. Verify important information.
-        </Text>
       </View>
+
     </View>
   );
 }

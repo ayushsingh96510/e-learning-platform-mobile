@@ -6,6 +6,7 @@ import { useRoute, type RouteProp } from "@react-navigation/native";
 import api from "@/api/axios";
 import type { ApiResponse } from "@/api/types";
 import type { StudentStackParamList } from "@/navigation/StudentNavigator";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 import {
   type MaterialType,
@@ -174,60 +175,59 @@ export default function MaterialDetailScreen() {
     : "overview";
 
   return (
-  <ScrollView
-    className="flex-1 bg-gray-50"
-    contentContainerStyle={{ paddingBottom: 20 }}
-    showsVerticalScrollIndicator={false}
-    // stickyHeaderIndices={[1]}
-    keyboardShouldPersistTaps="handled"
-    // nestedScrollEnabled
-    scrollEnabled={!isPdfInteracting}
-  >
-    <MaterialHeader material={material} />
+    <KeyboardAwareScrollView
+      className="flex-1 bg-gray-50"
+      contentContainerStyle={{ paddingBottom: 20 }}
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+      scrollEnabled={!isPdfInteracting}
+      bottomOffset={16}
+    >
+      <MaterialHeader material={material} />
 
-    <View className="bg-gray-50">
-      <View className="px-5 pt-5">
-        <MaterialViewer
-          material={material}
-          onPdfTouchChange={setIsPdfInteracting}
-        />
+      <View className="bg-gray-50">
+        <View className="px-5 pt-5">
+          <MaterialViewer
+            material={material}
+            onPdfTouchChange={setIsPdfInteracting}
+          />
+        </View>
+
+        <View className="bg-gray-50 px-5 pb-2 pt-3">
+          <MaterialTabs
+            tabs={tabs}
+            activeTab={displayedTab}
+            onChange={setActiveTab}
+          />
+        </View>
       </View>
 
-      <View className="bg-gray-50 px-5 pb-2 pt-3">
-        <MaterialTabs
-          tabs={tabs}
-          activeTab={displayedTab}
-          onChange={setActiveTab}
-        />
+      <View className="px-5">
+        {displayedTab === "overview" && (
+          <OverviewTab material={material} />
+        )}
+
+        {displayedTab === "ai-summary" && aiReady?.isSummaryReady && (
+          <AISummaryTab
+            key={`summary-${material.id}`}
+            materialId={material.id}
+          />
+        )}
+
+        {displayedTab === "transcription" && aiReady?.isTranscriptReady && (
+          <TranscriptTab
+            key={`transcript-${material.id}`}
+            materialId={material.id}
+          />
+        )}
+
+        {displayedTab === "ai-tutor" && aiReady?.isAskAiReady && (
+          <AskAITutorTab
+            key={`tutor-${material.id}`}
+            materialId={material.id}
+          />
+        )}
       </View>
-    </View>
-
-    <View className="px-5">
-      {displayedTab === "overview" && (
-        <OverviewTab material={material} />
-      )}
-
-      {displayedTab === "ai-summary" && aiReady?.isSummaryReady && (
-        <AISummaryTab
-          key={`summary-${material.id}`}
-          materialId={material.id}
-        />
-      )}
-
-      {displayedTab === "transcription" && aiReady?.isTranscriptReady && (
-        <TranscriptTab
-          key={`transcript-${material.id}`}
-          materialId={material.id}
-        />
-      )}
-
-      {displayedTab === "ai-tutor" && aiReady?.isAskAiReady && (
-        <AskAITutorTab
-          key={`tutor-${material.id}`}
-          materialId={material.id}
-        />
-      )}
-    </View>
-  </ScrollView>
-);
+    </KeyboardAwareScrollView>
+  );
 }
