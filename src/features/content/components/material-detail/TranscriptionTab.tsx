@@ -1,5 +1,4 @@
-
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -37,6 +36,8 @@ export default function TranscriptTab({
     useMaterialTranscript(materialId);
 
   const [search, setSearch] = useState("");
+  const transcriptScrollRef = useRef<ScrollView>(null);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   const filteredSegments = useMemo(() => {
     const segments = transcript?.segments ?? [];
@@ -110,37 +111,7 @@ export default function TranscriptTab({
 
   return (
     <View className="flex-1">
-      <View className="mb-4 rounded-2xl border border-gray-200 bg-white p-4">
-        <Text className="text-base font-bold text-gray-900">
-          Transcription
-        </Text>
-        <Text className="mt-1 text-sm text-gray-500">
-          {transcript.segments.length} transcript segments
-          {transcript.language ? ` · ${transcript.language}` : ""}
-        </Text>
 
-        <View className="mt-4 flex-row items-center rounded-xl border border-gray-200 bg-gray-50 px-3">
-          <Ionicons name="search-outline" size={20} color="#6B7280" />
-          <TextInput
-            value={search}
-            onChangeText={setSearch}
-            placeholder="Search transcript..."
-            placeholderTextColor="#9CA3AF"
-            className="ml-2 flex-1 py-3 text-sm text-gray-900"
-            accessibilityLabel="Search transcript"
-            returnKeyType="search"
-          />
-          {search.length > 0 && (
-            <TouchableOpacity
-              onPress={() => setSearch("")}
-              accessibilityRole="button"
-              accessibilityLabel="Clear transcript search"
-            >
-              <Ionicons name="close-circle" size={20} color="#6B7280" />
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
 
       {filteredSegments.length === 0 ? (
         <View className="items-center rounded-2xl bg-gray-50 p-6">
@@ -150,11 +121,51 @@ export default function TranscriptTab({
         </View>
       ) : (
         <ScrollView
+          ref={transcriptScrollRef}
           className="min-h-0 flex-1"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 24 }}
           keyboardShouldPersistTaps="handled"
+          onScroll={(event) => {
+            setShowBackToTop(event.nativeEvent.contentOffset.y > 300);
+          }}
+          scrollEventThrottle={16}
         >
+          <View className="mb-3 rounded-2xl border border-gray-200 bg-white p-3">
+            <Text className="text-sm font-bold text-gray-900">
+              Transcription
+            </Text>
+
+            <Text className="mt-0.5 text-xs text-gray-500">
+              {transcript.segments.length} transcript segments
+              {transcript.language ? ` · ${transcript.language}` : ""}
+            </Text>
+
+            <View className="mt-2 flex-row items-center rounded-xl border border-gray-200 bg-gray-50 px-3">
+              <Ionicons name="search-outline" size={18} color="#6B7280" />
+
+              <TextInput
+                value={search}
+                onChangeText={setSearch}
+                placeholder="Search transcript..."
+                placeholderTextColor="#9CA3AF"
+                className="ml-2 flex-1 py-2 text-sm text-gray-900"
+                accessibilityLabel="Search transcript"
+                returnKeyType="search"
+              />
+
+              {search.length > 0 && (
+                <TouchableOpacity
+                  onPress={() => setSearch("")}
+                  accessibilityRole="button"
+                  accessibilityLabel="Clear transcript search"
+                >
+                  <Ionicons name="close-circle" size={18} color="#6B7280" />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+
           {filteredSegments.map((segment, index) => (
             <View
               key={`${segment.start}-${index}`}
@@ -174,6 +185,23 @@ export default function TranscriptTab({
             </View>
           ))}
         </ScrollView>
+      )}
+      {showBackToTop && (
+        <TouchableOpacity
+          onPress={() => {
+            transcriptScrollRef.current?.scrollTo({
+              y: 0,
+              animated: true,
+            });
+            setShowBackToTop(false);
+          }}
+          className="absolute bottom-5 right-2 h-12 w-12 items-center justify-center rounded-full bg-indigo-600 shadow-lg"
+          style={{ elevation: 5 }}
+          accessibilityRole="button"
+          accessibilityLabel="Back to top"
+        >
+          <Ionicons name="arrow-up" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
       )}
     </View>
   );

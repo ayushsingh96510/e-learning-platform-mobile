@@ -174,17 +174,19 @@ export default function MaterialDetailScreen() {
     : "overview";
 
   return (
+    <View className="flex-1 bg-gray-50">
     <ScrollView
       className="flex-1 bg-gray-50"
       contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
       showsVerticalScrollIndicator={false}
-      stickyHeaderIndices={[1]}
+      // stickyHeaderIndices={[1]}
       keyboardShouldPersistTaps="handled"
-      nestedScrollEnabled
+      // nestedScrollEnabled
       scrollEnabled={!isPdfInteracting}
     >
       {/* 0: Header */}
       <MaterialHeader material={material} />
+      </ScrollView>
 
       {/* 1: Both Viewer and Tabs sticky together */}
       <View className="bg-gray-50">
@@ -228,6 +230,6 @@ export default function MaterialDetailScreen() {
           />
         )}
       </View>
-    </ScrollView>
+    </View>
   );
 }

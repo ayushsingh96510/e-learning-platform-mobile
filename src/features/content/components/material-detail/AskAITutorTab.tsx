@@ -273,35 +273,36 @@ export default function AskAITutorTab({
   }
 
   return (
-    <View className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-      <View className="flex-row items-center border-b border-gray-100 p-4">
-        <View className="mr-3 h-11 w-11 items-center justify-center rounded-xl bg-indigo-100">
-          <Ionicons name="sparkles" size={23} color="#4F46E5" />
-        </View>
-
-        <View className="flex-1">
-          <Text className="text-base font-bold text-gray-900">
-            AI Tutor
-          </Text>
-          <Text className="mt-1 text-xs text-gray-500">
-            Ask questions about this material
-          </Text>
-        </View>
-
-        {sending && (
-          <ActivityIndicator size="small" color="#4F46E5" />
-        )}
-      </View>
-
+    <View className="flex-1 overflow-hidden rounded-2xl border border-gray-200 bg-white">
       <ScrollView
         ref={listRef}
         className="max-h-[460px]"
         contentContainerStyle={{ padding: 14, gap: 12 }}
         keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled
         onContentSizeChange={() =>
           listRef.current?.scrollToEnd({ animated: true })
         }
       >
+        {/* AI Tutor header */}
+        <View className="flex-row items-center border-b border-gray-100 pb-3">
+          <View className="mr-3 h-11 w-11 items-center justify-center rounded-xl bg-indigo-100">
+            <Ionicons name="sparkles" size={23} color="#4F46E5" />
+          </View>
+
+          <View className="flex-1">
+            <Text className="text-base font-bold text-gray-900">
+              AI Tutor
+            </Text>
+            <Text className="mt-1 text-xs text-gray-500">
+              Ask questions about this material
+            </Text>
+          </View>
+
+          {sending && (
+            <ActivityIndicator size="small" color="#4F46E5" />
+          )}
+        </View>
         {messages.length === 0 && (
           <View className="py-3">
             <Text className="text-base font-semibold text-gray-900">
@@ -344,16 +345,14 @@ export default function AskAITutorTab({
           return (
             <View
               key={message.id}
-              className={`max-w-[90%] rounded-2xl p-3 ${
-                isUser
+              className={`max-w-[90%] rounded-2xl p-3 ${isUser
                   ? "self-end rounded-br-sm bg-indigo-600"
                   : "self-start rounded-bl-sm bg-gray-100"
-              }`}
+                }`}
             >
               <Text
-                className={`text-sm leading-6 ${
-                  isUser ? "text-white" : "text-gray-800"
-                }`}
+                className={`text-sm leading-6 ${isUser ? "text-white" : "text-gray-800"
+                  }`}
               >
                 {message.content ||
                   (sending && !isUser ? "Thinking..." : "")}
@@ -388,11 +387,10 @@ export default function AskAITutorTab({
             onPress={() => void sendMessage()}
             accessibilityRole="button"
             accessibilityLabel="Send question"
-            className={`mb-1 ml-2 h-10 w-10 items-center justify-center rounded-xl ${
-              input.trim() && !sending
+            className={`mb-1 ml-2 h-10 w-10 items-center justify-center rounded-xl ${input.trim() && !sending
                 ? "bg-indigo-600"
                 : "bg-gray-300"
-            }`}
+              }`}
           >
             <Ionicons name="send" size={18} color="#FFFFFF" />
           </TouchableOpacity>
