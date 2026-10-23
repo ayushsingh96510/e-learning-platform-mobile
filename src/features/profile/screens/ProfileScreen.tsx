@@ -100,6 +100,7 @@ const getStatusStyle = (status?: string) => {
   }
 };
 
+
 interface InfoRowProps {
   label: string;
   value?: string | null;
@@ -110,20 +111,25 @@ function InfoRow({ label, value, icon }: InfoRowProps) {
   return (
     <View className="flex-row items-start py-3">
       {icon ? (
-        <View className="mr-3 mt-1">{icon}</View>
+        <View className="mr-3 mt-1 h-9 w-9 items-center justify-center rounded-xl bg-slate-50">
+          {icon}
+        </View>
       ) : null}
 
-      <View className="flex-1">
+      <View className="flex-1 pt-0.5">
         <Text className="text-xs font-medium uppercase tracking-wide text-gray-500">
           {label}
         </Text>
-        <Text className="mt-1 text-sm font-medium text-gray-900">
+
+        <Text className="mt-1 text-sm font-medium leading-5 text-gray-900">
           {displayValue(value)}
         </Text>
       </View>
     </View>
   );
 }
+
+
 
 interface SectionCardProps {
   title: string;
@@ -133,11 +139,11 @@ interface SectionCardProps {
 
 function SectionCard({ title, icon, children }: SectionCardProps) {
   return (
-    <View className="mb-4 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+    <View className="mb-4 overflow-hidden rounded-2xl border border-gray-100 bg-white">
       <View className="h-1 bg-blue-600" />
 
       <View className="flex-row items-center px-4 pb-3 pt-4">
-        <View className="mr-3 rounded-xl bg-blue-50 p-2">
+        <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
           {icon}
         </View>
 
@@ -146,10 +152,13 @@ function SectionCard({ title, icon, children }: SectionCardProps) {
         </Text>
       </View>
 
-      <View className="px-4 pb-2">{children}</View>
+      <View className="px-4 pb-2">
+        {children}
+      </View>
     </View>
   );
 }
+
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -347,14 +356,14 @@ export default function ProfileScreen() {
 
           <View className="mt-5 border-t border-white/20 pt-4">
             <View className="mb-3 flex-row items-center">
-              <Mail size={16} color="#ffffff" />
+              <Mail size={17} color="#FFFFFF" strokeWidth={2} />
               <Text className="ml-2 flex-1 text-sm text-white">
                 {profile.email}
               </Text>
             </View>
 
             <View className="flex-row items-center">
-              <Phone size={16} color="#ffffff" />
+              <Phone size={17} color="#FFFFFF" strokeWidth={2} />
               <Text className="ml-2 text-sm text-white">
                 {displayValue(profile.phoneNumber)}
               </Text>
@@ -381,13 +390,13 @@ export default function ProfileScreen() {
             <InfoRow
               label="Date of Birth"
               value={formatDate(personalInfo?.dateOfBirth)}
-              icon={<CalendarDays size={17} color="#6b7280" />}
+              icon={<CalendarDays size={18} color="#64748B" strokeWidth={1.8} />}
             />
 
             <InfoRow
               label="Address"
               value={fullAddress}
-              icon={<MapPin size={17} color="#6b7280" />}
+              icon={<MapPin size={18} color="#64748B" strokeWidth={1.8} />}
             />
           </SectionCard>
 
@@ -458,13 +467,13 @@ export default function ProfileScreen() {
             <InfoRow
               label="Email Address"
               value={profile.email}
-              icon={<Mail size={17} color="#6b7280" />}
+              icon={<Mail size={18} color="#64748B" strokeWidth={1.8} />}
             />
 
             <InfoRow
               label="Phone Number"
               value={profile.phoneNumber}
-              icon={<Phone size={17} color="#6b7280" />}
+              icon={<Phone size={18} color="#64748B" strokeWidth={1.8} />}
             />
 
             <InfoRow
@@ -485,10 +494,12 @@ export default function ProfileScreen() {
             className="mb-4 flex-row items-center justify-center rounded-2xl border border-red-100 bg-white px-4 py-4"
           >
             {loggingOut ? (
-              <ActivityIndicator color="#dc2626" />
+              <ActivityIndicator size="large" color="#2563EB" />
             ) : (
               <>
-                <LogOut size={19} color="#dc2626" />
+                <View className="h-9 w-9 items-center justify-center rounded-xl bg-red-50">
+                  <LogOut size={18} color="#DC2626" strokeWidth={2} />
+                </View>
                 <Text className="ml-2 font-semibold text-red-600">
                   Log out
                 </Text>

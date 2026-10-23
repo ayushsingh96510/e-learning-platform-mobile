@@ -9,6 +9,16 @@ import {
   View,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
+import {
+  X,
+  ClipboardList,
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle2,
+  CircleHelp,
+  RotateCcw,
+  FileCheck2,
+} from "lucide-react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -19,7 +29,10 @@ import { useAssessment } from "../hooks/useAssessment";
 import { useSubmitAssessment } from "../hooks/useSubmitAssessment";
 import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
 
-type Props = NativeStackScreenProps<StudentStackParamList, "AssignmentAttempt">;
+type Props = NativeStackScreenProps<
+  StudentStackParamList,
+  "AssignmentAttempt"
+>;
 
 export default function AttemptScreen({ navigation, route }: Props) {
   const { assessmentId } = route.params;
@@ -43,13 +56,12 @@ export default function AttemptScreen({ navigation, route }: Props) {
 
   const answeredCount = Object.keys(answers).length;
 
-  // Ask for confirmation before leaving with unsaved answers
-  // (header button, Android back button, or swipe back).
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
       if (allowLeave.current || answeredCount === 0) return;
 
       e.preventDefault();
+
       Alert.alert(
         "Leave this attempt?",
         "Your answers will be lost if you leave now.",
@@ -60,14 +72,13 @@ export default function AttemptScreen({ navigation, route }: Props) {
             style: "destructive",
             onPress: () => navigation.dispatch(e.data.action),
           },
-        ]
+        ],
       );
     });
 
     return unsubscribe;
   }, [navigation, answeredCount]);
 
-  // Start each question at the top.
   useEffect(() => {
     scrollRef.current?.scrollTo({ y: 0, animated: false });
   }, [currentIndex]);
@@ -78,6 +89,7 @@ export default function AttemptScreen({ navigation, route }: Props) {
         const { [questionId]: _removed, ...rest } = prev;
         return rest;
       }
+
       return { ...prev, [questionId]: value };
     });
   };
@@ -85,11 +97,16 @@ export default function AttemptScreen({ navigation, route }: Props) {
   const handleSubmit = async () => {
     if (!assessment) return;
 
-    const result = await submit({ assessmentId: assessment.id, answers });
+    const result = await submit({
+      assessmentId: assessment.id,
+      answers,
+    });
+
     if (!result) return;
 
     allowLeave.current = true;
     setSubmitOpen(false);
+
     navigation.replace("AssignmentResult", {
       resultId: result.id || undefined,
       result,
@@ -109,7 +126,10 @@ export default function AttemptScreen({ navigation, route }: Props) {
         className="flex-1 items-center justify-center bg-gray-50"
         style={topPadding}
       >
-        <ActivityIndicator />
+        <ActivityIndicator size="large" color="#2563FF" />
+        <Text className="mt-3 text-sm text-gray-500">
+          Loading assessment...
+        </Text>
       </View>
     );
   }
@@ -120,19 +140,33 @@ export default function AttemptScreen({ navigation, route }: Props) {
         className="flex-1 items-center justify-center bg-gray-50 px-6"
         style={topPadding}
       >
-        <Text className="text-center text-sm text-red-600">
+        <View className="mb-4 h-16 w-16 items-center justify-center rounded-2xl bg-red-50">
+          <ClipboardList size={30} color="#FF4545" />
+        </View>
+
+        <Text className="text-lg font-bold text-gray-900">
+          Unable to load assessment
+        </Text>
+
+        <Text className="mt-2 text-center text-sm leading-5 text-gray-500">
           {error ?? "Assessment not found."}
         </Text>
 
         <Pressable
           onPress={reload}
-          className="mt-4 rounded-xl bg-primary-600 px-6 py-3"
+          accessibilityRole="button"
+          className="mt-5 flex-row items-center justify-center rounded-xl bg-blue-600 px-6 py-3"
         >
-          <Text className="font-semibold text-white">Retry</Text>
+          <RotateCcw size={17} color="#FFFFFF" />
+          <Text className="ml-2 font-semibold text-white">Try Again</Text>
         </Pressable>
 
-        <Pressable onPress={() => navigation.goBack()} className="mt-3 px-6 py-3">
-          <Text className="font-semibold text-gray-600">Go back</Text>
+        <Pressable
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          className="mt-3 px-6 py-3"
+        >
+          <Text className="font-semibold text-gray-600">Go Back</Text>
         </Pressable>
       </View>
     );
@@ -146,15 +180,23 @@ export default function AttemptScreen({ navigation, route }: Props) {
         className="flex-1 items-center justify-center bg-gray-50 px-6"
         style={topPadding}
       >
-        <Text className="text-center text-sm text-gray-500">
+        <View className="mb-4 h-16 w-16 items-center justify-center rounded-2xl bg-blue-50">
+          <ClipboardList size={30} color="#2563FF" />
+        </View>
+
+        <Text className="text-lg font-bold text-gray-900">
+          No questions available
+        </Text>
+
+        <Text className="mt-2 text-center text-sm text-gray-500">
           This assessment has no questions yet.
         </Text>
 
         <Pressable
           onPress={() => navigation.goBack()}
-          className="mt-4 rounded-xl bg-primary-600 px-6 py-3"
+          className="mt-5 rounded-xl bg-blue-600 px-6 py-3"
         >
-          <Text className="font-semibold text-white">Go back</Text>
+          <Text className="font-semibold text-white">Go Back</Text>
         </Pressable>
       </View>
     );
@@ -180,9 +222,11 @@ export default function AttemptScreen({ navigation, route }: Props) {
           <Pressable
             onPress={() => navigation.goBack()}
             hitSlop={12}
-            className="mr-3 h-9 w-9 items-center justify-center rounded-full bg-gray-100"
+            accessibilityRole="button"
+            accessibilityLabel="Exit assessment"
+            className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-red-50"
           >
-            <Text className="text-base text-gray-700">✕</Text>
+            <X size={20} color="#FF4545" strokeWidth={2.2} />
           </Pressable>
 
           <View className="flex-1 pr-2">
@@ -192,26 +236,53 @@ export default function AttemptScreen({ navigation, route }: Props) {
             >
               {assessment.title}
             </Text>
-            <Text className="text-xs text-gray-500">
-              Question {currentIndex + 1} of {total} · {answeredCount} answered
-            </Text>
+
+            <View className="mt-1 flex-row flex-wrap items-center">
+              <Text className="text-xs text-gray-500">
+                Question {currentIndex + 1} of {total}
+              </Text>
+
+              <View className="mx-2 h-1 w-1 rounded-full bg-gray-300" />
+
+              <View className="flex-row items-center">
+                <CheckCircle2 size={12} color="#059669" />
+                <Text className="ml-1 text-xs font-medium text-emerald-700">
+                  {answeredCount} answered
+                </Text>
+              </View>
+            </View>
           </View>
 
           <Pressable
             onPress={() => setPaletteOpen(true)}
-            className="rounded-full bg-primary-50 px-3 py-2"
+            accessibilityRole="button"
+            accessibilityLabel="Open question navigator"
+            className="flex-row items-center rounded-xl bg-blue-50 px-3 py-2.5"
           >
-            <Text className="text-xs font-semibold text-primary-600">
+            <CircleHelp size={16} color="#2563FF" />
+            <Text className="ml-1.5 text-xs font-semibold text-blue-700">
               Questions
             </Text>
           </Pressable>
         </View>
 
-        <View className="mt-3 h-2 rounded-full bg-gray-200">
-          <View
-            className="h-2 rounded-full bg-primary-600"
-            style={{ width: `${progress}%` }}
-          />
+        {/* Progress */}
+        <View className="mt-4">
+          <View className="mb-2 flex-row items-center justify-between">
+            <Text className="text-xs font-medium text-gray-500">
+              Assessment progress
+            </Text>
+            <Text className="text-xs font-bold text-blue-600">
+              {Math.round(progress)}%
+            </Text>
+          </View>
+
+          <View className="h-2 overflow-hidden rounded-full bg-blue-50">
+            <View
+              className="h-2 rounded-full bg-blue-600"
+              style={{ width: `${progress}%` }}
+            />
+          </View>
         </View>
       </View>
 
@@ -238,12 +309,19 @@ export default function AttemptScreen({ navigation, route }: Props) {
         <Pressable
           onPress={() => setCurrentIndex((i) => Math.max(0, i - 1))}
           disabled={isFirst}
-          className={`flex-1 items-center rounded-xl border py-3 ${
-            isFirst ? "border-gray-100" : "border-gray-200"
+          accessibilityRole="button"
+          className={`flex-1 flex-row items-center justify-center rounded-xl border py-3 ${
+            isFirst
+              ? "border-gray-100 bg-gray-50"
+              : "border-gray-200 bg-white"
           }`}
         >
+          <ChevronLeft
+            size={18}
+            color={isFirst ? "#D1D5DB" : "#374151"}
+          />
           <Text
-            className={`font-semibold ${
+            className={`ml-1 font-semibold ${
               isFirst ? "text-gray-300" : "text-gray-700"
             }`}
           >
@@ -254,20 +332,27 @@ export default function AttemptScreen({ navigation, route }: Props) {
         {isLast ? (
           <Pressable
             onPress={() => setSubmitOpen(true)}
-            className="flex-1 items-center rounded-xl bg-primary-600 py-3"
+            accessibilityRole="button"
+            className="flex-1 flex-row items-center justify-center rounded-xl bg-blue-600 py-3"
           >
-            <Text className="font-semibold text-white">Submit Paper</Text>
+            <FileCheck2 size={18} color="#FFFFFF" />
+            <Text className="ml-2 font-semibold text-white">
+              Submit Paper
+            </Text>
           </Pressable>
         ) : (
           <Pressable
             onPress={() => setCurrentIndex((i) => Math.min(total - 1, i + 1))}
-            className="flex-1 items-center rounded-xl bg-primary-600 py-3"
+            accessibilityRole="button"
+            className="flex-1 flex-row items-center justify-center rounded-xl bg-blue-600 py-3"
           >
-            <Text className="font-semibold text-white">Next</Text>
+            <Text className="mr-1 font-semibold text-white">Next</Text>
+            <ChevronRight size={18} color="#FFFFFF" />
           </Pressable>
         )}
       </View>
 
+      {/* Question navigator */}
       <QuestionPalette
         visible={paletteOpen}
         questionIds={questionIds}
@@ -280,6 +365,7 @@ export default function AttemptScreen({ navigation, route }: Props) {
         onClose={() => setPaletteOpen(false)}
       />
 
+      {/* Submission confirmation */}
       <SubmitSheet
         visible={submitOpen}
         totalQuestions={total}

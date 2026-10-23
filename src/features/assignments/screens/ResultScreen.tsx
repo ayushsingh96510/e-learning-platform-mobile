@@ -8,6 +8,11 @@ import StatisticsCard from "../components/StatisticsCard";
 import { useAssessmentResult } from "../hooks/useAssessmentResult";
 import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
 
+import {
+  ArrowLeft,
+  Trophy,
+} from "lucide-react-native";
+
 type Props = NativeStackScreenProps<StudentStackParamList, "AssignmentResult">;
 
 export default function ResultScreen({ navigation, route }: Props) {
@@ -81,15 +86,20 @@ export default function ResultScreen({ navigation, route }: Props) {
           </Pressable> */}
           <Pressable
             onPress={() => navigation.goBack()}
-            className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-white"
+            hitSlop={12}
+            className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-white border border-gray-100"
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
           >
-            <Text className="text-xl text-gray-900">‹</Text>
+            <ArrowLeft size={20} color="#2563FF" strokeWidth={2} />
           </Pressable>
           <Text className="text-lg font-bold text-gray-900">Result</Text>
         </View>
 
         <View className="mb-4 items-center rounded-2xl border border-gray-100 bg-white p-6">
-          <Text className="text-4xl">🏆</Text>
+          <View className="h-16 w-16 items-center justify-center rounded-2xl bg-amber-50">
+            <Trophy size={30} color="#F08C00" strokeWidth={2} />
+          </View>
           <Text className="mt-3 text-2xl font-bold text-gray-900">
             Test Completed
           </Text>

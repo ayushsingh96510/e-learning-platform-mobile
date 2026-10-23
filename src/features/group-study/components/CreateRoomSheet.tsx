@@ -11,6 +11,16 @@ import {
   TextInput,
   View,
 } from "react-native";
+import {
+  BookOpen,
+  UsersRound,
+  LockKeyhole,
+  ChevronRight,
+  X,
+  AlertCircle,
+  Check,
+  Users,
+} from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -159,14 +169,14 @@ export default function CreateRoomSheet({
               Create Study Room
             </Text>
 
-            <Pressable
-              onPress={onClose}
-              disabled={creating}
-              hitSlop={12}
-              className="h-9 w-9 items-center justify-center rounded-full bg-gray-100"
-            >
-              <Text className="text-base text-gray-700">✕</Text>
-            </Pressable>
+              <Pressable
+                onPress={onClose}
+                disabled={creating}
+                hitSlop={12}
+                className="h-9 w-9 items-center justify-center rounded-xl border border-gray-200 bg-white"
+              >
+                <X size={18} color="#6B7280" strokeWidth={2} />
+              </Pressable>
           </View>
 
           <ScrollView
@@ -175,9 +185,15 @@ export default function CreateRoomSheet({
             keyboardShouldPersistTaps="handled"
           >
             {/* Name */}
-            <Text className="mb-1.5 text-sm font-medium text-gray-700">
-              Room Name
-            </Text>
+              <View className="mb-1.5 flex-row items-center gap-2">
+                <View className="h-7 w-7 items-center justify-center rounded-lg bg-blue-50">
+                  <BookOpen size={15} color="#2563FF" strokeWidth={2} />
+                </View>
+
+                <Text className="text-sm font-semibold text-gray-700">
+                  Room Name
+                </Text>
+              </View>
             <TextInput
               value={name}
               onChangeText={setName}
@@ -191,9 +207,15 @@ export default function CreateRoomSheet({
             )}
 
             {/* Subject */}
-            <Text className="mb-1.5 mt-4 text-sm font-medium text-gray-700">
-              Subject (optional)
-            </Text>
+              <View className="mb-1.5 mt-4 flex-row items-center gap-2">
+                <View className="h-7 w-7 items-center justify-center rounded-lg bg-blue-50">
+                  <BookOpen size={15} color="#2563FF" strokeWidth={2} />
+                </View>
+
+                <Text className="text-sm font-semibold text-gray-700">
+                  Subject (optional)
+                </Text>
+              </View>
             <TextInput
               value={subject}
               onChangeText={setSubject}
@@ -227,9 +249,15 @@ export default function CreateRoomSheet({
             )}
 
             {/* Members */}
-            <Text className="mb-1.5 mt-4 text-sm font-medium text-gray-700">
-              Members
-            </Text>
+              <View className="mb-1.5 mt-4 flex-row items-center gap-2">
+                <View className="h-7 w-7 items-center justify-center rounded-lg bg-purple-50">
+                  <UsersRound size={15} color="#A020F0" strokeWidth={2} />
+                </View>
+
+                <Text className="text-sm font-semibold text-gray-700">
+                  Members
+                </Text>
+              </View>
             <Pressable
               onPress={() => setScreen("members")}
               className="flex-row items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
@@ -243,37 +271,64 @@ export default function CreateRoomSheet({
                 {memberSummary ?? "Select students..."}
               </Text>
 
-              <Text className="text-sm text-gray-400">
-                {memberIds.length > 0 ? `${memberIds.length} ›` : "›"}
-              </Text>
+                <View className="flex-row items-center gap-2">
+                  {memberIds.length > 0 && (
+                    <View className="rounded-lg bg-purple-50 px-2 py-1">
+                      <Text className="text-xs font-semibold text-purple-700">
+                        {memberIds.length}
+                      </Text>
+                    </View>
+                  )}
+
+                  <ChevronRight size={18} color="#A020F0" strokeWidth={2} />
+                </View>
             </Pressable>
             {!!errors.members && (
               <Text className="mt-1 text-xs text-red-600">{errors.members}</Text>
             )}
 
             {/* Private */}
-            <View className="mt-4 flex-row items-center justify-between rounded-xl border border-gray-200 bg-white p-4">
-              <View className="mr-3 flex-1">
-                <Text className="text-sm font-medium text-gray-900">
-                  Private Room
-                </Text>
-                <Text className="mt-0.5 text-xs text-gray-500">
-                  Only invited members can join a private room
-                </Text>
+              <View className="mt-4 flex-row items-center justify-between rounded-xl border border-orange-200 bg-white p-4">
+                <View className="mr-3 flex-1 flex-row items-center">
+                  <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
+                    <LockKeyhole
+                      size={19}
+                      color="#F08C00"
+                      strokeWidth={2}
+                    />
+                  </View>
+
+                  <View className="flex-1">
+                    <Text className="text-sm font-semibold text-gray-900">
+                      Private Room
+                    </Text>
+
+                    <Text className="mt-0.5 text-xs leading-5 text-gray-500">
+                      Only invited members can join a private room
+                    </Text>
+                  </View>
+                </View>
+
+                <Switch
+                  value={isPrivate}
+                  onValueChange={setIsPrivate}
+                  trackColor={{ true: "#2563FF" }}
+                />
               </View>
 
-              <Switch
-                value={isPrivate}
-                onValueChange={setIsPrivate}
-                trackColor={{ true: "#2563EB" }}
-              />
-            </View>
+              {!!serverError && (
+                <View className="mt-4 flex-row items-start rounded-xl border border-red-200 bg-red-50 p-3">
+                  <AlertCircle
+                    size={18}
+                    color="#FF4545"
+                    strokeWidth={2}
+                  />
 
-            {!!serverError && (
-              <View className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3">
-                <Text className="text-sm text-red-700">{serverError}</Text>
-              </View>
-            )}
+                  <Text className="ml-2 flex-1 text-sm leading-5 text-red-700">
+                    {serverError}
+                  </Text>
+                </View>
+              )}
           </ScrollView>
 
           {/* Footer */}
@@ -289,19 +344,24 @@ export default function CreateRoomSheet({
               <Text className="font-semibold text-gray-700">Cancel</Text>
             </Pressable>
 
-            <Pressable
-              onPress={handleSubmit}
-              disabled={creating}
-              className={`flex-1 items-center rounded-xl py-3 ${
-                creating ? "bg-primary-400" : "bg-primary-600"
-              }`}
-            >
-              {creating ? (
-                <ActivityIndicator color="#FFFFFF" />
-              ) : (
-                <Text className="font-semibold text-white">Create Room</Text>
-              )}
-            </Pressable>
+              <Pressable
+                onPress={handleSubmit}
+                disabled={creating}
+                className={`flex-1 flex-row items-center justify-center rounded-xl py-3 ${creating ? "bg-primary-400" : "bg-primary-600"
+                  }`}
+              >
+                {creating ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <>
+                    <Users size={17} color="#FFFFFF" strokeWidth={2} />
+
+                    <Text className="ml-2 font-semibold text-white">
+                      Create Room
+                    </Text>
+                  </>
+                )}
+              </Pressable>
           </View>
         </KeyboardAvoidingView>
       )}

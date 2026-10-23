@@ -8,6 +8,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { Plus } from "lucide-react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -107,9 +108,13 @@ export default function GroupStudyScreen() {
 
           <Pressable
             onPress={() => setCreateOpen(true)}
-            className="rounded-xl bg-primary-600 px-4 py-2.5"
+            className="flex-row items-center rounded-xl bg-primary-600 px-3 py-2.5 active:opacity-80"
           >
-            <Text className="text-sm font-semibold text-white">+ New Room</Text>
+            <Plus size={17} color="#FFFFFF" strokeWidth={2.5} />
+
+            <Text className="ml-1.5 text-sm font-semibold text-white">
+              New Room
+            </Text>
           </Pressable>
         </View>
 

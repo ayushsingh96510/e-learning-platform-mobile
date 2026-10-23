@@ -1,4 +1,10 @@
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import {
+  Video,
+  UserRound,
+  CalendarDays,
+  Clock3,
+} from "lucide-react-native";
 import type { LiveClassTab, LiveSession } from "../types";
 
 // Join window: opens 5 minutes before start, closes 15 minutes after start.
@@ -14,8 +20,10 @@ interface Props {
 
 function formatDateTime(iso?: string | null) {
   if (!iso) return null;
+
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
+
   return d.toLocaleString(undefined, {
     day: "numeric",
     month: "short",
@@ -34,7 +42,6 @@ export default function LiveClassCard({
   const isUpcoming = variant === "UPCOMING";
   const isCompleted = variant === "COMPLETED";
 
-  // join window is [scheduled - 5min, scheduled + 15min]
   const scheduledMs = item.scheduledAt
     ? new Date(item.scheduledAt).getTime()
     : null;
@@ -52,19 +59,21 @@ export default function LiveClassCard({
     : isCompleted
       ? item.endedAt ?? item.startedAt ?? item.scheduledAt
       : item.scheduledAt;
+
   const when = formatDateTime(timeSource);
 
   const tags = [item.program?.name, item.batch?.name].filter(
-    Boolean
+    Boolean,
   ) as string[];
 
-  // Helper: what message to show for upcoming classes that can't join yet
   const upcomingHint = (() => {
     if (!isUpcoming || showJoin) return null;
-    if (!scheduledMs) return "Join link will be available soon";
+    if (scheduledMs === null) return "Join link will be available soon";
+
     if (Date.now() < scheduledMs - JOIN_WINDOW_BEFORE_MS) {
       return "Available 5 minutes before class start";
     }
+
     return "Join window has closed";
   })();
 
@@ -74,10 +83,14 @@ export default function LiveClassCard({
       <View className="flex-row items-start">
         <View
           className={`mr-3 h-11 w-11 items-center justify-center rounded-xl ${
-            isLive ? "bg-red-50" : "bg-gray-100"
+            isLive ? "bg-red-50" : "bg-blue-50"
           }`}
         >
-          <Text className="text-xl">🎥</Text>
+          <Video
+            size={21}
+            color={isLive ? "#FF4545" : "#2563FF"}
+            strokeWidth={2}
+          />
         </View>
 
         <View className="flex-1 pr-2">
@@ -95,17 +108,22 @@ export default function LiveClassCard({
         {isLive && (
           <View className="flex-row items-center rounded-full bg-red-50 px-2.5 py-1">
             <View className="mr-1.5 h-2 w-2 rounded-full bg-red-600" />
-            <Text className="text-xs font-bold text-red-600">LIVE NOW</Text>
+            <Text className="text-xs font-bold text-red-600">
+              LIVE NOW
+            </Text>
           </View>
         )}
       </View>
 
-      {/* Tags */}
+      {/* Program and batch tags */}
       {tags.length > 0 && (
         <View className="mt-3 flex-row flex-wrap gap-2">
           {tags.map((tag) => (
-            <View key={tag} className="rounded-full bg-primary-50 px-3 py-1">
-              <Text className="text-xs font-medium text-primary-600">
+            <View
+              key={tag}
+              className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1"
+            >
+              <Text className="text-xs font-medium text-blue-700">
                 {tag}
               </Text>
             </View>
@@ -113,40 +131,66 @@ export default function LiveClassCard({
         </View>
       )}
 
-      {/* Description (completed classes only) */}
+      {/* Description */}
       {isCompleted && !!item.description && (
         <Text className="mt-3 text-sm text-gray-600" numberOfLines={2}>
           {item.description}
         </Text>
       )}
 
-      {/* Meta */}
-      <View className="mt-3 gap-1">
+      {/* Class details */}
+      <View className="mt-4 gap-3">
         {!!item.teacher?.name && (
-          <Text className="text-sm text-gray-700">
-            👨‍🏫 {item.teacher.name}
-          </Text>
+          <View className="flex-row items-center">
+            <View className="mr-2.5 h-8 w-8 items-center justify-center rounded-lg bg-purple-50">
+              <UserRound size={16} color="#A020F0" strokeWidth={2} />
+            </View>
+
+            <Text className="flex-1 text-sm text-gray-700">
+              {item.teacher.name}
+            </Text>
+          </View>
         )}
-        {!!when && <Text className="text-sm text-gray-500">🗓 {when}</Text>}
-        <Text className="text-sm text-gray-500">
-          ⏱ {item.durationMinutes} min
-        </Text>
+
+        {!!when && (
+          <View className="flex-row items-center">
+            <View className="mr-2.5 h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
+              <CalendarDays size={16} color="#2563FF" strokeWidth={2} />
+            </View>
+
+            <Text className="flex-1 text-sm text-gray-600">
+              {when}
+            </Text>
+          </View>
+        )}
+
+        <View className="flex-row items-center">
+          <View className="mr-2.5 h-8 w-8 items-center justify-center rounded-lg bg-orange-50">
+            <Clock3 size={16} color="#F08C00" strokeWidth={2} />
+          </View>
+
+          <Text className="flex-1 text-sm text-gray-600">
+            {item.durationMinutes} min
+          </Text>
+        </View>
       </View>
 
-      {/* Action */}
+      {/* Join action */}
       {showJoin && (
         <Pressable
           onPress={() => !joining && onJoin?.()}
           disabled={joining}
+          accessibilityRole="button"
+          accessibilityLabel={joining ? "Joining class" : "Join class room"}
           className={`mt-4 flex-row items-center justify-center rounded-xl py-3 ${
-            isLive ? "bg-red-50" : "bg-primary-600"
+            isLive ? "bg-red-50" : "bg-blue-600"
           } ${joining ? "opacity-60" : ""}`}
         >
           {joining ? (
             <>
               <ActivityIndicator
                 size="small"
-                color={isLive ? "#dc2626" : "#ffffff"}
+                color={isLive ? "#FF4545" : "#FFFFFF"}
               />
               <Text
                 className={`ml-2 font-semibold ${
@@ -157,18 +201,25 @@ export default function LiveClassCard({
               </Text>
             </>
           ) : (
-            <Text
-              className={`font-semibold ${
-                isLive ? "text-red-600" : "text-white"
-              }`}
-            >
-              Join Room
-            </Text>
+            <>
+              <Video
+                size={18}
+                color={isLive ? "#FF4545" : "#FFFFFF"}
+                strokeWidth={2}
+              />
+              <Text
+                className={`ml-2 font-semibold ${
+                  isLive ? "text-red-600" : "text-white"
+                }`}
+              >
+                Join Room
+              </Text>
+            </>
           )}
         </Pressable>
       )}
 
-      {/* FIXED: accurate hint based on join window state */}
+      {/* Upcoming class hint */}
       {!!upcomingHint && (
         <Text className="mt-4 text-center text-xs text-gray-400">
           {upcomingHint}

@@ -1,4 +1,19 @@
-import { ActivityIndicator, Modal, Pressable, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Modal,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
+import {
+  ClipboardList,
+  CheckCircle2,
+  CircleAlert,
+  AlertTriangle,
+  X,
+  ChevronRight,
+  Send,
+} from "lucide-react-native";
 
 interface Props {
   visible: boolean;
@@ -19,7 +34,7 @@ export default function SubmitSheet({
   onCancel,
   onConfirm,
 }: Props) {
-  const remaining = totalQuestions - answeredQuestions;
+  const remaining = Math.max(0, totalQuestions - answeredQuestions);
 
   return (
     <Modal
@@ -31,76 +46,191 @@ export default function SubmitSheet({
       }}
     >
       <View className="flex-1 justify-end bg-black/40">
-        <View className="rounded-t-3xl bg-white px-5 pb-8 pt-3">
-          <View className="mb-4 h-1 w-10 self-center rounded-full bg-gray-300" />
+        <View className="rounded-t-3xl border-t border-gray-100 bg-white px-5 pb-8 pt-3">
+          {/* Sheet handle */}
+          <View className="mb-5 h-1 w-10 self-center rounded-full bg-gray-300" />
 
-          <Text className="text-lg font-bold text-gray-900">
-            Submit Question Paper
-          </Text>
-          <Text className="mt-1 text-sm text-gray-500">
-            Once submitted, you will not be able to change your answers.
-          </Text>
+          {/* Header */}
+          <View className="flex-row items-center">
+            <View className="mr-3 h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
+              <ClipboardList size={24} color="#2563FF" />
+            </View>
 
+            <View className="flex-1">
+              <Text className="text-lg font-bold text-gray-900">
+                Submit Question Paper
+              </Text>
+              <Text className="mt-1 text-sm text-gray-500">
+                Review your progress before submitting.
+              </Text>
+            </View>
+          </View>
+
+          {/* Warning */}
+          <View className="mt-4 flex-row items-start rounded-xl border border-amber-100 bg-amber-50 p-3">
+            <AlertTriangle
+              size={18}
+              color="#D97706"
+              style={{ marginTop: 1 }}
+            />
+            <Text className="ml-2 flex-1 text-xs leading-5 text-amber-800">
+              Once submitted, you will not be able to change your answers.
+            </Text>
+          </View>
+
+          {/* Statistics */}
           <View className="mt-5 gap-3">
-            <View className="flex-row items-center justify-between rounded-xl border border-gray-100 p-3">
-              <Text className="text-sm text-gray-700">Total Questions</Text>
-              <Text className="font-semibold text-gray-900">
+            {/* Total */}
+            <View className="flex-row items-center rounded-xl border border-blue-100 bg-blue-50 p-3">
+              <View className="mr-3 h-10 w-10 items-center justify-center rounded-lg bg-white">
+                <ClipboardList size={20} color="#2563FF" />
+              </View>
+
+              <Text className="flex-1 text-sm font-medium text-blue-800">
+                Total Questions
+              </Text>
+
+              <Text className="text-lg font-bold text-blue-700">
                 {totalQuestions}
               </Text>
             </View>
 
-            <View className="flex-row items-center justify-between rounded-xl border border-green-200 bg-green-50 p-3">
-              <Text className="text-sm text-green-700">Answered</Text>
-              <Text className="font-semibold text-green-700">
+            {/* Answered */}
+            <View className="flex-row items-center rounded-xl border border-emerald-100 bg-emerald-50 p-3">
+              <View className="mr-3 h-10 w-10 items-center justify-center rounded-lg bg-white">
+                <CheckCircle2 size={20} color="#059669" />
+              </View>
+
+              <Text className="flex-1 text-sm font-medium text-emerald-800">
+                Answered
+              </Text>
+
+              <Text className="text-lg font-bold text-emerald-700">
                 {answeredQuestions}
               </Text>
             </View>
 
-            <View className="flex-row items-center justify-between rounded-xl border border-amber-200 bg-amber-50 p-3">
-              <Text className="text-sm text-amber-700">Remaining</Text>
-              <Text className="font-semibold text-amber-700">{remaining}</Text>
+            {/* Remaining */}
+            <View
+              className={`flex-row items-center rounded-xl border p-3 ${
+                remaining > 0
+                  ? "border-amber-100 bg-amber-50"
+                  : "border-emerald-100 bg-emerald-50"
+              }`}
+            >
+              <View className="mr-3 h-10 w-10 items-center justify-center rounded-lg bg-white">
+                {remaining > 0 ? (
+                  <CircleAlert size={20} color="#D97706" />
+                ) : (
+                  <CheckCircle2 size={20} color="#059669" />
+                )}
+              </View>
+
+              <Text
+                className={`flex-1 text-sm font-medium ${
+                  remaining > 0
+                    ? "text-amber-800"
+                    : "text-emerald-800"
+                }`}
+              >
+                Remaining
+              </Text>
+
+              <Text
+                className={`text-lg font-bold ${
+                  remaining > 0
+                    ? "text-amber-700"
+                    : "text-emerald-700"
+                }`}
+              >
+                {remaining}
+              </Text>
             </View>
 
+            {/* Unanswered warning */}
             {remaining > 0 && (
-              <View className="rounded-xl border border-red-200 bg-red-50 p-3">
-                <Text className="text-sm text-red-700">
+              <View className="flex-row items-start rounded-xl border border-red-100 bg-red-50 p-3">
+                <AlertTriangle
+                  size={17}
+                  color="#DC2626"
+                  style={{ marginTop: 1 }}
+                />
+
+                <Text className="ml-2 flex-1 text-sm leading-5 text-red-700">
                   You still have {remaining} unanswered{" "}
-                  {remaining === 1 ? "question" : "questions"}.
+                  {remaining === 1 ? "question" : "questions"}. You can
+                  return to your attempt before submitting.
                 </Text>
               </View>
             )}
 
+            {/* Submission error */}
             {!!error && (
-              <View className="rounded-xl border border-red-200 bg-red-50 p-3">
-                <Text className="text-sm text-red-700">{error}</Text>
+              <View className="flex-row items-start rounded-xl border border-red-200 bg-red-50 p-3">
+                <CircleAlert
+                  size={18}
+                  color="#DC2626"
+                  style={{ marginTop: 1 }}
+                />
+
+                <Text className="ml-2 flex-1 text-sm leading-5 text-red-700">
+                  {error}
+                </Text>
               </View>
             )}
           </View>
 
+          {/* Actions */}
           <View className="mt-5 flex-row gap-3">
             <Pressable
               onPress={onCancel}
               disabled={submitting}
-              className="flex-1 items-center rounded-xl border border-gray-200 py-3"
+              accessibilityRole="button"
+              className={`flex-1 flex-row items-center justify-center rounded-xl border border-gray-200 bg-white py-3 ${
+                submitting ? "opacity-50" : ""
+              }`}
             >
-              <Text className="font-semibold text-gray-700">
-                Continue Attempt
+              <X size={17} color="#4B5563" />
+              <Text className="ml-1.5 font-semibold text-gray-700">
+                Continue
               </Text>
             </Pressable>
 
             <Pressable
               onPress={onConfirm}
               disabled={submitting}
-              className={`flex-1 items-center rounded-xl py-3 ${
-                submitting ? "bg-primary-400" : "bg-primary-600"
+              accessibilityRole="button"
+              className={`flex-1 flex-row items-center justify-center rounded-xl py-3 ${
+                submitting ? "bg-blue-400" : "bg-blue-600"
               }`}
             >
               {submitting ? (
-                <ActivityIndicator color="#FFFFFF" />
+                <>
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                  <Text className="ml-2 font-semibold text-white">
+                    Submitting...
+                  </Text>
+                </>
               ) : (
-                <Text className="font-semibold text-white">
-                  {error ? "Retry" : "Submit Paper"}
-                </Text>
+                <>
+                  {error ? (
+                    <Send size={17} color="#FFFFFF" />
+                  ) : (
+                    <CheckCircle2 size={17} color="#FFFFFF" />
+                  )}
+
+                  <Text className="ml-2 font-semibold text-white">
+                    {error ? "Retry" : "Submit Paper"}
+                  </Text>
+
+                  {!error && (
+                    <ChevronRight
+                      size={17}
+                      color="#FFFFFF"
+                      style={{ marginLeft: 3 }}
+                    />
+                  )}
+                </>
               )}
             </Pressable>
           </View>
