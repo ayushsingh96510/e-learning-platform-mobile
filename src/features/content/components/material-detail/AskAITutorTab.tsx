@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -276,10 +275,11 @@ export default function AskAITutorTab({
     <View className="flex-1 overflow-hidden rounded-2xl border border-gray-200 bg-white">
       <ScrollView
         ref={listRef}
-        className="max-h-[460px]"
+        style={{ height: 400, flexGrow: 0 }}
         contentContainerStyle={{ padding: 14, gap: 12 }}
         keyboardShouldPersistTaps="handled"
-        nestedScrollEnabled
+        nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={false}
         onContentSizeChange={() =>
           listRef.current?.scrollToEnd({ animated: true })
         }
@@ -346,8 +346,8 @@ export default function AskAITutorTab({
             <View
               key={message.id}
               className={`max-w-[90%] rounded-2xl p-3 ${isUser
-                  ? "self-end rounded-br-sm bg-indigo-600"
-                  : "self-start rounded-bl-sm bg-gray-100"
+                ? "self-end rounded-br-sm bg-indigo-600"
+                : "self-start rounded-bl-sm bg-gray-100"
                 }`}
             >
               <Text
@@ -388,8 +388,8 @@ export default function AskAITutorTab({
             accessibilityRole="button"
             accessibilityLabel="Send question"
             className={`mb-1 ml-2 h-10 w-10 items-center justify-center rounded-xl ${input.trim() && !sending
-                ? "bg-indigo-600"
-                : "bg-gray-300"
+              ? "bg-indigo-600"
+              : "bg-gray-300"
               }`}
           >
             <Ionicons name="send" size={18} color="#FFFFFF" />

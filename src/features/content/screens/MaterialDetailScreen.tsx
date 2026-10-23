@@ -174,62 +174,60 @@ export default function MaterialDetailScreen() {
     : "overview";
 
   return (
-    <View className="flex-1 bg-gray-50">
-    <ScrollView
-      className="flex-1 bg-gray-50"
-      contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-      showsVerticalScrollIndicator={false}
-      // stickyHeaderIndices={[1]}
-      keyboardShouldPersistTaps="handled"
-      // nestedScrollEnabled
-      scrollEnabled={!isPdfInteracting}
-    >
-      {/* 0: Header */}
-      <MaterialHeader material={material} />
-      </ScrollView>
+  <ScrollView
+    className="flex-1 bg-gray-50"
+    contentContainerStyle={{ paddingBottom: 20 }}
+    showsVerticalScrollIndicator={false}
+    // stickyHeaderIndices={[1]}
+    keyboardShouldPersistTaps="handled"
+    // nestedScrollEnabled
+    scrollEnabled={!isPdfInteracting}
+  >
+    <MaterialHeader material={material} />
 
-      {/* 1: Both Viewer and Tabs sticky together */}
-      <View className="bg-gray-50">
-        <View className="px-5 pt-5">
-          <MaterialViewer material={material} onPdfTouchChange={setIsPdfInteracting} />
-        </View>
-
-        <View className="px-5 pt-3 pb-2 bg-gray-50">
-          <MaterialTabs
-            tabs={tabs}
-            activeTab={displayedTab}
-            onChange={setActiveTab}
-          />
-        </View>
+    <View className="bg-gray-50">
+      <View className="px-5 pt-5">
+        <MaterialViewer
+          material={material}
+          onPdfTouchChange={setIsPdfInteracting}
+        />
       </View>
 
-      {/* 2: Selected tab content */}
-      <View className="min-h-[400px] px-5">
-        {displayedTab === "overview" && (
-          <OverviewTab material={material} />
-        )}
-
-        {displayedTab === "ai-summary" && aiReady?.isSummaryReady && (
-          <AISummaryTab
-            key={`summary-${material.id}`}
-            materialId={material.id}
-          />
-        )}
-
-        {displayedTab === "transcription" && aiReady?.isTranscriptReady && (
-          <TranscriptTab
-            key={`transcript-${material.id}`}
-            materialId={material.id}
-          />
-        )}
-
-        {displayedTab === "ai-tutor" && aiReady?.isAskAiReady && (
-          <AskAITutorTab
-            key={`tutor-${material.id}`}
-            materialId={material.id}
-          />
-        )}
+      <View className="bg-gray-50 px-5 pb-2 pt-3">
+        <MaterialTabs
+          tabs={tabs}
+          activeTab={displayedTab}
+          onChange={setActiveTab}
+        />
       </View>
     </View>
-  );
+
+    <View className="px-5">
+      {displayedTab === "overview" && (
+        <OverviewTab material={material} />
+      )}
+
+      {displayedTab === "ai-summary" && aiReady?.isSummaryReady && (
+        <AISummaryTab
+          key={`summary-${material.id}`}
+          materialId={material.id}
+        />
+      )}
+
+      {displayedTab === "transcription" && aiReady?.isTranscriptReady && (
+        <TranscriptTab
+          key={`transcript-${material.id}`}
+          materialId={material.id}
+        />
+      )}
+
+      {displayedTab === "ai-tutor" && aiReady?.isAskAiReady && (
+        <AskAITutorTab
+          key={`tutor-${material.id}`}
+          materialId={material.id}
+        />
+      )}
+    </View>
+  </ScrollView>
+);
 }

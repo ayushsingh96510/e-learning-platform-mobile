@@ -122,12 +122,15 @@ export default function TranscriptTab({
       ) : (
         <ScrollView
           ref={transcriptScrollRef}
-          className="min-h-0 flex-1"
-          showsVerticalScrollIndicator={false}
+          style={{ height: 500, flexGrow: 0, flexShrink: 1 }}
           contentContainerStyle={{ paddingBottom: 24 }}
+          nestedScrollEnabled={true}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
           onScroll={(event) => {
-            setShowBackToTop(event.nativeEvent.contentOffset.y > 300);
+            setShowBackToTop(
+              event.nativeEvent.contentOffset.y > 300
+            );
           }}
           scrollEventThrottle={16}
         >
@@ -152,6 +155,7 @@ export default function TranscriptTab({
                 className="ml-2 flex-1 py-2 text-sm text-gray-900"
                 accessibilityLabel="Search transcript"
                 returnKeyType="search"
+                autoCorrect={false}
               />
 
               {search.length > 0 && (
@@ -195,7 +199,7 @@ export default function TranscriptTab({
             });
             setShowBackToTop(false);
           }}
-          className="absolute bottom-5 right-2 h-12 w-12 items-center justify-center rounded-full bg-indigo-600 shadow-lg"
+          className="absolute top-5 right-2 h-12 w-12 items-center justify-center rounded-full bg-indigo-600 shadow-lg"
           style={{ elevation: 5 }}
           accessibilityRole="button"
           accessibilityLabel="Back to top"

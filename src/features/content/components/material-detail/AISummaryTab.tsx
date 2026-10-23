@@ -69,9 +69,11 @@ export default function AISummaryTab({
 
   return (
     <ScrollView
+      style={{ height: 500, flexGrow: 0 }}
       className="flex-1"
       showsVerticalScrollIndicator={false}
-      nestedScrollEnabled
+      nestedScrollEnabled={true}
+      keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ paddingBottom: 20 }}
     >
       <View className="mb-4 rounded-2xl border border-gray-200 bg-white p-4">
