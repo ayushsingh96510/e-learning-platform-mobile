@@ -17,6 +17,7 @@ import LiveClassCard from "../../live-class/components/LiveClassCard";
 import LiveClassJoinSheet from "../../live-class/components/LiveClassJoinSheet";
 import type { LiveSession } from "../../live-class/types";
 import type { StudentStackParamList } from "@/navigation/types";
+import ActiveLiveClassCard from "./ActiveLiveClassCard";
 
 interface Props {
     userName?: string | null;
@@ -201,16 +202,11 @@ export default function ActiveLiveClasses({ userName }: Props) {
                     contentContainerStyle={{ paddingRight: 4 }}
                 >
                     {items.map((item) => (
-                        <View
+                        <ActiveLiveClassCard
                             key={item.id}
-                            style={{ width: 300, marginRight: 12 }}
-                        >
-                            <LiveClassCard
-                                item={item}
-                                variant="LIVE"
-                                onJoin={() => handleJoin(item)}
-                            />
-                        </View>
+                            item={item}
+                            onJoin={() => handleJoin(item)}
+                        />
                     ))}
                 </ScrollView>
             )}
