@@ -4,7 +4,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AudioSession, LiveKitRoom } from "@livekit/react-native";
 
-import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
+import type { StudentStackParamList } from "@/navigation/types";
 import ClassRoomContent from "../components/ClassRoomContent";
 import { ClassRoomProvider } from "../ClassRoomContext";
 import { useClassRoomConnection } from "../hooks/useClassRoomConnection";

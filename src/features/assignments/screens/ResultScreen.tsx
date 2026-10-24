@@ -6,7 +6,7 @@ import QuestionReviewCard from "../components/QuestionReviewCard";
 import ScoreCard from "../components/ScoreCard";
 import StatisticsCard from "../components/StatisticsCard";
 import { useAssessmentResult } from "../hooks/useAssessmentResult";
-import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
+import type { StudentStackParamList } from "@/navigation/types";
 
 import {
   ArrowLeft,

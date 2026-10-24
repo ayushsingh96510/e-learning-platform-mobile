@@ -7,6 +7,7 @@ import NextClassCard from "../components/NextClassCard";
 import RecentActivity from "../components/RecentActivity";
 import { useDashboard } from "../hooks/useDashboard";
 import { useNavigation } from "@react-navigation/native";
+import ActiveLiveClasses from "../components/ActiveLiveClasses";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -54,12 +55,14 @@ export default function HomeScreen() {
       showsVerticalScrollIndicator={false}
     >
       <DashboardHeader
-        name={user?.name}
+        name={user?.personalInfo?.name}
         onProfilePress={() => {navigation.getParent()?.navigate("Profile");
         }}
       />
 
       <StatsGrid data={stats?.data?.counts} />
+
+      <ActiveLiveClasses userName={user?.personalInfo?.name} />
 
       <View className="mt-6">
         <NextClassCard

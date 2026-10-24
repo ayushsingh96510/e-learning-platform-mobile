@@ -17,7 +17,7 @@ import type { LiveClassTab, LiveSession } from "../types";
 
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
+import type { StudentStackParamList } from "@/navigation/types";
 
 import { requestMediaPermissions } from "@/features/classroom/permissions";
 

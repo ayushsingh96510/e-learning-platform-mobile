@@ -7,7 +7,7 @@ import { AudioSession, LiveKitRoom } from "@livekit/react-native";
 import RoomContent from "../components/RoomContent";
 import { useEndRoom } from "../hooks/useEndRoom";
 import { useRoomJoin } from "../hooks/useRoomJoin";
-import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
+import type { StudentStackParamList } from "@/navigation/types";
 
 type Props = NativeStackScreenProps<StudentStackParamList, "GroupStudyRoom">;
 

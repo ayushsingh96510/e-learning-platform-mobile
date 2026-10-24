@@ -5,7 +5,7 @@ import { useRoute, type RouteProp } from "@react-navigation/native";
 
 import api from "@/api/axios";
 import type { ApiResponse } from "@/api/types";
-import type { StudentStackParamList } from "@/navigation/StudentNavigator";
+import type { StudentStackParamList } from "@/navigation/types";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 import {

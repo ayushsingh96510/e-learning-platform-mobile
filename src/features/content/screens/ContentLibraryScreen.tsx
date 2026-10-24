@@ -15,7 +15,7 @@ import { MaterialType, Material } from "../types/content.types";
 
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { StudentStackParamList } from "@/navigation/StudentNavigator";
+import type { StudentStackParamList } from "@/navigation/types";
 
 const MATERIAL_TYPES: Array<{
   label: string;

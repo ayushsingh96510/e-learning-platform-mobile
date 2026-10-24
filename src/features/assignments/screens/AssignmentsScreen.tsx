@@ -19,7 +19,7 @@ import type {
   AssignmentTab,
   DifficultyFilter,
 } from "../types";
-import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
+import type { StudentStackParamList } from "@/navigation/types";
 
 const DIFFICULTY_FILTERS: { label: string; value: DifficultyFilter }[] = [
   { label: "All", value: "ALL" },

@@ -27,7 +27,7 @@ import QuestionPalette from "../components/QuestionPalette";
 import SubmitSheet from "../components/SubmitSheet";
 import { useAssessment } from "../hooks/useAssessment";
 import { useSubmitAssessment } from "../hooks/useSubmitAssessment";
-import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
+import type { StudentStackParamList } from "@/navigation/types";
 
 type Props = NativeStackScreenProps<
   StudentStackParamList,

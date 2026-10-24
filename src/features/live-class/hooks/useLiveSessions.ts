@@ -68,6 +68,10 @@ export function useLiveSessions(
     load(page + 1, "more");
   }, [load, loading, loadingMore, refreshing, hasMore, page]);
 
+  const refetch = useCallback(() => {
+    void load(1, "refresh");
+  }, [load]);
+
   return {
     items,
     loading,
@@ -76,7 +80,7 @@ export function useLiveSessions(
     error,
     hasMore,
     loadMore,
-    refetch: () => load(1, "refresh"),
+    refetch,
     reload: () => load(1, "initial"),
   };
 }

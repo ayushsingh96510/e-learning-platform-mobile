@@ -10,31 +10,11 @@ import ClassRoomScreen from "@/features/classroom/screens/ClassRoomScreen";
 import AssignmentsScreen from "@/features/assignments/screens/AssignmentsScreen";
 import AttemptScreen from "@/features/assignments/screens/AttemptScreen";
 import ResultScreen from "@/features/assignments/screens/ResultScreen";
-import type { AssessmentResult } from "@/features/assignments/types";
 import ContentLibraryScreen from "@/features/content/screens/ContentLibraryScreen";
 import MaterialDetailScreen from "@/features/content/screens/MaterialDetailScreen";
-
 import GroupStudyScreen from "@/features/group-study/screens/GroupStudyScreen";
 import GroupStudyRoomScreen from "@/features/group-study/screens/GroupStudyRoomScreen";
-import type { JoinRoomData } from "@/features/group-study/types";
-
-export type StudentTabParamList = {
-  Home: undefined;
-  LiveClasses: undefined;
-  GroupStudy: undefined;
-  Assignments: undefined;
-  Content: undefined;
-};
-
-export type StudentStackParamList = {
-  MainTabs: undefined;
-  Profile: undefined;
-  ClassRoom: { roomName: string };
-  AssignmentAttempt: { assessmentId: string };
-  AssignmentResult: { resultId?: string; result?: AssessmentResult };
-  MaterialDetail: { materialId: string };
-  GroupStudyRoom: { roomName: string; joinData?: JoinRoomData };
-};
+import type { StudentTabParamList, StudentStackParamList, } from "@/navigation/types";
 
 const Tab = createBottomTabNavigator<StudentTabParamList>();
 const Stack = createNativeStackNavigator<StudentStackParamList>();

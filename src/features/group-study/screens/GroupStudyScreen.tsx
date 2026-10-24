@@ -21,7 +21,7 @@ import { useGroupStudyStats } from "../hooks/useGroupStudyStats";
 import { useJoinRoom } from "../hooks/useJoinRoom";
 import { useStudentBatchId } from "../hooks/useStudentBatchId";
 import type { RoomFilter, StudyRoom } from "../types";
-import type { StudentStackParamList } from "../../../navigation/StudentNavigator";
+import type { StudentStackParamList } from "@/navigation/types";
 
 const FILTERS: { label: string; value: RoomFilter }[] = [
   { label: "All Rooms", value: "ALL" },
