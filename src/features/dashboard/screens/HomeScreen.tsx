@@ -8,6 +8,7 @@ import RecentActivity from "../components/RecentActivity";
 import { useDashboard } from "../hooks/useDashboard";
 import { useNavigation } from "@react-navigation/native";
 import ActiveLiveClasses from "../components/ActiveLiveClasses";
+import MyStudyRooms from "../components/MyStudyRooms";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -17,9 +18,11 @@ export default function HomeScreen() {
     stats,
     liveClasses,
     contents,
+    groupStudies,
     loading,
     error,
   } = useDashboard();
+  console.log("groupStudies", JSON.stringify(groupStudies, null, 2));
 
   if (loading) {
     return (
@@ -63,6 +66,10 @@ export default function HomeScreen() {
       <StatsGrid data={stats?.data?.counts} />
 
       <ActiveLiveClasses userName={user?.personalInfo?.name} />
+
+      <MyStudyRooms
+        rooms={groupStudies?.data ?? []}
+      />
 
       <View className="mt-6">
         <NextClassCard

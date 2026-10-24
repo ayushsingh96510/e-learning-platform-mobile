@@ -4,12 +4,14 @@ import {
   getDashboardStats,
   getRecentContents,
   getRecentLiveClasses,
+  getRecentGroupStudies,
 } from "../api/dashboard.api";
 
 export function useDashboard() {
   const [stats, setStats] = useState<any>(null);
   const [liveClasses, setLiveClasses] = useState<any>(null);
   const [contents, setContents] = useState<any>(null);
+  const [groupStudies, setGroupStudies] = useState<any>(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -19,16 +21,22 @@ export function useDashboard() {
       setLoading(true);
       setError("");
 
-      const [statsResponse, liveResponse, contentsResponse] =
-        await Promise.all([
-          getDashboardStats(),
-          getRecentLiveClasses(),
-          getRecentContents(),
-        ]);
+      const [
+        statsResponse,
+        liveResponse,
+        contentsResponse,
+        groupStudiesResponse,
+      ] = await Promise.all([
+        getDashboardStats(),
+        getRecentLiveClasses(),
+        getRecentContents(),
+        getRecentGroupStudies(),
+      ]);
 
       setStats(statsResponse);
       setLiveClasses(liveResponse);
       setContents(contentsResponse);
+      setGroupStudies(groupStudiesResponse);
     } catch (err: any) {
       setError(
         err?.response?.data?.message ||
@@ -47,6 +55,7 @@ export function useDashboard() {
     stats,
     liveClasses,
     contents,
+    groupStudies,
     loading,
     error,
     refetch: fetchDashboard,

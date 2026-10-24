@@ -1,4 +1,5 @@
 import api from "../../../api/axios";
+import { getRooms } from "../../group-study/api/groupStudy.api";
 
 export const getDashboardStats = async () => {
   const response = await api.get("/dashboard/stats");
@@ -16,6 +17,6 @@ export const getRecentContents = async () => {
 };
 
 export const getRecentGroupStudies = async () => {
-  const response = await api.get("/dashboard/group-studies");
-  return response.data;
+  const { rooms } = await getRooms({ page: 1, limit: 50, filter: "ALL" });
+  return { data: rooms ?? [] };
 };
