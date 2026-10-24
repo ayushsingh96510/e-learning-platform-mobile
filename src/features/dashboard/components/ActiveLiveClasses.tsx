@@ -122,10 +122,6 @@ export default function ActiveLiveClasses({ userName }: Props) {
             {/* Section header */}
             <View className="mb-4 flex-row items-center justify-between">
                 <View className="flex-row items-center">
-                    <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-red-50">
-                        <Video size={21} color="#EF4444" />
-                    </View>
-
                     <View>
                         <Text className="text-lg font-bold text-gray-900">
                             Active Live Classes

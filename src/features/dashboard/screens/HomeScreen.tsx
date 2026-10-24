@@ -9,6 +9,7 @@ import { useDashboard } from "../hooks/useDashboard";
 import { useNavigation } from "@react-navigation/native";
 import ActiveLiveClasses from "../components/ActiveLiveClasses";
 import MyStudyRooms from "../components/MyStudyRooms";
+import NextUpcomingLiveClass from "../components/NextUpcomingLiveClass";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -71,7 +72,9 @@ export default function HomeScreen() {
         rooms={groupStudies?.data ?? []}
       />
 
-      <View className="mt-6">
+      <NextUpcomingLiveClass />
+
+      {/* <View className="mt-6">
         <NextClassCard
           liveClass={
             liveClasses?.data?.status === "SCHEDULED"
@@ -82,7 +85,7 @@ export default function HomeScreen() {
             // Live class navigation will be added later.
           }}
         />
-      </View>
+      </View> */}
 
       <View className="mt-6">
         <RecentActivity contents={contents} />
