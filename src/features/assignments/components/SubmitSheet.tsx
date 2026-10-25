@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Send,
 } from "lucide-react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   visible: boolean;
@@ -35,6 +36,7 @@ export default function SubmitSheet({
   onConfirm,
 }: Props) {
   const remaining = Math.max(0, totalQuestions - answeredQuestions);
+  const insets = useSafeAreaInsets();
 
   return (
     <Modal
@@ -46,7 +48,12 @@ export default function SubmitSheet({
       }}
     >
       <View className="flex-1 justify-end bg-black/40">
-        <View className="rounded-t-3xl border-t border-gray-100 bg-white px-5 pb-8 pt-3">
+        <View
+          className="rounded-t-3xl border-t border-gray-100 bg-white px-5 pt-3"
+          style={{
+            paddingBottom: Math.max(insets.bottom, 16),
+          }}
+        >
           {/* Sheet handle */}
           <View className="mb-5 h-1 w-10 self-center rounded-full bg-gray-300" />
 
@@ -112,11 +119,10 @@ export default function SubmitSheet({
 
             {/* Remaining */}
             <View
-              className={`flex-row items-center rounded-xl border p-3 ${
-                remaining > 0
+              className={`flex-row items-center rounded-xl border p-3 ${remaining > 0
                   ? "border-amber-100 bg-amber-50"
                   : "border-emerald-100 bg-emerald-50"
-              }`}
+                }`}
             >
               <View className="mr-3 h-10 w-10 items-center justify-center rounded-lg bg-white">
                 {remaining > 0 ? (
@@ -127,21 +133,19 @@ export default function SubmitSheet({
               </View>
 
               <Text
-                className={`flex-1 text-sm font-medium ${
-                  remaining > 0
+                className={`flex-1 text-sm font-medium ${remaining > 0
                     ? "text-amber-800"
                     : "text-emerald-800"
-                }`}
+                  }`}
               >
                 Remaining
               </Text>
 
               <Text
-                className={`text-lg font-bold ${
-                  remaining > 0
+                className={`text-lg font-bold ${remaining > 0
                     ? "text-amber-700"
                     : "text-emerald-700"
-                }`}
+                  }`}
               >
                 {remaining}
               </Text>
@@ -186,9 +190,8 @@ export default function SubmitSheet({
               onPress={onCancel}
               disabled={submitting}
               accessibilityRole="button"
-              className={`flex-1 flex-row items-center justify-center rounded-xl border border-gray-200 bg-white py-3 ${
-                submitting ? "opacity-50" : ""
-              }`}
+              className={`flex-1 flex-row items-center justify-center rounded-xl border border-gray-200 bg-white py-3 ${submitting ? "opacity-50" : ""
+                }`}
             >
               <X size={17} color="#4B5563" />
               <Text className="ml-1.5 font-semibold text-gray-700">
@@ -200,9 +203,8 @@ export default function SubmitSheet({
               onPress={onConfirm}
               disabled={submitting}
               accessibilityRole="button"
-              className={`flex-1 flex-row items-center justify-center rounded-xl py-3 ${
-                submitting ? "bg-blue-400" : "bg-blue-600"
-              }`}
+              className={`flex-1 flex-row items-center justify-center rounded-xl py-3 ${submitting ? "bg-blue-400" : "bg-blue-600"
+                }`}
             >
               {submitting ? (
                 <>

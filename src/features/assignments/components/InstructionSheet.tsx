@@ -12,6 +12,7 @@ import {
 import type { AssessmentSummary } from "../types";
 import { assessmentTypeLabel, questionTypeLabel } from "../utils/labels";
 import DifficultyBadge from "./DifficultyBadge";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   visible: boolean;
@@ -26,12 +27,14 @@ export default function InstructionSheet({
   onClose,
   onStart,
 }: Props) {
+  const insets = useSafeAreaInsets();
   return (
     <Modal
       visible={visible}
       transparent
       animationType="slide"
       onRequestClose={onClose}
+      navigationBarTranslucent={false}
     >
       <View className="flex-1 justify-end bg-black/40">
         {/* Tap outside to close */}
@@ -43,8 +46,11 @@ export default function InstructionSheet({
         />
 
         <View
-          className="rounded-t-3xl border-t border-gray-100 bg-white px-5 pb-8 pt-3"
-          style={{ maxHeight: "85%" }}
+          className="rounded-t-3xl border-t border-gray-100 bg-white px-5 pt-3"
+          style={{
+            maxHeight: "85%",
+            paddingBottom: Math.max(insets.bottom, 16),
+          }}
         >
           <View className="mb-4 h-1 w-10 self-center rounded-full bg-gray-300" />
 

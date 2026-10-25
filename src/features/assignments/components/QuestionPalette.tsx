@@ -5,6 +5,7 @@ import {
   ClipboardList,
   CircleDot,
 } from "lucide-react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   visible: boolean;
@@ -28,6 +29,7 @@ export default function QuestionPalette({
   ).length;
 
   const remainingCount = questionIds.length - answeredCount;
+  const insets = useSafeAreaInsets();
 
   return (
     <Modal
@@ -45,8 +47,11 @@ export default function QuestionPalette({
         />
 
         <View
-          className="rounded-t-3xl border-t border-gray-100 bg-white px-5 pb-8 pt-3"
-          style={{ maxHeight: "75%" }}
+          className="rounded-t-3xl border-t border-gray-100 bg-white px-5 pt-3"
+          style={{
+            maxHeight: "75%",
+            paddingBottom: Math.max(insets.bottom, 16),
+          }}
         >
           {/* Sheet handle */}
           <View className="mb-5 h-1 w-10 self-center rounded-full bg-gray-300" />
@@ -113,21 +118,19 @@ export default function QuestionPalette({
                     key={id}
                     onPress={() => onJump(index)}
                     accessibilityRole="button"
-                    accessibilityLabel={`Question ${index + 1}${
-                      active
+                    accessibilityLabel={`Question ${index + 1}${active
                         ? ", current question"
                         : answered
                           ? ", answered"
                           : ", unanswered"
-                    }`}
+                      }`}
                     accessibilityState={{ selected: active }}
-                    className={`h-11 w-11 items-center justify-center rounded-xl border ${
-                      active
+                    className={`h-11 w-11 items-center justify-center rounded-xl border ${active
                         ? "border-blue-600 bg-blue-600"
                         : answered
                           ? "border-emerald-200 bg-emerald-50"
                           : "border-gray-200 bg-white"
-                    }`}
+                      }`}
                   >
                     {answered && !active ? (
                       <View className="absolute -right-1 -top-1 rounded-full bg-white">
@@ -136,13 +139,12 @@ export default function QuestionPalette({
                     ) : null}
 
                     <Text
-                      className={`text-sm font-bold ${
-                        active
+                      className={`text-sm font-bold ${active
                           ? "text-white"
                           : answered
                             ? "text-emerald-700"
                             : "text-gray-700"
-                      }`}
+                        }`}
                     >
                       {index + 1}
                     </Text>

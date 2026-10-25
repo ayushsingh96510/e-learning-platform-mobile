@@ -14,6 +14,7 @@ import {
   Radio,
 } from "lucide-react-native";
 import type { LiveSession } from "../types";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   visible: boolean;
@@ -36,6 +37,7 @@ export default function LiveClassJoinSheet({
 
   const isLive = item.status === "LIVE";
   const recording = item.isRecordingEnabled;
+  const insets = useSafeAreaInsets();
 
   return (
     <Modal
@@ -43,6 +45,7 @@ export default function LiveClassJoinSheet({
       transparent
       animationType="slide"
       onRequestClose={onClose}
+      navigationBarTranslucent={false}
     >
       <View className="flex-1 justify-end bg-black/40">
         <Pressable
@@ -54,8 +57,11 @@ export default function LiveClassJoinSheet({
         />
 
         <View
-          className="rounded-t-3xl border-t border-gray-100 bg-white px-5 pb-8 pt-3"
-          style={{ maxHeight: "85%" }}
+          className="rounded-t-3xl border-t border-gray-100 bg-white px-5 pt-3"
+          style={{
+            maxHeight: "85%",
+            paddingBottom: Math.max(insets.bottom, 16),
+          }}
         >
           <View className="mb-4 h-1 w-10 self-center rounded-full bg-gray-300" />
 
@@ -66,9 +72,8 @@ export default function LiveClassJoinSheet({
             {/* Header */}
             <View className="flex-row items-center">
               <View
-                className={`mr-3 h-12 w-12 items-center justify-center rounded-xl ${
-                  isLive ? "bg-red-50" : "bg-blue-50"
-                }`}
+                className={`mr-3 h-12 w-12 items-center justify-center rounded-xl ${isLive ? "bg-red-50" : "bg-blue-50"
+                  }`}
               >
                 <Video
                   size={23}
@@ -123,16 +128,14 @@ export default function LiveClassJoinSheet({
               </View>
 
               <View
-                className={`flex-1 rounded-2xl border p-4 ${
-                  isLive
+                className={`flex-1 rounded-2xl border p-4 ${isLive
                     ? "border-red-100 bg-white"
                     : "border-blue-100 bg-white"
-                }`}
+                  }`}
               >
                 <View
-                  className={`mb-3 h-9 w-9 items-center justify-center rounded-xl ${
-                    isLive ? "bg-red-50" : "bg-blue-50"
-                  }`}
+                  className={`mb-3 h-9 w-9 items-center justify-center rounded-xl ${isLive ? "bg-red-50" : "bg-blue-50"
+                    }`}
                 >
                   <Radio
                     size={19}
@@ -146,9 +149,8 @@ export default function LiveClassJoinSheet({
                 </Text>
 
                 <Text
-                  className={`mt-1 text-xl font-bold ${
-                    isLive ? "text-red-600" : "text-blue-600"
-                  }`}
+                  className={`mt-1 text-xl font-bold ${isLive ? "text-red-600" : "text-blue-600"
+                    }`}
                 >
                   {isLive ? "LIVE" : "Upcoming"}
                 </Text>
@@ -175,14 +177,12 @@ export default function LiveClassJoinSheet({
               </View>
 
               <View
-                className={`flex-1 rounded-2xl border p-4 ${
-                  recording ? "border-red-100 bg-white" : "border-gray-100 bg-white"
-                }`}
+                className={`flex-1 rounded-2xl border p-4 ${recording ? "border-red-100 bg-white" : "border-gray-100 bg-white"
+                  }`}
               >
                 <View
-                  className={`mb-3 h-9 w-9 items-center justify-center rounded-xl ${
-                    recording ? "bg-red-50" : "bg-gray-100"
-                  }`}
+                  className={`mb-3 h-9 w-9 items-center justify-center rounded-xl ${recording ? "bg-red-50" : "bg-gray-100"
+                    }`}
                 >
                   <Disc3
                     size={18}
@@ -196,9 +196,8 @@ export default function LiveClassJoinSheet({
                 </Text>
 
                 <Text
-                  className={`mt-1 text-sm font-bold ${
-                    recording ? "text-red-600" : "text-gray-700"
-                  }`}
+                  className={`mt-1 text-sm font-bold ${recording ? "text-red-600" : "text-gray-700"
+                    }`}
                 >
                   {recording ? "Enabled" : "Disabled"}
                 </Text>
@@ -305,9 +304,8 @@ export default function LiveClassJoinSheet({
               onPress={onClose}
               disabled={joining}
               accessibilityRole="button"
-              className={`flex-1 items-center justify-center rounded-xl border border-gray-200 py-3 ${
-                joining ? "opacity-50" : ""
-              }`}
+              className={`flex-1 items-center justify-center rounded-xl border border-gray-200 py-3 ${joining ? "opacity-50" : ""
+                }`}
             >
               <Text className="font-semibold text-gray-700">
                 Cancel
@@ -319,9 +317,8 @@ export default function LiveClassJoinSheet({
               disabled={joining}
               accessibilityRole="button"
               accessibilityLabel={joining ? "Joining class" : "Join class"}
-              className={`flex-1 flex-row items-center justify-center rounded-xl py-3 ${
-                isLive ? "bg-red-500" : "bg-blue-600"
-              } ${joining ? "opacity-60" : ""}`}
+              className={`flex-1 flex-row items-center justify-center rounded-xl py-3 ${isLive ? "bg-red-500" : "bg-blue-600"
+                } ${joining ? "opacity-60" : ""}`}
             >
               {joining ? (
                 <>
