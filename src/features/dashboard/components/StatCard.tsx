@@ -2,8 +2,8 @@ import { Text, View } from "react-native";
 import {
   BookOpen,
   UsersRound,
-  Video,
   Layers3,
+  Radio,
 } from "lucide-react-native";
 
 interface StatCardProps {
@@ -26,7 +26,7 @@ const iconConfig = {
     border: "#E9C8FF",
   },
   video: {
-    Component: Video,
+    Component: Radio,
     color: "#FF4545",
     background: "#FFF0F0",
     border: "#FFCACA",

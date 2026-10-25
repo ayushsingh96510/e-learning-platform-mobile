@@ -14,6 +14,7 @@ import {
   UserRound,
   AlertCircle,
   X,
+  UserPlus,
 } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -68,8 +69,7 @@ export default function MemberSelectView({
           </Text>
 
           <Text className="mt-2 text-center text-sm leading-6 text-gray-500">
-            Your batch could not be found, so classmates cannot be listed. You
-            can still create the room without inviting anyone.
+            Your batch could not be found, so classmates cannot be listed.
           </Text>
         </View>
       );
@@ -149,16 +149,14 @@ export default function MemberSelectView({
               onPress={() => onToggle(item.value)}
               accessibilityRole="checkbox"
               accessibilityState={{ checked: selected }}
-              className={`flex-row items-center rounded-xl border p-3 ${
-                selected
+              className={`flex-row items-center rounded-xl border p-3 ${selected
                   ? "border-blue-200 bg-blue-50"
                   : "border-gray-100 bg-white"
-              }`}
+                }`}
             >
               <View
-                className={`mr-3 h-10 w-10 items-center justify-center rounded-xl ${
-                  selected ? "bg-blue-100" : "bg-purple-50"
-                }`}
+                className={`mr-3 h-10 w-10 items-center justify-center rounded-xl ${selected ? "bg-blue-100" : "bg-purple-50"
+                  }`}
               >
                 <UserRound
                   size={19}
@@ -168,22 +166,20 @@ export default function MemberSelectView({
               </View>
 
               <Text
-                className={`flex-1 text-sm ${
-                  selected
+                className={`flex-1 text-sm ${selected
                     ? "font-semibold text-gray-900"
                     : "font-medium text-gray-700"
-                }`}
+                  }`}
                 numberOfLines={1}
               >
                 {item.label}
               </Text>
 
               <View
-                className={`ml-3 h-6 w-6 items-center justify-center rounded-md border ${
-                  selected
+                className={`ml-3 h-6 w-6 items-center justify-center rounded-md border ${selected
                     ? "border-blue-600 bg-blue-600"
                     : "border-gray-300 bg-white"
-                }`}
+                  }`}
               >
                 {selected && (
                   <Check size={15} color="#FFFFFF" strokeWidth={2.5} />
@@ -206,7 +202,7 @@ export default function MemberSelectView({
         <View className="flex-row items-center justify-between">
           <View className="flex-1 flex-row items-center">
             <View className="mr-3 h-11 w-11 items-center justify-center rounded-xl border border-purple-100 bg-purple-50">
-              <UsersRound
+              <UserPlus
                 size={21}
                 color="#A020F0"
                 strokeWidth={2}
@@ -224,16 +220,30 @@ export default function MemberSelectView({
             </View>
           </View>
 
-          <Pressable
-            onPress={onDone}
-            className="flex-row items-center justify-center rounded-xl bg-primary-600 px-4 py-2.5"
-          >
-            <Check size={16} color="#FFFFFF" strokeWidth={2.5} />
+          {selectedIds.length === 0 ? (
+            <Pressable
+              onPress={onDone}
+              accessibilityRole="button"
+              accessibilityLabel="Cancel member selection"
+              className="h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-white"
+              hitSlop={8}
+            >
+              <X size={19} color="#6B7280" strokeWidth={2} />
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={onDone}
+              accessibilityRole="button"
+              accessibilityLabel={`Done, ${selectedIds.length} students selected`}
+              className="flex-row items-center justify-center rounded-xl bg-primary-600 px-4 py-2.5"
+            >
+              <Check size={16} color="#FFFFFF" strokeWidth={2.5} />
 
-            <Text className="ml-1.5 text-sm font-semibold text-white">
-              Done
-            </Text>
-          </Pressable>
+              <Text className="ml-1.5 text-sm font-semibold text-white">
+                Done
+              </Text>
+            </Pressable>
+          )}
         </View>
 
         {/* Selection summary */}

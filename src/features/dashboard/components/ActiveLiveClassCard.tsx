@@ -1,4 +1,3 @@
-
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { Video, UserRound } from "lucide-react-native";
 import type { LiveSession } from "../../live-class/types";

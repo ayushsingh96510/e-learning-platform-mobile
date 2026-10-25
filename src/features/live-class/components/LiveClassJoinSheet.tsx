@@ -11,6 +11,7 @@ import {
   Headphones,
   MessageCircle,
   ShieldCheck,
+  Radio,
 } from "lucide-react-native";
 import type { LiveSession } from "../types";
 
@@ -133,7 +134,7 @@ export default function LiveClassJoinSheet({
                     isLive ? "bg-red-50" : "bg-blue-50"
                   }`}
                 >
-                  <Video
+                  <Radio
                     size={19}
                     color={isLive ? "#FF4545" : "#2563FF"}
                     strokeWidth={2}
