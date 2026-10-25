@@ -39,7 +39,9 @@ export function validateRoomForm(values: RoomFormValues): RoomFormErrors {
     errors.description = `Description cannot exceed ${ROOM_LIMITS.descriptionMax} characters`;
   }
 
-  if (values.memberIds.length > ROOM_LIMITS.membersMax) {
+  if (values.memberIds.length === 0) {
+    errors.members = "Please select at least one member";
+  } else if (values.memberIds.length > ROOM_LIMITS.membersMax) {
     errors.members = `A room can have at most ${ROOM_LIMITS.membersMax} invited members`;
   }
 
