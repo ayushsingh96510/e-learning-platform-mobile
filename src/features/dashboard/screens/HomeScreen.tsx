@@ -3,7 +3,7 @@ import { ScrollView, Text, View } from "react-native";
 import { useAuth } from "../../auth/AuthContext";
 import DashboardHeader from "../components/DashboardHeader";
 import StatsGrid from "../components/StatsGrid";
-import NextClassCard from "../components/NextClassCard";
+// import NextClassCard from "../components/NextClassCard";
 import RecentActivity from "../components/RecentActivity";
 import { useDashboard } from "../hooks/useDashboard";
 import { useNavigation } from "@react-navigation/native";

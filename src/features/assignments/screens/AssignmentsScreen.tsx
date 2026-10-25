@@ -159,16 +159,14 @@ export default function AssignmentsScreen() {
               <Pressable
                 key={filter.value}
                 onPress={() => setDifficulty(filter.value)}
-                className={`rounded-full border px-4 py-2 ${
-                  active
+                className={`rounded-full border px-4 py-2 ${active
                     ? "border-primary-600 bg-primary-600"
                     : "border-gray-200 bg-white"
-                }`}
+                  }`}
               >
                 <Text
-                  className={`text-sm font-medium ${
-                    active ? "text-white" : "text-gray-600"
-                  }`}
+                  className={`text-sm font-medium ${active ? "text-white" : "text-gray-600"
+                    }`}
                 >
                   {filter.label}
                 </Text>
@@ -186,14 +184,13 @@ export default function AssignmentsScreen() {
               <Pressable
                 key={tab.value}
                 onPress={() => setActiveTab(tab.value)}
-                className={`flex-1 items-center rounded-lg py-3 ${
-                  active ? "bg-white" : ""
-                }`}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: active }}
+                className={`flex-1 items-center rounded-lg py-3 ${active ? "bg-white" : ""}`}
               >
                 <Text
-                  className={`text-sm font-semibold ${
-                    active ? "text-primary-600" : "text-gray-500"
-                  }`}
+                  className={`text-sm font-semibold ${active ? "text-primary-600" : "text-gray-500"
+                    }`}
                 >
                   {tab.label} ({tab.count})
                 </Text>

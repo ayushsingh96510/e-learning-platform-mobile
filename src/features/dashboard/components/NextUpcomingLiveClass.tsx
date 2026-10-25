@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { ArrowRight, CalendarClock } from "lucide-react-native";
+import { ChevronRight, CalendarClock } from "lucide-react-native";
 
 import { useLiveSessions } from "../../live-class/hooks/useLiveSessions";
 import UpcomingLiveClassCard from "./UpcomingLiveClassCard";
@@ -85,7 +85,7 @@ export default function NextUpcomingLiveClass() {
             View all
           </Text>
 
-          <ArrowRight size={16} color="#2563EB" />
+          <ChevronRight size={17} color="#2563EB" />
         </Pressable>
       </View>
 

@@ -21,13 +21,13 @@ const MATERIAL_TYPES: Array<{
   label: string;
   value: MaterialType | undefined;
 }> = [
-  { label: "All", value: undefined },
-  { label: "Video", value: "VIDEO" },
-  { label: "PDF", value: "PDF" },
-  { label: "Document", value: "DOCUMENT" },
-  { label: "Image", value: "IMAGE" },
-  { label: "Audio", value: "AUDIO" },
-];
+    { label: "All", value: undefined },
+    { label: "Video", value: "VIDEO" },
+    { label: "PDF", value: "PDF" },
+    { label: "Document", value: "DOCUMENT" },
+    { label: "Image", value: "IMAGE" },
+    { label: "Audio", value: "AUDIO" },
+  ];
 
 const TYPE_ICONS: Record<MaterialType, keyof typeof Ionicons.glyphMap> = {
   VIDEO: "videocam-outline",
@@ -77,7 +77,7 @@ export default function ContentLibraryScreen() {
   const [totalPages, setTotalPages] = useState(1);
 
   const navigation =
-  useNavigation<NativeStackNavigationProp<StudentStackParamList>>();
+    useNavigation<NativeStackNavigationProp<StudentStackParamList>>();
 
   const fetchMaterials = useCallback(
     async (requestedPage: number, append = false) => {
@@ -95,11 +95,11 @@ export default function ContentLibraryScreen() {
         setMaterials((previous) =>
           append
             ? [
-                ...previous,
-                ...result.materials.filter(
-                  (item) => !previous.some((old) => old.id === item.id),
-                ),
-              ]
+              ...previous,
+              ...result.materials.filter(
+                (item) => !previous.some((old) => old.id === item.id),
+              ),
+            ]
             : result.materials,
         );
 
@@ -108,13 +108,13 @@ export default function ContentLibraryScreen() {
       } catch (err: unknown) {
         const message =
           typeof err === "object" &&
-          err !== null &&
-          "response" in err
+            err !== null &&
+            "response" in err
             ? (
-                err as {
-                  response?: { data?: { message?: string } };
-                }
-              ).response?.data?.message
+              err as {
+                response?: { data?: { message?: string } };
+              }
+            ).response?.data?.message
             : undefined;
 
         setError(message || "Unable to load learning materials.");
@@ -149,13 +149,13 @@ export default function ContentLibraryScreen() {
 
         const message =
           typeof err === "object" &&
-          err !== null &&
-          "response" in err
+            err !== null &&
+            "response" in err
             ? (
-                err as {
-                  response?: { data?: { message?: string } };
-                }
-              ).response?.data?.message
+              err as {
+                response?: { data?: { message?: string } };
+              }
+            ).response?.data?.message
             : undefined;
 
         setError(message || "Unable to load learning materials.");
@@ -181,8 +181,11 @@ export default function ContentLibraryScreen() {
     if (loading || refreshing || loadingMore || page >= totalPages) return;
 
     setLoadingMore(true);
-    await fetchMaterials(page + 1, true);
-    setLoadingMore(false);
+    try {
+      await fetchMaterials(page + 1, true);
+    } finally {
+      setLoadingMore(false);
+    }
   }, [
     loading,
     refreshing,
@@ -197,7 +200,7 @@ export default function ContentLibraryScreen() {
       activeOpacity={0.8}
       className="mb-3 overflow-hidden rounded-2xl border border-gray-100 bg-white"
       onPress={() =>
-        navigation.navigate("MaterialDetail", {materialId: item.id,})}
+        navigation.navigate("MaterialDetail", { materialId: item.id, })}
     >
       <View className="h-36 items-center justify-center bg-blue-50">
         <Ionicons
@@ -216,12 +219,12 @@ export default function ContentLibraryScreen() {
         </Text>
 
         <Text numberOfLines={1} className="mt-1 text-sm text-gray-500">
-            {(typeof item.subject === "string" ? item.subject : item.subject?.name) || "General"}{" · "}{item.createdBy?.name || "Instructor"}
+          {(typeof item.subject === "string" ? item.subject : item.subject?.name) || "General"}{" · "}{item.createdBy?.name || "Instructor"}
         </Text>
 
         <View className="mt-3 flex-row items-center">
-          <View className="rounded-md bg-blue-50 px-2 py-1">
-            <Text className="text-xs font-semibold text-blue-700">
+          <View className="rounded-md bg-primary-100 px-2 py-1">
+            <Text className="text-xs font-semibold text-primary-700">
               {item.materialType}
             </Text>
           </View>
@@ -242,7 +245,7 @@ export default function ContentLibraryScreen() {
 
   return (
     <View className="flex-1 bg-gray-50">
-      <View className="border-b border-gray-100 bg-white px-5 pb-4 pt-5">
+      <View className="px-4 pb-2 pt-6">
         <Text className="text-2xl font-bold text-gray-900">
           Content Library
         </Text>
@@ -250,8 +253,8 @@ export default function ContentLibraryScreen() {
           Browse your learning materials
         </Text>
 
-        <View className="mt-4 flex-row items-center rounded-xl border border-gray-200 bg-gray-50 px-3">
-          <Ionicons name="search-outline" size={20} color="#9CA3AF" />
+        <View className="mt-4 flex-row items-center rounded-xl border border-gray-200 bg-white px-3">
+          {/* <Ionicons name="search-outline" size={20} color="#9CA3AF" /> */}
           <TextInput
             value={search}
             onChangeText={setSearch}
@@ -281,16 +284,14 @@ export default function ContentLibraryScreen() {
             return (
               <TouchableOpacity
                 onPress={() => setSelectedType(item.value)}
-                className={`rounded-full border px-4 py-2 ${
-                  selected
-                    ? "border-blue-600 bg-blue-600"
-                    : "border-gray-200 bg-white"
-                }`}
+                className={`rounded-full border px-4 py-2 ${selected
+                  ? "border-primary-600 bg-primary-600"
+                  : "border-gray-200 bg-white"
+                  }`}
               >
                 <Text
-                  className={`text-sm font-semibold ${
-                    selected ? "text-white" : "text-gray-600"
-                  }`}
+                  className={`text-sm font-semibold ${selected ? "text-white" : "text-gray-600"
+                    }`}
                 >
                   {item.label}
                 </Text>
@@ -324,7 +325,7 @@ export default function ContentLibraryScreen() {
             onPress={() => {
               void onRefresh();
             }}
-            className="mt-4 rounded-xl bg-blue-600 px-5 py-3"
+            className="mt-4 rounded-xl bg-primary-600 px-5 py-3"
           >
             <Text className="font-semibold text-white">Try again</Text>
           </TouchableOpacity>

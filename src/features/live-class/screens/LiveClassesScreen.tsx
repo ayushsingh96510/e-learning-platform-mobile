@@ -61,7 +61,7 @@ export default function LiveClassesScreen() {
     useNavigation<NativeStackNavigationProp<StudentStackParamList>>();
 
   const { user } = useAuth();
-  const userName = user?.personalInfo?.name ?? null; 
+  const userName = user?.personalInfo?.name ?? null;
 
   const [activeTab, setActiveTab] = useState<LiveClassTab>("LIVE");
   const [startDate, setStartDate] = useState<string>(toYmd(new Date()));
@@ -171,14 +171,13 @@ export default function LiveClassesScreen() {
               <Pressable
                 key={tab.value}
                 onPress={() => setActiveTab(tab.value)}
-                className={`flex-1 items-center rounded-lg py-3 ${
-                  active ? "bg-white" : ""
-                }`}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: active }}
+                className={`flex-1 items-center rounded-lg py-3 ${active ? "bg-white" : ""}`}
               >
                 <Text
-                  className={`text-sm font-semibold ${
-                    active ? "text-primary-600" : "text-gray-500"
-                  }`}
+                  className={`text-sm font-semibold ${active ? "text-primary-600" : "text-gray-500"
+                    }`}
                 >
                   {tab.label}
                 </Text>

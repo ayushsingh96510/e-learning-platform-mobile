@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { ArrowRight, UsersRound } from "lucide-react-native";
+import { ChevronRight, UsersRound } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -78,7 +78,7 @@ export default function MyStudyRooms({ rooms }: Props) {
             View all
           </Text>
 
-          <ArrowRight size={16} color="#2563EB" />
+          <ChevronRight size={17} color="#2563EB" />
         </Pressable>
       </View>
 

@@ -1,4 +1,5 @@
 import { Pressable, Text, View } from "react-native";
+import { UserRound } from "lucide-react-native";
 
 interface DashboardHeaderProps {
   name?: string;
@@ -13,7 +14,7 @@ export default function DashboardHeader({
     <View className="mb-6 flex-row items-center justify-between">
       <View className="flex-1 pr-4">
         <Text className="text-2xl font-bold text-gray-900">
-          Welcome back{ name ? `, ${name}` : "" }
+          Welcome back{name ? `, ${name}` : ""}
         </Text>
 
         <Text className="mt-1 text-sm text-gray-500">
@@ -23,9 +24,11 @@ export default function DashboardHeader({
 
       <Pressable
         onPress={onProfilePress}
+        accessibilityRole="button"
+        accessibilityLabel="Open profile"
         className="h-11 w-11 items-center justify-center rounded-full bg-primary-100"
       >
-        <Text className="text-lg">👤</Text>
+        <UserRound size={22} color="#2563EB" />
       </Pressable>
     </View>
   );
