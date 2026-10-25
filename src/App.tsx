@@ -12,19 +12,16 @@ import { AuthProvider } from "./features/auth/AuthContext";
 
 export default function App() {
   return (
-  <KeyboardProvider> 
-    <SafeAreaProvider>
-      <SafeAreaView
-        edges={["top"]}
-        className="flex-1 bg-gray-50"
-      >
-        <AuthProvider>
-          <NavigationContainer>
-            <RootNavigator />
-          </NavigationContainer>
-        </AuthProvider>
-      </SafeAreaView>
-    </SafeAreaProvider>
-  </KeyboardProvider>   
+    <KeyboardProvider>
+      <SafeAreaProvider>
+        <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-white">
+          <AuthProvider>
+            <NavigationContainer>
+              <RootNavigator />
+            </NavigationContainer>
+          </AuthProvider>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </KeyboardProvider>
   );
 }
