@@ -120,22 +120,21 @@ export default function RoomContent({
       {/* Header */}
       <View
         className="border-b border-gray-100 bg-white px-4 pb-4"
-        style={{ paddingTop: insets.top + 8 }}
       >
         <View className="flex-row items-center">
           {/* Back button */}
-          <Pressable
+          {/* <Pressable
             onPress={onLeave}
             accessibilityRole="button"
             accessibilityLabel="Leave study room"
             className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-gray-100"
           >
             <Ionicons name="arrow-back" size={21} color="#374151" />
-          </Pressable>
+          </Pressable> */}
 
           {/* Room icon */}
           <View className="mr-3 h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50">
-            <Ionicons name="people" size={25} color="#4F46E5" />
+            <Ionicons name="people" size={17} color="#2563FF" />
           </View>
 
           {/* Room details */}
@@ -215,7 +214,7 @@ export default function RoomContent({
           <View
             className="absolute right-4 w-60 overflow-hidden rounded-2xl border border-gray-100 bg-white py-2"
             style={{
-              top: insets.top + 58,
+              top: insets.top + 60,
               elevation: 8,
               shadowColor: "#000",
               shadowOpacity: 0.12,
@@ -234,7 +233,7 @@ export default function RoomContent({
               <Ionicons
                 name="sync-outline"
                 size={20}
-                color="#4F46E5"
+                color="#2563FF"
               />
               <Text className="ml-3 text-sm font-medium text-gray-800">
                 Refresh Whiteboard
@@ -252,13 +251,13 @@ export default function RoomContent({
               <Ionicons
                 name="people-outline"
                 size={20}
-                color="#4F46E5"
+                color="#2563FF"
               />
               <Text className="ml-3 text-sm font-medium text-gray-800">
                 Participants
               </Text>
               <View className="ml-auto rounded-full bg-indigo-50 px-2 py-1">
-                <Text className="text-xs font-semibold text-indigo-700">
+                <Text className="text-xs font-semibold text-blue-600">
                   {participants.length}
                 </Text>
               </View>
@@ -312,7 +311,7 @@ export default function RoomContent({
                 <Ionicons
                   name={item === "people" ? "people-outline" : "easel-outline"}
                   size={17}
-                  color={active ? "#4F46E5" : "#6B7280"}
+                  color={active ? "#2563FF" : "#6B7280"}
                 />
                 <Text
                   className={`ml-2 text-sm font-semibold ${active ? "text-primary-600" : "text-gray-500"
@@ -371,7 +370,6 @@ export default function RoomContent({
         fileCount={files.length}
         isCreator={isCreator}
         ending={ending}
-        bottomInset={insets.bottom}
         onToggleMic={handleToggleMic}
         onOpenChat={openChat}
         onOpenFiles={() => setFilesOpen(true)}

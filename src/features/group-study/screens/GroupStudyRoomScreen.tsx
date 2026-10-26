@@ -75,13 +75,13 @@ export default function GroupStudyRoomScreen({ navigation, route }: Props) {
     );
   }, [navigation]);
 
+
   if (error) {
     return (
-      <View
-        className="flex-1 items-center justify-center bg-gray-50 px-6"
-        style={{ paddingTop: insets.top }}
-      >
-        <Text className="text-center text-base text-red-600">{error}</Text>
+      <View className="flex-1 items-center justify-center bg-gray-50 px-6">
+        <Text className="text-center text-base text-red-600">
+          {error}
+        </Text>
 
         <Pressable
           onPress={retry}
@@ -89,12 +89,25 @@ export default function GroupStudyRoomScreen({ navigation, route }: Props) {
         >
           <Text className="font-semibold text-white">Retry</Text>
         </Pressable>
+
         <Pressable onPress={leave} className="mt-3 px-6 py-2">
           <Text className="font-semibold text-gray-600">Go back</Text>
         </Pressable>
       </View>
     );
   }
+
+  if (loading || !joinData) {
+    return (
+      <View className="flex-1 items-center justify-center bg-gray-50">
+        <ActivityIndicator />
+        <Text className="mt-3 text-sm text-gray-500">
+          Joining study room...
+        </Text>
+      </View>
+    );
+  }
+
 
   if (loading || !joinData) {
     return (

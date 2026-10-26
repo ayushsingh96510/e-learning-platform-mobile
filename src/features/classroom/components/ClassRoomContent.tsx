@@ -81,25 +81,23 @@ export default function ClassRoomContent({ onLeave, onRetry, roomError }: Props)
   return (
     <View
       className={`flex-1 ${fullscreen ? "bg-black" : "bg-gray-50"}`}
-      style={
-        fullscreen
-          ? {
-              paddingLeft: insets.left,
-              paddingRight: insets.right,
-              paddingBottom: insets.bottom,
-            }
-          : { paddingTop: insets.top, paddingBottom: insets.bottom }
-      }
     >
       <StatusBar hidden={fullscreen} />
 
-      {!fullscreen && <ClassRoomHeader onLeave={onLeave} roomError={roomError} />}
+      {!fullscreen && (
+        <ClassRoomHeader
+          onLeave={onLeave}
+          roomError={roomError}
+        />
+      )}
 
       <View className={fullscreen ? "flex-1" : "flex-1 px-3 pt-3"}>
         <MainStage
           onRetry={onRetry}
           fullscreen={fullscreen}
-          onToggleFullscreen={() => (fullscreen ? exit() : enter())}
+          onToggleFullscreen={() =>
+            fullscreen ? exit() : enter()
+          }
         />
       </View>
 

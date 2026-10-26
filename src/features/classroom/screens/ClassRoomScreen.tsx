@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AudioSession, LiveKitRoom } from "@livekit/react-native";
 
 import type { StudentStackParamList } from "@/navigation/types";
@@ -13,7 +12,6 @@ import type { ParticipantRole } from "../types";
 
 export default function ClassRoomScreen() {
   const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
   const route = useRoute<RouteProp<StudentStackParamList, "ClassRoom">>();
   const { roomName } = route.params;
 
@@ -57,18 +55,24 @@ export default function ClassRoomScreen() {
 
   if (step === "error") {
     return (
-      <View
-        className="flex-1 items-center justify-center bg-gray-50 px-6"
-        style={{ paddingTop: insets.top }}
-      >
-        <Text className="text-center text-base text-red-600">{error}</Text>
+      <View className="flex-1 items-center justify-center bg-gray-50 px-6">
+        <Text className="text-center text-base text-red-600">
+          {error}
+        </Text>
+
         {statusCode ? (
-          <Text className="mt-1 text-xs text-gray-400">Error code: {statusCode}</Text>
+          <Text className="mt-1 text-xs text-gray-400">
+            Error code: {statusCode}
+          </Text>
         ) : null}
 
-        <Pressable onPress={retry} className="mt-4 rounded-xl bg-primary-600 px-6 py-3">
+        <Pressable
+          onPress={retry}
+          className="mt-4 rounded-xl bg-primary-600 px-6 py-3"
+        >
           <Text className="font-semibold text-white">Retry</Text>
         </Pressable>
+
         <Pressable onPress={leave} className="mt-3 px-6 py-2">
           <Text className="font-semibold text-gray-600">Go back</Text>
         </Pressable>

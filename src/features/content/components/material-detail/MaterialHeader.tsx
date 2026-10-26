@@ -1,4 +1,4 @@
-import {  Alert, Modal, Pressable, Text, View } from "react-native";
+import { Alert, Modal, Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
@@ -6,6 +6,7 @@ import { resolveMaterialType } from "../../utils/material";
 import LectureNotesModal from "./LectureNotesModal";
 import * as Sharing from "expo-sharing";
 import { ensureMaterialDownloaded, saveMaterialToPublicDownloads, } from "../../utils/materialFile";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   TYPE_LABELS,
@@ -93,6 +94,7 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [notesVisible, setNotesVisible] = useState(false);
   const [fileAction, setFileAction] = useState<"download" | "share" | null>(null);
+  const insets = useSafeAreaInsets();
 
 
   const handleDownloadMaterial = async () => {
@@ -168,7 +170,7 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
   };
 
   return (
-    <View className="border-b border-gray-100 bg-white px-5 pb-6 pt-7">
+    <View className="border-b border-gray-100 bg-white px-5 pb-5 pt-3">
 
       {/* Back button + Material icon + Type badge + Menu */}
       <View className="mb-5 flex-row items-center">
@@ -235,7 +237,10 @@ export default function MaterialHeader({ material }: MaterialHeaderProps) {
             className="flex-1 bg-black/20"
             onPress={() => setMenuVisible(false)}
           >
-            <View className="absolute right-5 top-24 w-56 rounded-2xl border border-gray-100 bg-white p-2 shadow-lg">
+            <View
+              className="absolute right-5 w-56 rounded-2xl border border-gray-100 bg-white p-2 shadow-lg"
+              style={{ top: insets.top + 60, elevation: 8 }}
+            >
               {materialType === "VIDEO" && aiCount > 0 && (
                 <>
                   <Pressable
