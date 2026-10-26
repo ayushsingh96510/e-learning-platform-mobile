@@ -226,8 +226,8 @@ function AudioMaterialPlayer({ uri }: { uri: string }) {
                 accessibilityLabel={`Playback speed ${speed} times`}
                 accessibilityState={{ selected }}
                 className={`min-w-[52px] items-center rounded-lg px-3 py-2 ${selected
-                    ? "bg-blue-600"
-                    : "border border-gray-200 bg-white"
+                  ? "bg-blue-600"
+                  : "border border-gray-200 bg-white"
                   }`}
               >
                 <Text
@@ -268,7 +268,7 @@ function PdfMaterialViewer({
   return (
     <View
       className="overflow-hidden rounded-xl border border-gray-200 bg-white"
-      style={{ height: 400 }}
+      style={{ height: 420 }}
     >
       <WebView
         source={{ uri: viewerUrl }}
@@ -293,7 +293,6 @@ function PdfMaterialViewer({
     </View>
   );
 }
-
 
 function ImageMaterialViewer({
   uri,

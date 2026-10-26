@@ -69,7 +69,6 @@ interface Props {
   fileCount: number;
   isCreator: boolean;
   ending: boolean;
-  bottomInset: number;
   onToggleMic: () => void;
   onOpenChat: () => void;
   onOpenFiles: () => void;
@@ -84,7 +83,6 @@ export default function RoomControls({
   fileCount,
   isCreator,
   ending,
-  bottomInset,
   onToggleMic,
   onOpenChat,
   onOpenFiles,
@@ -92,10 +90,7 @@ export default function RoomControls({
   onLeave,
 }: Props) {
   return (
-    <View
-      className="items-center px-3 pt-3"
-      style={{ paddingBottom: bottomInset + 12 }}
-    >
+    <View className="items-center px-3 pt-2 pb-3">
       <View className="flex-row items-center gap-1.5 rounded-2xl border border-gray-200 bg-white px-3 py-2 shadow-sm">
         {/* Microphone */}
         <RoundButton
