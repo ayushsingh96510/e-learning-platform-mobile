@@ -60,6 +60,7 @@ export default function HomeScreen() {
     >
       <DashboardHeader
         name={user?.personalInfo?.name}
+        profileImage={user?.personalInfo?.profileImage}
         onProfilePress={() => {navigation.getParent()?.navigate("Profile");
         }}
       />
