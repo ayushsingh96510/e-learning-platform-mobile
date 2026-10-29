@@ -17,20 +17,12 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAuthenticated: boolean;
-
-  login: (
-    email: string,
-    password: string,
-  ) => Promise<AuthResult>;
-
+  login: (email: string, password: string) => Promise<AuthResult>;
   logout: () => Promise<void>;
-
   checkAuthStatus: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(
-  undefined,
-);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const STORAGE_KEYS = {
   accessToken: "accessToken",
@@ -49,11 +41,10 @@ const clearSession = async () => {
   ]);
 };
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const isStudent = (user: User) =>
+  String(user.role).toUpperCase() === "STUDENT";
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -62,25 +53,33 @@ export function AuthProvider({
     setLoading(true);
 
     try {
-      const [accessToken, refreshToken] =
-        await Promise.all([
-          AsyncStorage.getItem(STORAGE_KEYS.accessToken),
-          AsyncStorage.getItem(STORAGE_KEYS.refreshToken),
-        ]);
+      const [accessToken, refreshToken] = await Promise.all([
+        AsyncStorage.getItem(STORAGE_KEYS.accessToken),
+        AsyncStorage.getItem(STORAGE_KEYS.refreshToken),
+      ]);
 
       if (!accessToken || !refreshToken) {
+        await clearSession();
         setUser(null);
         setIsAuthenticated(false);
         return;
       }
 
       const response = await getCurrentUser();
+      const currentUser = response.data as User;
 
-      setUser(response.data);
+      if (!isStudent(currentUser)) {
+        await clearSession();
+        setUser(null);
+        setIsAuthenticated(false);
+        return;
+      }
+
+      setUser(currentUser);
       setIsAuthenticated(true);
+      await AsyncStorage.setItem(STORAGE_KEYS.role, currentUser.role);
     } catch {
       await clearSession();
-
       setUser(null);
       setIsAuthenticated(false);
     } finally {
@@ -93,10 +92,7 @@ export function AuthProvider({
     password: string,
   ): Promise<AuthResult> => {
     try {
-      const response = await loginRequest(
-        email,
-        password,
-      );
+      const response = await loginRequest(email, password);
 
       if (!response.success) {
         return {
@@ -105,45 +101,55 @@ export function AuthProvider({
         };
       }
 
-      const {
-        accessToken,
-        refreshToken,
-      } = response.data;
+      const { accessToken, refreshToken } = response.data;
 
       await AsyncStorage.multiSet([
         [STORAGE_KEYS.accessToken, accessToken],
         [STORAGE_KEYS.refreshToken, refreshToken],
-        [STORAGE_KEYS.loggedIn, "true"],
       ]);
 
       const meResponse = await getCurrentUser();
-
       const currentUser = meResponse.data as User;
+
+      if (!currentUser?.role || !isStudent(currentUser)) {
+        const role = String(currentUser?.role || "").toUpperCase();
+
+        await clearSession();
+        setUser(null);
+        setIsAuthenticated(false);
+
+        return {
+          success: false,
+          message:
+            role === "ADMIN" || role === "TEACHER"
+              ? "Please use the web application to access your account."
+              : "Your account is not authorized to access the student app.",
+        };
+      }
+
+      await AsyncStorage.multiSet([
+        [STORAGE_KEYS.loggedIn, "true"],
+        [STORAGE_KEYS.role, currentUser.role],
+      ]);
 
       setUser(currentUser);
       setIsAuthenticated(true);
 
-      await AsyncStorage.setItem(
-        STORAGE_KEYS.role,
-        currentUser.role,
-      );
+      return { success: true };
+    } catch (error: any) {
+      await clearSession();
+      setUser(null);
+      setIsAuthenticated(false);
 
       return {
-        success: true,
-      };
-    } catch (error: any) {
-      return {
         success: false,
-        message:
-          error?.response?.data?.message ||
-          "Login failed",
+        message: error?.response?.data?.message || "Login failed",
       };
     }
   };
 
   const logout = async () => {
     await clearSession();
-
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -172,9 +178,7 @@ export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      "useAuth must be used inside AuthProvider",
-    );
+    throw new Error("useAuth must be used inside AuthProvider");
   }
 
   return context;
